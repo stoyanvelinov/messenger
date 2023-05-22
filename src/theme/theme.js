@@ -6,12 +6,23 @@ const theme = extendTheme({
     },
     colors: {
         primary: '#142543',
-        // secondary: '#FEB2B2',
+        primaryMid: '#203355',
+        primaryDark: '#12213c',
+        primaryLight: '#52688E'
+        // secondary: '#DBC2CF',
+        //#EBBAB9
+        //#C3979F
     },
     styles: {
-        'body': {
-            margin: 0
+        global: {
+            'html, body': {
+                h: '100vh',
+                margin: '0',
+                bg: '#142543',
+                color: '#fff'
+            }
         }
+
     }
 }
 );
