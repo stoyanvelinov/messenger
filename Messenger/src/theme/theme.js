@@ -6,7 +6,7 @@ const theme = extendTheme({
     },
     colors: {
         primary: '#142543',
-        // secondary: '#FEB2B2',
+        secondary: '#FEB2B2',
     },
     styles: {
         'body': {
