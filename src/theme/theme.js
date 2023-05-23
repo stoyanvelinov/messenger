@@ -22,3 +22,6 @@ const theme = extendTheme({
                 color: '#fff'
             }
         }
+    }
+});
+export default theme;
