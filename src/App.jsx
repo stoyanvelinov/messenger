@@ -6,6 +6,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { getUserData } from './services/users.service';
 import { AuthContext } from './context/authContext';
 
+
 function App() {
   const [user] = useAuthState(auth);
   const [appState, setAppState] = useState({
