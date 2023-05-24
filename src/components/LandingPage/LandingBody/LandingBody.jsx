@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
 import InfoBar from '../InfoBar/InfoBar';
-import UnsplashImg from '../Carousel/Carousel';
-import ImageCarousel from '../Carousel/Carousel';
 import Carousel from '../Carousel/Carousel';
 
 const LandingBody = () => {
@@ -27,7 +25,7 @@ const LandingBody = () => {
         fontWeight="bold"
         fontSize="xl"
       >
-        <Text fontFamily="cursive" fontSize='xs'>Enhance your team's communication and collaboration with our powerful messenger platform. Stay connected with your colleagues, exchange ideas, share files, and work together seamlessly. Our feature-rich messenger provides a streamlined experience designed to boost productivity and foster teamwork.</Text>
+        <Text fontSize='xs'>Enhance your team's communication and collaboration with our powerful messenger platform. Stay connected with your colleagues, exchange ideas, share files, and work together seamlessly. Our feature-rich messenger provides a streamlined experience designed to boost productivity and foster teamwork.</Text>
       </Flex>
       <Flex
         className='body-right-side'
@@ -35,7 +33,7 @@ const LandingBody = () => {
         height="100%"
         bg="primary"
       >
-       <Carousel/>
+        <Carousel />
       </Flex>
     </Box>
   );

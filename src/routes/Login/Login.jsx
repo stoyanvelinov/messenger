@@ -56,10 +56,10 @@ const Login = () => {
                         <Input id="password" borderRadius="2xl" type="password" value={form.password} onChange={updateForm('password')} placeholder="Password" autoComplete="off" required />
                         {error && <Text color="red">{error.message}</Text>}
                     </Box>
-                    <Button borderRadius="2xl" w="100%" onClick={onLogin}>Log in</Button>
+                    <Button color='primaryDark' _hover={{ bg: 'primaryLight', color: '#fff' }} borderRadius="2xl" w="100%" onClick={onLogin}>Log in</Button>
                 </FormControl>
                 <Box>
-                <Text >Not a member yet? <Link btn-id="toRegisterBtn" pl={2} onClick={()=>{navigate('/register');}}>Sign up</Link></Text>
+                    <Text >Not a member yet? <Link btn-id="toRegisterBtn" pl={2} onClick={() => { navigate('/register'); }}>Sign up</Link></Text>
                 </Box>
                 {/* </form> */}
             </Flex>

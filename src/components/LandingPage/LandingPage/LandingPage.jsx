@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, Button, Link, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import LandingHeader from '../LandingHeader/LandingHeader';
 import LandingFooter from '../LandingFooter/LandingFooter';
 import LandingBody from '../LandingBody/LandingBody';
@@ -15,9 +15,9 @@ const LandingPage = () => {
       alignItems="center"
       justifyContent="center"
     >
-  <LandingHeader/>
-  <LandingBody/>
-  <LandingFooter/>
+      <LandingHeader />
+      <LandingBody />
+      <LandingFooter />
     </Box>
   );
 };

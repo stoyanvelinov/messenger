@@ -59,6 +59,7 @@ export default function PhoneNumberInput({
           position="absolute"
           value={selectedCountry}
           onChange={onCountryChange}
+          color='primaryLight'
         >
           <option value="" />
           {options.map(option => (
