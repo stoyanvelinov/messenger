@@ -41,9 +41,11 @@ export const createUser = (
   const createdOn = Timestamp.fromDate(new Date()).seconds;
   const isAdmin = false;
   const status = 'offline';
+  
 
-  return set(ref(db, `users/${username}`), {
+  return set(ref(db, `users/${uid}`), {
     uid,
+    username,
     email,
     firstName,
     lastName,
