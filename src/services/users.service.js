@@ -100,8 +100,14 @@ export const getLastRegisteredUser = async () => {
   }
 };
 
-export const updateUserStatus = (name, status = STATUS.ONLINE) => {
-  return update(ref(db, `users/${name}`), {
+export const updateUserStatus = (uid, status = STATUS.ONLINE) => {
+  return update(ref(db, `users/${uid}`), {
     status
+  });
+};
+
+export const updateUserProfile = (uid,form) => {
+  return update(ref(db, `users/${uid}`), {
+    ...form
   });
 };

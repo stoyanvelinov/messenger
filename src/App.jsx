@@ -28,7 +28,7 @@ function App() {
         if (!snapshot.exists()) {
           throw new Error('Something went wrong!');
         }
-        updateUserStatus(user.firstName);
+        updateUserStatus(user.uid,STATUS.ONLINE);
 
         setAppState({
           ...appState,
@@ -36,6 +36,10 @@ function App() {
         });
       })
       .catch(e => alert(e.message));
+    
+    // return () => {
+    //   updateUserStatus(user.uid, STATUS.OFFLINE);
+    // };
   }, [user]);
 
   return (

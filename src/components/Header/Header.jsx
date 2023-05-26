@@ -37,7 +37,7 @@ const Header = () => {
             </MenuList>
         </Menu >
         <Box ml='auto'>
-            <Profile></Profile>
+            <Profile />
         </Box>
         <Text
             display={{ base: 'flex', md: 'none' }}
