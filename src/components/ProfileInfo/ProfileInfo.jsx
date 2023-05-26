@@ -85,7 +85,13 @@ const ProfileInfo = () => {
                 </label>
                 <Popover placement='bottom-start' >
                     <PopoverTrigger>
-                        <ProfileStatusIcon color={`${style}`} cursor='pointer' />
+                        <Icon viewBox='0 0 200 200' ml='-0.8rem' color={`${style}`} cursor='pointer'>
+                            <path
+                                fill='currentColor'
+                                d='M 100, 100 m -75, 0 a 75,75 0 1,0 150,0 a 75,75 0 1,0 -150,0'
+                            />
+                        </Icon>
+                        {/* <ProfileStatusIcon color={`${style}`} cursor='pointer' /> */}
                     </PopoverTrigger>
                     <PopoverContent w='12rem' bg='primaryDark'>
                         <PopoverArrow bg='primaryDark'  />
