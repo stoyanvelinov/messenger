@@ -3,12 +3,11 @@ import { Text, Flex, MenuButton, MenuList, Menu, MenuItem, Box } from '@chakra-u
 import { Button } from '@chakra-ui/react';
 import Profile from '../Profile/Profile';
 
-
 const Header = () => {
 
     return (<Flex
-        bg='primaryDark'
-        className="NavBar"
+        bg="primaryDark"
+        as="header"
         px="4"
         position="sticky"
         top="0"
@@ -21,7 +20,7 @@ const Header = () => {
     >
         <Menu >
             <MenuButton
-                bg='primaryMid'
+                bg="primaryMid"
                 _hover={{ color: 'white', bg: 'primaryMid' }}
                 border="none"
                 as={Button}
@@ -30,10 +29,10 @@ const Header = () => {
                 display={{ base: 'flex', md: 'none' }}
             ><HamburgerIcon />
             </MenuButton>
-            <MenuList bg='primary' >
-                <MenuItem bg='primary' _hover={{ color: 'white', bg: 'primaryMid' }}>Something</MenuItem>
-                <MenuItem bg='primary' _hover={{ color: 'white', bg: 'primaryMid' }}>Something</MenuItem>
-                <MenuItem bg='primary' _hover={{ color: 'white', bg: 'primaryMid' }}>Something</MenuItem>
+            <MenuList bg="primary" >
+                <MenuItem bg="primary" _hover={{ color: 'white', bg: 'primaryMid' }}>My Teams </MenuItem>
+                <MenuItem bg="primary" _hover={{ color: 'white', bg: 'primaryMid' }}>Something</MenuItem>
+                <MenuItem bg="primary" _hover={{ color: 'white', bg: 'primaryMid' }}>Something</MenuItem>
             </MenuList>
         </Menu >
         <Box ml='auto'>

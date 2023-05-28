@@ -8,14 +8,14 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { app } from '../config/firebase.config';
 
-export const storeImage = async (image, username) => {
+export const storeImage = async (image, target) => {
   // if(isEmpty(image)){
   //   console.log('no avatar');
   //   return '';
   // }
   return new Promise((resolve, reject) => {
     const storage = getStorage(app);
-    const fileName = `${username}-${image.name}-${uuidv4()}`;
+    const fileName = `${target}-${image.name}-${uuidv4()}`;
 
     const storageRef = ref(storage, 'images/' + fileName);
 

@@ -8,7 +8,10 @@ const theme = extendTheme({
         primary: '#142543',
         primaryMid: '#203355',
         primaryDark: '#12213c',
-        primaryLight: '#52688E'
+        primaryLight: '#52688E',
+        accent: '#3182ce',
+        accentDark: '#2C5282',
+        tertiary: '#425472'
         // secondary: '#DBC2CF',
         //#EBBAB9
         //#C3979F

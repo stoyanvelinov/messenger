@@ -1,0 +1,3 @@
+.autoCompleteList::-webkit-scrollbar { 
+    display: none;  
+}
