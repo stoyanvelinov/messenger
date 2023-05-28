@@ -48,7 +48,7 @@ const SearchUsers = () => {
             {(users.length !== 0) && users.map((user, cid) => (
               <AutoCompleteItem
                 key={`option-${cid}`}
-                value={user.uid}
+                value={user.username}
                 textTransform="capitalize"
                 color='white'
                 bg='#12213c'
