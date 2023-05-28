@@ -1,0 +1,9 @@
+.team {
+
+    transition: all 0.2s ease;
+}
+
+.team:hover {
+    transform: scale(1.2);
+    box-shadow: 2px 1px 6px 2px #0d0127;
+}

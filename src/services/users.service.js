@@ -41,9 +41,11 @@ export const createUser = (
   const createdOn = Timestamp.fromDate(new Date()).seconds;
   const isAdmin = false;
   const status = 'offline';
+  
 
-  return set(ref(db, `users/${username}`), {
-    uid,
+  return set(ref(db, `users/${uid}`), {
+    username: username,
+    uid: uid,
     email,
     firstName,
     lastName,
@@ -97,9 +99,8 @@ export const getLastRegisteredUser = async () => {
   }
 };
 
-
-export const updateUserCanPost = (name,status) => {
+export const updateUserCanPost = (name, status) => {
   return update(ref(db, `users/${name}`), {
-    canPost:status
+    canPost: status
   });
 };
