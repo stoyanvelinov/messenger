@@ -44,8 +44,8 @@ export const createUser = (
   
 
   return set(ref(db, `users/${uid}`), {
-    uid,
-    username,
+    username: username,
+    uid: uid,
     email,
     firstName,
     lastName,
@@ -99,9 +99,8 @@ export const getLastRegisteredUser = async () => {
   }
 };
 
-
-export const updateUserCanPost = (name,status) => {
+export const updateUserCanPost = (name, status) => {
   return update(ref(db, `users/${name}`), {
-    canPost:status
+    canPost: status
   });
 };

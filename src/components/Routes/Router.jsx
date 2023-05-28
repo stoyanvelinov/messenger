@@ -12,10 +12,11 @@ function Router() {
     <Routes>
       <Route path="/" element={<AuthenticatedRoute><RootLayout /></AuthenticatedRoute>} >
         <Route index element={<MainContent />} />
+        <Route path="teams/:teamId" element={<MainContent />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-    </Routes>
+    </Routes >
   );
 }
 export default Router;
