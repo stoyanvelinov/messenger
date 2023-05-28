@@ -9,9 +9,11 @@ import {
   update,
   push,
   child,
+  onValue,
 } from 'firebase/database';
 import { db } from '../config/firebase.config';
 import { Timestamp } from 'firebase/firestore';
+import { STATUS } from '../components/common/status';
 
 export const getUserByHandle = (handle) => {
   return get(ref(db, `users/${handle}`));
@@ -40,17 +42,16 @@ export const createUser = (
 ) => {
   const createdOn = Timestamp.fromDate(new Date()).seconds;
   const isAdmin = false;
-  const status = 'offline';
-  
+ 
 
   return set(ref(db, `users/${uid}`), {
-    username: username,
-    uid: uid,
+    uid,
+    username,
     email,
     firstName,
     lastName,
     isAdmin,
-    status: status,
+    status: STATUS.ONLINE,
     createdOn: createdOn,
     avatar: avatar,
     phone: phone,
@@ -99,8 +100,14 @@ export const getLastRegisteredUser = async () => {
   }
 };
 
-export const updateUserCanPost = (name, status) => {
-  return update(ref(db, `users/${name}`), {
-    canPost: status
+export const updateUserStatus = (uid, status = STATUS.ONLINE) => {
+  return update(ref(db, `users/${uid}`), {
+    status
+  });
+};
+
+export const updateUserProfile = (uid,form) => {
+  return update(ref(db, `users/${uid}`), {
+    ...form
   });
 };
