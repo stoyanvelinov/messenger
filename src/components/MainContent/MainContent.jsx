@@ -2,6 +2,8 @@ import { Box, Flex } from '@chakra-ui/react';
 import './MainContent.css';
 import { useParams } from 'react-router-dom';
 import ChannelsSideBar from '../../routes/ChannelsSideBar/ChannelsSideBar';
+import ChatList from '../ChatList/ChatList';
+// import ChatRoom from '../ChatRoom/Chatroom';
 
 const MainContent = () => {
     const { teamId } = useParams();

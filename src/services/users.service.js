@@ -24,9 +24,28 @@ export const getAllUsers = () => {
     return users;
   });
 };
+export const getUserById = (uid) => {
+  // return get(child(ref(db, 'users'), uid));
+  return get(ref(db, `users/${uid}`));
+};
+
+export const getUserByUsername = (username) => {
+  return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)))
+          .then((snapshot) => { 
+            if (snapshot.exists()) {
+              console.log('xxx',snapshot.val());
+              return Object.keys(snapshot.val())[0];
+            }
+            return null;
+          })
+          .catch(error => {
+            console.error('Error getting user:', error);
+            return null; // Return null in case of an error
+          });
+};
 
 export const getUserByEmail = (email) => {
-  return get(query(ref(db, 'users'), orderByChild('uid'), equalTo(email)));
+  return get(query(ref(db, 'users'), orderByChild('email'), equalTo(email)));
 };
 
 export const createUser = (
