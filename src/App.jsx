@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import Router from './components/routes/Router';
 import { auth } from './config/firebase.config';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { getUserData } from './services/users.service';
+import { getUserData, updateUserStatus } from './services/users.service';
 import { AuthContext } from './context/authContext';
+import { STATUS } from './components/common/status';
 
 
 function App() {
@@ -23,15 +24,22 @@ function App() {
 
     getUserData(user.uid)
       .then(snapshot => {
+
         if (!snapshot.exists()) {
           throw new Error('Something went wrong!');
         }
+        updateUserStatus(user.uid,STATUS.ONLINE);
+
         setAppState({
           ...appState,
-          userData: snapshot.val()[Object.keys(snapshot.val())[0]],
+          userData: { ...snapshot.val()[Object.keys(snapshot.val())[0]], status: STATUS.ONLINE },
         });
       })
       .catch(e => alert(e.message));
+    
+    // return () => {
+    //   updateUserStatus(user.uid, STATUS.OFFLINE);
+    // };
   }, [user]);
 
   return (

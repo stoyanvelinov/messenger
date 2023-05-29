@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import ChannelsSideBar from '../../routes/ChannelsSideBar/ChannelsSideBar';
 import ChatList from '../ChatList/ChatList';
 // import ChatRoom from '../ChatRoom/Chatroom';
+import SearchUsers from '../SearchUsers/SearchUsers';
 
 const MainContent = () => {
     const { teamId } = useParams();
@@ -13,6 +14,7 @@ const MainContent = () => {
             <Flex bg="primary" direction="column" display={{ base: 'none', lg: 'flex' }} minW="250px" flexBasis={{ md: '250px', lg: '15%' }} gap={2}>
                 {teamId && <ChannelsSideBar />}
                 <ChatList />
+                <SearchUsers/>
             </Flex>
             <Box flexGrow={1} h={{ base: '100%' }} borderRight="1px"
                 borderRightColor="primaryLight" borderLeft="1px" borderLeftColor="primaryLight"> Some other text</Box>
