@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Link } from '@chakra-ui/react';
+import { Link, useToast } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/button';
 import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import { Flex, Container, Box, Text } from '@chakra-ui/layout';
@@ -11,9 +11,12 @@ import { registerUser } from '../../services/auth.service';
 import { createUser } from '../../services/users.service';
 import { toast } from 'react-toastify';
 import { storeImage } from '../../services/image.service';
-import { isEmpty } from 'lodash';
 import PhoneNumberInput from '../../components/PhoneNumberInput/PhoneNumberInput';
 import { COUNTRIES } from '../../services/countries';
+import { AttachmentIcon } from '@chakra-ui/icons';
+import './Register.css';
+import { validateForm } from '../../components/common/helperFuncs';
+import { TOAST_DURATION } from '../../components/common/constants';
 
 const Register = () => {
     const [form, setForm] = useState({
@@ -27,6 +30,8 @@ const Register = () => {
     });
     const { setUser } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [isFileAttached, setIsFileAttached] = useState(false);
+    const customToast = useToast();
 
     const countryOptions = COUNTRIES.map(({ name, iso }) => ({
         label: name,
@@ -45,11 +50,28 @@ const Register = () => {
             ...form,
             avatar: e.target.files[0]
         });
+        setIsFileAttached(e.target.files[0]);
     };
 
     const onRegister = async (e) => {
         e.preventDefault();
+        
         try {
+            const errors = validateForm(form);
+            console.log(errors);
+            if (Object.keys(errors).length > 0) {
+                Object.values(errors).forEach((errorMessage) => {
+                    customToast({
+                        title: `${errorMessage}`,
+                        status: 'error',
+                        duration: `${TOAST_DURATION}`,
+                        isClosable: true,
+                        position: 'top-left',
+                    });
+                });
+                return;
+            }
+
             const imgUrl = await storeImage(form.avatar, form.username);
 
             const snapshot = await getUserByHandle(form.username);
@@ -74,23 +96,23 @@ const Register = () => {
 
     return (
         <>
-            <Container maxW='2xl'>
-                <Flex w="100%" direction='column'>
+            <Container maxW='2xl' mt='6rem' borderColor='primaryLight' border='1px' borderRadius='1rem'>
+                <Flex w="100%" direction='column' p='1rem'>
                     <form onSubmit={onRegister}>
                         <FormControl display="flex" flexDirection="column" justify="center" alignItems="center" gap="10px">
-                            <Box w="100%"><FormLabel>First name*</FormLabel>
+                            <Box w="100%"><FormLabel htmlFor="first-name">First name</FormLabel>
                                 <Input id="first-name" borderRadius="md" type="text" value={form.firstName} onChange={updateForm('firstName')} placeholder="First name" autoComplete="off" required />
                             </Box>
-                            <Box w="100%"><FormLabel>Last name*</FormLabel>
+                            <Box w="100%"><FormLabel htmlFor='last-name'>Last name</FormLabel>
                                 <Input id="last-name" borderRadius="md" type="text" value={form.lastName} onChange={updateForm('lastName')} placeholder="Last name" autoComplete="off" required />
                             </Box>
-                            <Box w="100%"><FormLabel>Username*</FormLabel>
-                                <Input id="handle" borderRadius="md" type="text" value={form.username} onChange={updateForm('username')} placeholder="Username" autoComplete="off" required />
+                            <Box w="100%"><FormLabel htmlFor='username' >Username</FormLabel>
+                                <Input id="username" borderRadius="md" type="text" value={form.username} onChange={updateForm('username')} placeholder="Username" autoComplete="off" required />
                             </Box>
-                            <Box w="100%"><FormLabel>Email*</FormLabel>
+                            <Box w="100%"><FormLabel htmlFor="email">Email</FormLabel>
                                 <Input id="email" borderRadius="md" type="email" value={form.email} onChange={updateForm('email')} placeholder="Email address" autoComplete="off" required />
                             </Box>
-                            <Box w="100%"><FormLabel>Password*</FormLabel>
+                            <Box w="100%"><FormLabel htmlFor="password">Password</FormLabel>
                                 <Input id="password" borderRadius="md" type="password" value={form.password} onChange={updateForm('password')} placeholder="Password" autoComplete="off" required />
                             </Box>
                             <Box w="100%">
@@ -105,13 +127,20 @@ const Register = () => {
                                 </FormControl>
                             </Box>
                             <Box w="100%"><FormLabel>Avatar</FormLabel>
-                                <Input id="avatar" pt='4px' borderRadius="md" type="file" onChange={updateImage} autoComplete="off" accept='.jpg,.png,.jpeg' />
+                                <Box border='1px' borderRadius='md' p='0.2rem' >
+                                    <label htmlFor="avatar" id='avatarLabelRegister' >
+                                        <AttachmentIcon boxSize={6} mr={2} cursor='pointer' />
+                                        Attach Avatar
+                                    </label>
+                                    <Input id="avatar" display="none" type="file" onChange={updateImage} autoComplete="off" accept=".jpg,.png,.jpeg" />
+                                    {isFileAttached && <Box >{ isFileAttached.name }</Box>}
+                                </Box>
                             </Box>
 
                             <Button borderRadius="md" w="100%" type='submit' color='primaryDark' _hover={{ bg: 'primaryLight', color: '#fff' }} >Register</Button>
                         </FormControl>
                     </form>
-                    <Text >Already registered? <Link btn-id="toLoginBtn" pl={2} onClick={() => { navigate('/login'); }}>Login</Link></Text>
+                    <Text mt='0.2rem' opacity='0.5'>Already registered? <Link btn-id="toLoginBtn" pl={2} onClick={() => { navigate('/login'); }}>Login</Link></Text>
                 </Flex>
             </Container>
 
