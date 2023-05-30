@@ -38,7 +38,7 @@ const Login = () => {
                 });
             })
             .then(() => {
-                navigate('/');
+                navigate('/messages');
             })
             .catch(e => setError(e));
     };

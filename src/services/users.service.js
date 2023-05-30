@@ -35,7 +35,6 @@ export const getUserByUsername = (username) => {
   return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)))
           .then((snapshot) => { 
             if (snapshot.exists()) {
-              console.log('xxx',snapshot.val());
               return Object.keys(snapshot.val())[0];
             }
             return null;

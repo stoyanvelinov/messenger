@@ -1,11 +1,13 @@
 import { TriangleDownIcon } from '@chakra-ui/icons';
-import { Box, useToast, Tooltip, IconButton, Text, Flex, Input, FormControl, FormLabel, FormHelperText, HStack, Avatar, Popover, PopoverContent, PopoverTrigger, PopoverArrow, PopoverBody, PopoverHeader, PopoverCloseButton, Button, Portal } from '@chakra-ui/react';
+import { Box, useToast, Tooltip, IconButton, Text, Flex, Input, Divider, Image, FormControl, FormLabel, FormHelperText, HStack, Avatar, Popover, PopoverContent, PopoverTrigger, PopoverArrow, PopoverBody, PopoverHeader, PopoverCloseButton, Button, Portal } from '@chakra-ui/react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { storeImage } from '../../services/image.service';
 import { createTeam, getLiveTeams, getTeamByName } from '../../services/teams.service';
 import { createGeneralChannel } from '../../services/channels.service';
 import './SideBar.css';
+import messageIcon from '../../assets/icons/icon-msg.png';
+import messageIconHover from '../../assets/icons/icon-msg-hover.png';
 import { useNavigate } from 'react-router-dom';
 import { TEAM_NAME_MAX_LENGTH, TEAM_NAME_MIN_LENGTH } from '../../constants/constants';
 
@@ -19,6 +21,7 @@ const SideBar = () => {
         teamAvatar: '',
     });
     const [teams, setTeams] = useState([]);
+    const [iconMsg, setIconMsg] = useState(messageIcon);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -75,6 +78,10 @@ const SideBar = () => {
         navigate(`/teams/${teamId}`);
     };
 
+    const onOpenDirectMessages = (e) => {
+        navigate('/messages/');
+    };
+
     return (
         <Box
             bg="primaryDark"
@@ -96,6 +103,23 @@ const SideBar = () => {
                 Logo
             </Text>
             <Flex direction="column" p={4} gap="1rem" >
+                {/* <Box boxSize='sm'>
+                    <Image src={messageIcon}  boxSize='50px' alt='message icon' />
+                </Box> */}
+                <span>
+                    <Tooltip label='Direct Messages' openDelay={300} placement="right">
+                        <Image src={iconMsg} 
+                            boxSize='50px'
+                            onMouseEnter={() => setIconMsg(messageIconHover)}
+                            onMouseOut={() => setIconMsg(messageIcon)}
+                            onClick={onOpenDirectMessages}
+                            alt='message icon' />
+                    </Tooltip>
+                </span>
+                <span>
+                    <Divider />
+                </span>
+
                 <Popover initialFocusRef={nameInput} onClose={() => {
                     setForm({
                         teamName: '',

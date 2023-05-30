@@ -2,41 +2,38 @@ import React, { useEffect, useContext, useState } from 'react';
 import { getChatRoomMembersExceptMe } from '../../services/chat.service';
 import { AuthContext } from '../../context/authContext';
 import { getUserById, getUserData } from '../../services/users.service';
+import { AvatarGroup, Avatar, HStack, Box } from '@chakra-ui/react';
 
-const ChatListItem = ({ cId }) => {
-    const [members, setMembers] = useState([]);
-    const [membersData, setMembersData] = useState({});
-    const { user } = useContext(AuthContext);
+const ChatListItem = ({ members }) => {
 
-    useEffect(()=>{
-        const getUsers = async () => {
-            const allUsers = await getChatRoomMembersExceptMe(user.uid, cId);
-            setMembers(allUsers);
-            const FFF = allUsers.forEach((usr) => {
-                return ;
-            });
-        };
-        getUsers();
-    },[]);
-
-    useEffect(()=>{
-        const getUsersData = async () => {
-            const allUsersObj = await Promise.all(
-                members.map((usr) => {
-                    return getUserById(usr);
-                })
-            );
-            const result = allUsersObj.map((item)=> item.val());
-            setMembersData(...result);
-        };
-        getUsersData();
-    },[members]);
-
-    console.log('мемберс',members);
-    console.log('мемберсDEITA',membersData);
   return (
     <div>
-        <h5>{membersData && membersData.username}</h5>
+        <Box mb={1}  bg='primaryLight' border='1px' borderColor='gray.900' boxShadow='dark-lg'  rounded='md'>
+            <HStack p={2}>
+                <AvatarGroup size="sm" max={2}>
+                    {
+                        members && 
+                        members.map((m,index)=>{
+                            console.log(m[0]);
+                            
+                            return <Avatar 
+                                key={index}
+                                name={m[0].username} 
+                                src={m[0].avatar} 
+                            />;
+                            
+                        })
+                    }                    
+                </AvatarGroup>
+                {
+                        members && 
+                        members.map((m,index)=>{
+                            return <span>{m[0].username}</span>;
+                        })
+                    }                   
+            </HStack>
+
+        </Box>
     </div>
   );
 };

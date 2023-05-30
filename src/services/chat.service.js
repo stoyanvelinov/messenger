@@ -27,8 +27,26 @@ import {
     });
   };
 
-  export const getAllUserChatRooms = (uid, observer) => {
-    return onValue(ref(db,`users/${uid}/chatRooms/`), observer);
+
+  // export const getCurrentUserChatRooms = (uid, observer) => {
+  //   return onValue(ref(db,`users/${uid}/chatRooms/`), observer);
+  // };
+
+  export const getCurrentUserChatRooms = (uid, observer) => {
+    return new Promise((resolve, reject) => {
+      const chatRoomsRef = ref(db, `users/${uid}/chatRooms/`);
+      const unsubscribe = onValue(chatRoomsRef, (snapshot) => {
+        observer(snapshot); // Notify the observer with the snapshot
+        resolve(); // Resolve the main promise
+      });
+  
+      // Cleanup function to unsubscribe when the promise is resolved or rejected
+      const cleanup = () => {
+        unsubscribe();
+      };
+  
+      return cleanup;
+    });
   };
   
   export const getChatRoomMembers = (chatRoomId) => {
@@ -38,13 +56,14 @@ import {
   export const getChatRoomMembersExceptMe = (uid, chatRoomId) => {
     return getChatRoomMembers(chatRoomId)
             .then((result)=> { 
-                // console.log('ALLLLLLLLLLLLLLLLLLL:', Object.keys(result.val()));
-               return  Object.keys(result.val());
+               return  {
+                'chatRoomId': chatRoomId,
+                'members': Object.keys(result.val())
+              };
             })
             .then((result)=>{
-                const output = result.filter((id)=> id !== uid);
-                // console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZ',output);
-                return output;
+                result.members = result.members.filter((id)=> id !== uid);
+                return result;
             });
   };
   
@@ -61,3 +80,5 @@ import {
         return update(ref(db), updates);
       });
   };
+
+
