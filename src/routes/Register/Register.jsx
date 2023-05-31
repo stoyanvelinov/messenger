@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Link, useToast } from '@chakra-ui/react';
+import { Checkbox, Link, useDisclosure, useToast } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/button';
 import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import { Flex, Container, Box, Text } from '@chakra-ui/layout';
@@ -17,6 +17,7 @@ import { AttachmentIcon } from '@chakra-ui/icons';
 import './Register.css';
 import { validateForm } from '../../components/common/helperFuncs';
 import { TOAST_DURATION } from '../../components/common/constants';
+import TermsModal from './TermsModal';
 
 const Register = () => {
     const [form, setForm] = useState({
@@ -32,6 +33,8 @@ const Register = () => {
     const navigate = useNavigate();
     const [isFileAttached, setIsFileAttached] = useState(false);
     const customToast = useToast();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [isChecked, setIsChecked] = useState(false);
 
     const countryOptions = COUNTRIES.map(({ name, iso }) => ({
         label: name,
@@ -57,6 +60,17 @@ const Register = () => {
         e.preventDefault();
         
         try {
+            if (!isChecked) {
+                customToast({
+                    title: 'Please accept the Terms & Conditions',
+                    status: 'error',
+                    duration: `${TOAST_DURATION}`,
+                    isClosable: true,
+                    position: 'top-left',
+                });
+                return;
+            }
+
             const errors = validateForm(form);
             console.log(errors);
             if (Object.keys(errors).length > 0) {
@@ -131,19 +145,23 @@ const Register = () => {
                                     <label htmlFor="avatar" id='avatarLabelRegister' >
                                         <AttachmentIcon boxSize={6} mr={2} cursor='pointer' />
                                         Attach Avatar
-                                    </label>
                                     <Input id="avatar" display="none" type="file" onChange={updateImage} autoComplete="off" accept=".jpg,.png,.jpeg" />
+                                    </label>
                                     {isFileAttached && <Box >{ isFileAttached.name }</Box>}
                                 </Box>
                             </Box>
-
+                            <Box display="flex"  w='100%'>
+                                <Checkbox isChecked={isChecked} onChange={(e) => setIsChecked(e.target.checked)}
+                                />
+                                <Link pl='0.4rem' onClick={onOpen}>I am agree with Terms &amp; Conditions</Link>
+                            </Box>
                             <Button borderRadius="md" w="100%" type='submit' color='primaryDark' _hover={{ bg: 'primaryLight', color: '#fff' }} >Register</Button>
                         </FormControl>
                     </form>
                     <Text mt='0.2rem' opacity='0.5'>Already registered? <Link btn-id="toLoginBtn" pl={2} onClick={() => { navigate('/login'); }}>Login</Link></Text>
                 </Flex>
             </Container>
-
+            <TermsModal isOpen={ isOpen } onClose={ onClose } />
         </>
     );
 
