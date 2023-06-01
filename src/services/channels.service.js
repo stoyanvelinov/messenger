@@ -52,29 +52,39 @@ Deletes the channel with the specified id within the team that owns it and from 
 @param {string}teamId the id of the team from where the channel is deleted
 @returns {Promise<void>} void
 */
-export const deleteChannel = (channelId, teamId) => {
-    const updates = {};
+export const deleteChannel = async (channelId) => {
+    try {
+        const channelSnapshot = await getChannelById(channelId);
+        const channel = channelSnapshot.val();
+        const teamId = channel.channelTeam;
+        const updates = {};
 
-    updates[`/teams/${teamId}/channels/${channelId}`] = null;
-    updates[`/channels/${channelId}`] = null;
+        updates[`/teams/${teamId}/channels/${channelId}`] = null;
+        updates[`/channels/${channelId}`] = null;
 
-    return update(ref(db), updates);
+        return update(ref(db), updates);
+    } catch (e) {
+        console.log(e.message);
+        throw new Error('Unexpected issue occurred!');
+    }
 };
 
 /**
 Fetches all channels that belong to the team with the give id
 @param {string}teamId the id of the team
 @param {function}listener a callback function that will use the array of channels objects
-@returns {Promise<void>}void
+@returns {function} - A function that can be called to unsubscribe the listener.
  */
 export const getLiveChannelsByTeamId = (teamId, listener) => {
     return onValue(ref(db, `/teams/${teamId}/channels`), snapshot => {
         const data = snapshot.exists() ? snapshot.val() : {};
         const channelIds = Object.keys(data);
         const channelsPromises = channelIds.map(id => getChannelById(id));
-        Promise.all(channelsPromises).then(channelsSnapshot => {
-            const channels = channelsSnapshot.map(channel => channel.val());
-            listener(channels);
-        });
+        Promise.all(channelsPromises)
+            .then(channelsSnapshot => {
+                const channels = channelsSnapshot.map(channel => channel.val());
+                listener(channels);
+            })
+            .catch(e => console.log(e.message));
     });
 };

@@ -4,5 +4,9 @@
 }
 
 .channel:hover {
-    background: #203355;
+    background-color: #203355;
+}
+
+.active {
+    background-color: #203355;
 }

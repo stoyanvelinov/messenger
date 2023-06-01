@@ -1,13 +1,14 @@
-import { useParams } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { addNewChannel, getLiveChannelsByTeamId } from '../../services/channels.service';
-import { Box, Flex, IconButton, Tooltip, Input, useToast } from '@chakra-ui/react';
+import { Box, Flex, Text, IconButton, Input, useToast } from '@chakra-ui/react';
 import './ChannelsSideBar.css';
-import { getTeamById } from '../../services/teams.service';
-// import { MdSettings, MdFace } from 'react-icons/md';
-import { EditIcon, AddIcon } from '@chakra-ui/icons';
-import { AuthContext } from '../../context/authContext';
+import { getLiveTeamInfo } from '../../services/teams.service';
 import { CHANNEL_NAME_MAX_LENGTH, CHANNEL_NAME_MIN_LENGTH } from '../../constants/constants';
+import { AddIcon } from '@chakra-ui/icons';
+import ChannelUpdate from '../../components/ChannelUpdate/ChannelUpdate';
+import { useOutsideClick } from '@chakra-ui/react';
+import { AuthContext } from '../../context/authContext';
 
 const ChannelsSideBar = () => {
     const toast = useToast();
@@ -16,20 +17,30 @@ const ChannelsSideBar = () => {
     const [team, setTeam] = useState(null);
     const [addChannel, toggleAddChannel] = useState(false);
     const [channelName, setChannelName] = useState('');
+    const navigate = useNavigate();
+    const newChannelInput = useRef();
     const { user } = useContext(AuthContext);
 
+
     useEffect(() => {
-        const unsub = getLiveChannelsByTeamId(teamId, (c) => setChannels([...c]));
-        getTeamById(teamId)
-            .then(snapshot => snapshot.val())
-            .then(t => setTeam(t))
-            .catch(e => console.log(e));
-        return () => unsub();
+        // console.log("channels use effect ran")
+        const unsub1 = getLiveChannelsByTeamId(teamId, (c) => setChannels([...c]));
+        const unsub2 = getLiveTeamInfo(teamId, (teamObj) => setTeam(teamObj));
+        return () => {
+            unsub1();
+            unsub2();
+        };
     }, [teamId]);
+
 
     const onAddChannel = () => {
         toggleAddChannel(!addChannel);
     };
+
+    useOutsideClick({
+        ref: newChannelInput,
+        handler: () => toggleAddChannel(false),
+    });
 
     const handleChange = (e) => {
         //prevents creation of channel with empty name after having input, deleting it and hitting Enter
@@ -58,26 +69,51 @@ const ChannelsSideBar = () => {
         }
     };
 
+    const setActiveChannel = (id) => {
+        document.querySelectorAll('.channel').forEach(c => c.classList.remove('active'));
+        document.querySelector(`#${id}`).classList.add('active');
+    };
+
+    const goToChannel = (e) => {
+        const id = e.target.getAttribute('id');
+        //to ensure the dots menu can be accessed without errors due to Chakra's implementation of the popover
+        if (id && !id.includes('popover')) {
+            setActiveChannel(id);
+            navigate(`/teams/${teamId}/${id}`);
+        }
+    };
+
     return (
         <>
-            <Flex justifyContent="space-between" bg="accent" fontWeight="bold" fontSize="1.2rem" pl={2}>
-                {team && team.name}
-                {team && team.owner === user.uid && <Box>
-                    <Tooltip label="edit team" placement="top">
-                        <IconButton bg="accent" size="sm" _hover={{ bg: 'accent' }} icon={<EditIcon />}>
-                        </IconButton>
-                    </Tooltip>
-                </Box>}
-            </Flex>
+            <Flex justifyContent="space-between" bg="primaryLight" fontWeight="bold" p={1} fontSize="1.2rem" pl={2}>
+                {team && team.teamName}
+            </Flex >
             {channels && channels.map(channel => {
-                return <Flex justifyContent="space-between" key={channel.channelId} className="channel" fontSize="1.1rem" pl={2}>{channel.channelName} </Flex>;
+                const channelId = channel.channelId;
+                return (<Flex
+                    key={channelId}
+                    className="channel"
+                    id={channelId}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    fontSize="1.1rem"
+                    pl={2}
+                    cursor="pointer"
+                    onClick={goToChannel}>
+                    <Text>{channel.channelName}</Text>
+                    {user.uid === team.teamOwner && < ChannelUpdate channelId={channel.channelId} />}
+                </Flex>);
             })}
             <Box px={2}>
-                <IconButton bg="accent" size="xs" _hover={{ bg: 'primaryLight', color: 'primaryDark' }} icon={<AddIcon onClick={onAddChannel} />} />
-                {addChannel && <Input placeholder="Channel Name" onChange={handleChange} onKeyDown={handleKeyDown}></Input>}
+                <IconButton
+                    bg="accent"
+                    size="xs"
+                    _hover={{ bg: 'primaryLight', color: 'primaryDark' }}
+                    onClick={onAddChannel}
+                    icon={<AddIcon />} />
+                {addChannel && <Input placeholder="Channel Name" ref={newChannelInput} onChange={handleChange} onKeyDown={handleKeyDown}></Input>}
             </Box>
         </>
     );
 };
-
 export default ChannelsSideBar;
