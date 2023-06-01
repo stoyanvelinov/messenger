@@ -7,7 +7,8 @@ import {
   DrawerCloseButton,
   useDisclosure,
   Box,
-  Button
+  Button,
+  Avatar
 } from '@chakra-ui/react';
 import { useContext, useState } from 'react';
 import { useRef } from 'react';
@@ -57,19 +58,14 @@ const Profile = () => {
       style = 'gray';
   }
 
-  const updateImg = () => { };
   return (
     <Box width='100%' >
-      <Flex position='relative'  onClick={onOpen} ref={btnRef} w='100%' justify='center' align='center' mr='3rem'>
-
+      <Flex position='relative' onClick={onOpen} ref={btnRef} w='100%' justify='center' align='center' mr='3rem'>
         <Text color='white' mr='0.4rem' fontSize='s' cursor="pointer">{`${userData.firstName} ${userData.lastName}`} </Text>
-
-        <ProfileAvatar
-          onChange={updateImg}
-          name={`${userData.firstName} ${userData.lastName}`}
+        <Avatar name={`${userData.firstName} ${userData.lastName}`}
           status={userData.status}
           src={userData.avatar}
-        />
+          cursor="pointer" />
         <ProfileStatusIcon ml='-0.6rem' zIndex='5' mt='2rem' color={style} />
       </Flex>
 
@@ -78,21 +74,17 @@ const Profile = () => {
         placement='right'
         finalFocusRef={btnRef}
         onClose={onClose}>
-
         <DrawerOverlay />
-
         <DrawerContent>
           <DrawerCloseButton onClick={isOpenProfileTrue} />
-
-          <DrawerHeader borderBottomWidth='0.2rem' borderColor='primaryLight' background='primaryMid' pb='0.7rem'>
-            My profile
+          <DrawerHeader background='primaryLight' >
+            My&nbsp; profile
           </DrawerHeader>
-
           <DrawerBody background='primaryDark'>
             <Flex flexDirection='column' h='100%' justifyContent='space-between'>
               <ProfileInfo />
               <Flex justifyContent='flex-end'>
-                <Button mt='2rem' bg='darkRed' size='sm' color='white' pl='1.4rem' pr='1.4rem' onClick={handleLogout}>Logout</Button>
+                <Button mt='2rem' bg="darkRed" _hover={{ bg: 'red' }} size='sm' pl='1.4rem' pr='1.4rem' onClick={handleLogout}>Logout</Button>
               </Flex>
             </Flex>
           </DrawerBody>

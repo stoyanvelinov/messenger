@@ -1,11 +1,11 @@
-import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Stack, useDisclosure, useToast } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Icon, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useToast } from '@chakra-ui/react';
 import { useContext, useState } from 'react';
 import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { AuthContext } from '../../context/authContext';
 import { EditIcon } from '@chakra-ui/icons';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import { updateUserProfile, updateUserStatus } from '../../services/users.service';
-import { storeImage } from '../../services/image.service';
+// import { storeImage } from '../../services/image.service';
 import { STATUS } from '../common/status';
 import ProfileStatusIcon from './ProfileStatusIcon';
 
@@ -39,12 +39,10 @@ const ProfileInfo = () => {
         }
     };
 
-    const handleUploadImg = async (e) => {
-        const img = await storeImage(e.target.files[0], userData.username);
-        console.log(img);
+    const updateAvatarState = (newState) => {
         setUser((prev) => ({
             ...prev,
-            userData: { ...prev.userData, avatar: img }
+            userData: { ...prev.userData, avatar: newState }
         }));
     };
 
@@ -73,7 +71,7 @@ const ProfileInfo = () => {
     return (
         <Flex flexDirection='column' >
             <Flex alignContent='center' justify='center' position='relative'>
-                <label htmlFor='avatar-img'>
+                {/* <label htmlFor='avatar-img'>
 
                     <ProfileAvatar
                         name={`${userData.firstName} ${userData.lastName}`}
@@ -82,7 +80,8 @@ const ProfileInfo = () => {
                         size='xl'
                     />
                     <Input id='avatar-img' type='file' accept='.jpg,.png,.jpeg' display='none' onChange={(e) => handleUploadImg(e)} />
-                </label>
+                </label> */}
+                <ProfileAvatar name={`${userData.firstName} ${userData.lastName}`} src={userData.avatar} target={userData.username} updateState={updateAvatarState} />
                 <Popover placement='bottom-start' >
                     <PopoverTrigger>
                         <Icon viewBox='0 0 200 200' ml='-0.8rem' color={`${style}`} cursor='pointer'>
@@ -94,16 +93,16 @@ const ProfileInfo = () => {
                         {/* <ProfileStatusIcon color={`${style}`} cursor='pointer' /> */}
                     </PopoverTrigger>
                     <PopoverContent w='12rem' bg='primaryDark'>
-                        <PopoverArrow bg='primaryDark'  />
-                            <PopoverBody w='100%'>
-                                <Flex w='100%' flexDirection='column'>
-                                <Button justifyContent='flex-start' size='sm' leftIcon={<ProfileStatusIcon color='green' ml='' />} mb='0.6rem' variant='outline'  onClick={() => handleStatusChange(STATUS.ONLINE)}>
+                        <PopoverArrow bg='primaryDark' />
+                        <PopoverBody w='100%'>
+                            <Flex w='100%' flexDirection='column'>
+                                <Button justifyContent='flex-start' size='sm' leftIcon={<ProfileStatusIcon color='green' ml='' />} mb='0.6rem' variant='outline' onClick={() => handleStatusChange(STATUS.ONLINE)}>
                                     Online
                                 </Button>
                                 <Button justifyContent='flex-start' size='sm' leftIcon={<ProfileStatusIcon color='red' ml='' />} variant='outline' onClick={() => handleStatusChange(STATUS.DO_NOT_DISTURB)}>
                                     Do not disturb
                                 </Button>
-                                </Flex>
+                            </Flex>
                         </PopoverBody>
                     </PopoverContent>
                 </Popover>
@@ -119,7 +118,7 @@ const ProfileInfo = () => {
                             <Button variant='outline' ml='1rem' pl='1.4rem' pr='1.4rem' size='sm' onClick={() => setIsEditing(false)}>Cancel</Button>
                         </>
                         :
-                        <Button leftIcon={<EditIcon />} color='primaryDark' bg='primaryLight' size='sm' onClick={() => setIsEditing(true)}>
+                        <Button leftIcon={<EditIcon />} colorScheme="blue" _hover={{ bg: 'primaryLight' }} size='sm' onClick={() => setIsEditing(true)}>
                             Edit Profile
                         </Button>
                     }
