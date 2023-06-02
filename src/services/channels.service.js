@@ -46,6 +46,19 @@ export const getChannelById = (channelId) => {
 };
 
 /**
+ Updates the channel name in the database.
+ @async
+ @param {string} channelId - The id of the channel to be updated.
+ @param {object} form - The new channel name to be saved. It should be an object containing the property to be updated.
+ @returns {Promise} - A Promise that resolves when the channel data is successfully updated in the database.
+ */
+export const updateChannel = (channelId, form) => {
+    return update(ref(db, `channels/${channelId}`), {
+        ...form
+    });
+};
+
+/**
 Deletes the channel with the specified id within the team that owns it and from the channels entity in Firebase Realtime Database
 @async
 @param {string}channelId the id of the channel to delete
@@ -67,6 +80,22 @@ export const deleteChannel = async (channelId) => {
         console.log(e.message);
         throw new Error('Unexpected issue occurred!');
     }
+};
+
+/**
+ * Retrieves the channel data from the database and invokes a listener function whenever the data changes.
+ *
+ * @param {string} channelId - The id of the channel whose information is to be retrieved
+ * @param {function} listener - The listener function to be invoked when the channel data changes. It receives the updated channel data as an argument.
+ * @returns {function} - A function that can be called to unsubscribe the listener.
+ */
+export const getLiveChannelInfo = (channelId, listener) => {
+    // console.log("live info");
+    return onValue(
+        ref(db, `channels/${channelId}`), snapshot => {
+            const data = snapshot.exists() ? snapshot.val() : null;
+            listener(data);
+        });
 };
 
 /**

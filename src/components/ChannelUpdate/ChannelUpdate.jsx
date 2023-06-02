@@ -6,8 +6,11 @@ import DeleteTeamAlert from '../DeleteAlert/DeleteAlert';
 import { deleteChannel } from '../../services/channels.service';
 import PropTypes from 'prop-types';
 
-const ChannelUpdate = ({ channelId }) => {
+const ChannelUpdate = ({ channelId, setIsEditing }) => {
     const { isOpen: isDialogOpen, onOpen: onDialogOpen, onClose: onDialogClose } = useDisclosure();
+    const setEditMode = () => {
+        setIsEditing(true);
+    };
 
     return (<Popover variant="responsive">
         <PopoverTrigger>
@@ -18,7 +21,7 @@ const ChannelUpdate = ({ channelId }) => {
                 <PopoverArrow bg="primary" />
                 <PopoverCloseButton size="sm" />
                 <Flex direction="column" >
-                    <HStack className="active-channel-action" _hover={{ bg: 'primaryMid' }}>
+                    <HStack className="active-channel-action" _hover={{ bg: 'primaryMid' }} onClick={setEditMode}>
                         <IconButton variant="default" size="xs" icon={<EditIcon />} />
                         <Text>Edit</Text>
                     </HStack>
@@ -35,6 +38,7 @@ const ChannelUpdate = ({ channelId }) => {
 
 ChannelUpdate.propTypes = {
     channelId: PropTypes.string.isRequired,
+    setIsEditing: PropTypes.func.isRequired
 };
 
 export default ChannelUpdate;
