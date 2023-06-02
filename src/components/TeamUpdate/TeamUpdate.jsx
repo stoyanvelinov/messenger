@@ -4,6 +4,8 @@ import DeleteTeamAlert from '../DeleteAlert/DeleteAlert';
 import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { deleteTeam, updateTeam } from '../../services/teams.service';
 import PropTypes from 'prop-types';
+import { useToast } from '@chakra-ui/react';
+import { TEAM_NAME_MIN_LENGTH, TEAM_NAME_MAX_LENGTH } from '../../constants/constants';
 
 const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {
     const { isOpen: isDialogOpen, onClose: onDialogClose, onOpen: onDialogOpen } = useDisclosure();
@@ -11,6 +13,7 @@ const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {
         teamName: team.teamName,
         teamAvatar: team.teamAvatar,
     });
+    const toast = useToast();
 
     const handleChange = e => {
         setForm({
@@ -28,11 +31,30 @@ const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {
     };
     const handleSave = async () => {
         try {
+            if (form.teamName.length < TEAM_NAME_MIN_LENGTH || form.teamName.length > TEAM_NAME_MAX_LENGTH) {
+                throw new Error(`Team name should be between ${TEAM_NAME_MIN_LENGTH} and ${TEAM_NAME_MAX_LENGTH} symbols!`);
+            }
             await updateTeam(team.teamId, form);
             onDrawerClose();
-        } catch (e) { console.log(e); }
+            toast({
+                title: 'Team was successfully updated!',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+                position: 'top-left'
+            });
+        } catch (error) {
+            toast({
+                title: error.message,
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+                position: 'top-left'
+            });
+        }
     };
 
+    //to reset input fields if text was changed but drawer was closed without clicking Save
     const onHideDrawer = () => {
         onDrawerClose();
         setForm({
@@ -61,7 +83,7 @@ const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {
                         />
                         <Box>
                             <FormLabel fontSize="sm" opacity="0.5">Team Name</FormLabel>
-                            <Input id="teamName" name="teamName" type="text" value={form.teamName} onChange={handleChange} />
+                            <Input id="teamName" name="teamName" type="text" value={form.teamName} onChange={handleChange} autoComplete="off" />
                         </Box>
                         <Button bg="darkRed" _hover={{ bg: 'red' }} onClick={onDialogOpen} >Delete Team</Button>
                         <DeleteTeamAlert isOpen={isDialogOpen} onClose={onDialogClose} deleteFn={deleteTeam} heading="Delete Team" id={team.teamId} />
