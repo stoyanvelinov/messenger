@@ -5,15 +5,15 @@ import PropTypes from 'prop-types';
 
 const DeleteAlert = ({ isOpen, onClose, deleteFn, heading, id }) => {
     const navigate = useNavigate();
-    const { teamId } = useParams();
+    const { teamId, channelId } = useParams();
     const toast = useToast();
 
     const handleDeleteTeam = async () => {
-
         try {
             onClose();
             await deleteFn(id);
             if (heading.includes('Team') && id === teamId) navigate('/');
+            if (channelId === id) navigate(`/teams/${teamId}`);
 
         } catch (error) {
             toast({
