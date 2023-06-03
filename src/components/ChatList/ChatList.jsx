@@ -1,9 +1,9 @@
+//chatlist.jsx
 import { useState, useEffect, useContext } from 'react';
 import { addChatMember, createChatRoom, getCurrentUserChatRooms } from '../../services/chat.service';
 import { AuthContext } from '../../context/authContext';
-import { Button, Input, useStepContext } from '@chakra-ui/react';
+// import { Button, Input, useStepContext } from '@chakra-ui/react';
 import { Flex, Container, Box, Text } from '@chakra-ui/layout';
-// import ChatRoom from '../ChatRoom/Chatroom';
 import ChatListItem from '../ChatListItem/ChatListItem';
 import { getAllUsers, getUserById, getUserByUsername } from '../../services/users.service';
 import { useNavigate } from 'react-router-dom';
@@ -14,11 +14,9 @@ import { isEmpty } from 'lodash';
 const ChatList = () => {
   const { user } = useContext(AuthContext);
   const [activeChats, setActiveChats] = useState([]);
-  const [newUser, setNewUser] = useState('');
   const [allUsers, setAllUsers] = useState('');
   const [members, setMembers] = useState({});
   const [chatRoomsDetails, setChatRoomsDetails] = useState([]);
-  const [membersData, setMembersData] = useState([]);
   const navigate = useNavigate();
 
 
@@ -33,9 +31,6 @@ const ChatList = () => {
   
     Promise.all(promises)
       .then((results) => {
-        console.log('RESULTS:',results);
-        // Handle the user data for each chat room
-
         setChatRoomsDetails([
           ...chatRoomsDetails,
           ...results
@@ -44,7 +39,6 @@ const ChatList = () => {
         results.forEach((chatItem) => {
           chatItem.members.map((memberId)=> {
             return getUserById(memberId).then((result)=>{
-              console.log('result Value', result.val());
               setMembers({ 
                 ...members, 
                 [memberId]:result.val() 
@@ -58,19 +52,13 @@ const ChatList = () => {
       });
     };
     
-
     useEffect(() => {
-      const unsubscribePromise = getCurrentUserChatRooms(user.uid, activeChatsObserver);
+      const unsubscribe = getCurrentUserChatRooms(user.uid, activeChatsObserver);
   
       return () => {
-        unsubscribePromise.then((cleanup) => cleanup());
+        unsubscribe();
       };
     }, [user.uid]);
-    useEffect(()=>{
-    const promise = membersData.map((item)=>{
-
-    });
-  },[]);
 
     useEffect(()=>{
       getAllUsers()
@@ -79,33 +67,37 @@ const ChatList = () => {
       });
     },[]);
 
-  const handleChange = (event) => {
-    setNewUser(event.target.value);
-    console.log(newUser);
-  };
-  
-  async function handleAddChatRoom(){
+  const addChatRoom = async (newUser) => {
     try {
       const chatRoomId = await createChatRoom(user.uid);
-      await addChatMember(newUser, chatRoomId);
-      // navigate;
-    }catch(error){
+      const newUserId = await getUserByUsername(newUser);
+      await addChatMember(newUserId, chatRoomId);
+      // setNewChatRoom(chatRoomId);
+      navigate(`/messages/${chatRoomId}`);
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const handleOpenChatRoom = (chatRoomId) => {
+    navigate(`/messages/${chatRoomId}`);
+  };
 
   return (
     <div>
-      <SearchUsers/>
+      <SearchUsers addChatRoom={addChatRoom}/>
       <Flex direction='column'>
         {activeChats &&
           !isEmpty(members) &&
           chatRoomsDetails.map((details) => (
-            <ChatListItem
-            key={details.chatRoomId}
-            members={details.members.map((k) => allUsers.filter((user) => user.uid === k))}
-          />
-          
+            <Box 
+                key={details.chatRoomId}
+                onClick={()=>{ handleOpenChatRoom(details.chatRoomId); }}
+              >
+              <ChatListItem
+                members={details.members.map((k) => allUsers.filter((user) => user.uid === k))}
+              />
+            </Box>
           ))}
       </Flex>
     </div>

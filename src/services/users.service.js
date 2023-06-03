@@ -18,6 +18,7 @@ import { STATUS } from '../components/common/status';
 export const getUserByHandle = (handle) => {
   return get(ref(db, `users/${handle}`));
 };
+
 export const getAllUsers = () => {
   return get(query(ref(db, 'users'))).then((snapshot) => {
     if (!snapshot.exists()) return [];
@@ -26,8 +27,8 @@ export const getAllUsers = () => {
     return users;
   });
 };
+
 export const getUserById = (uid) => {
-  // return get(child(ref(db, 'users'), uid));
   return get(ref(db, `users/${uid}`));
 };
 
@@ -61,7 +62,6 @@ export const createUser = (
   const createdOn = Timestamp.fromDate(new Date()).seconds;
   const isAdmin = false;
  
-
   return set(ref(db, `users/${uid}`), {
     uid,
     username,

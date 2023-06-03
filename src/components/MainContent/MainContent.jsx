@@ -8,7 +8,7 @@ import ChatList from '../ChatList/ChatList';
 import ChatRoom from '../ChatRoom/ChatRoom';
 
 const MainContent = () => {
-    const { teamId } = useParams();
+    const { teamId, chatRoomId } = useParams();
 
     return (
         <Flex className="main-content-box" h="100%" bg="primaryMid" >
@@ -19,7 +19,7 @@ const MainContent = () => {
             </Flex>
             <Box flexGrow={1} h={{ base: '100%' }} borderRight="1px"
                 borderRightColor="primaryLight" borderLeft="1px" borderLeftColor="primaryLight">
-                    <ChatRoom />
+                    <ChatRoom chatRoomId={chatRoomId} />
             </Box>
             <Box bg="primary" display={{ base: 'none', xl: 'flex' }} minW="250px" flexBasis={{ md: '250px', lg: '15%' }}>Some text</Box>
         </Flex>

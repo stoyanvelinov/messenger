@@ -18,7 +18,6 @@ import {
     console.log(updates);
     update(ref(db), updates);
     return chatRoomId;
-
   };
   
   export const createChatRoom = (uid) => {
@@ -27,26 +26,11 @@ import {
     });
   };
 
-
-  // export const getCurrentUserChatRooms = (uid, observer) => {
-  //   return onValue(ref(db,`users/${uid}/chatRooms/`), observer);
-  // };
-
   export const getCurrentUserChatRooms = (uid, observer) => {
-    return new Promise((resolve, reject) => {
       const chatRoomsRef = ref(db, `users/${uid}/chatRooms/`);
-      const unsubscribe = onValue(chatRoomsRef, (snapshot) => {
+      return onValue(chatRoomsRef, (snapshot) => {
         observer(snapshot); // Notify the observer with the snapshot
-        resolve(); // Resolve the main promise
       });
-  
-      // Cleanup function to unsubscribe when the promise is resolved or rejected
-      const cleanup = () => {
-        unsubscribe();
-      };
-  
-      return cleanup;
-    });
   };
   
   export const getChatRoomMembers = (chatRoomId) => {
@@ -74,8 +58,6 @@ import {
   
         const updates = {};
         updates[`/chatRooms/${chatRoomId}/messages/${msgId.key}`] = true;
-        // updates[`/teams/${teamId}/channels/${channelId}/msgs/${result.key}/picURLs`] = picURLs;
-        // updates[`/teams/${teamId}/channels/${channelId}/msgs/${result.key}/seenBy/${owner}`] = true;
   
         return update(ref(db), updates);
       });
