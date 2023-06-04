@@ -10,6 +10,7 @@ import {
     orderByChild,
   } from 'firebase/database';
   import { db } from '../config/firebase.config';
+  import { getUserById } from './users.service';
 
   export const addChatMember = (uid, chatRoomId) => {
     const updates = {};
@@ -26,29 +27,29 @@ import {
     });
   };
 
-  export const getCurrentUserChatRooms = (uid, observer) => {
+  export const getCurrentUserChatRooms = (uid, listener) => {
       const chatRoomsRef = ref(db, `users/${uid}/chatRooms/`);
       return onValue(chatRoomsRef, (snapshot) => {
-        observer(snapshot); // Notify the observer with the snapshot
+        const data = snapshot.exists() ? snapshot.val() : {};
+        const chatRoomIds = Object.keys(data);
+        listener(chatRoomIds);
       });
   };
-  
+
+  export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
+    return onValue(ref(db, `/chatRooms/${chatRoomId}/members`), snapshot => {
+      const data = snapshot.exists() ? snapshot.val() : {};
+      const userUid = Object.keys(data);
+      const usersPromises = userUid.map(uid => getUserById(uid));
+      Promise.all(usersPromises).then(usersSnapshot => {
+        const users = usersSnapshot.map(user => user.val());
+        listener(users);
+      });
+    });
+  };
+
   export const getChatRoomMembers = (chatRoomId) => {
     return get(query(ref(db,`chatRooms/${chatRoomId}/members`)));
-  };
-  
-  export const getChatRoomMembersExceptMe = (uid, chatRoomId) => {
-    return getChatRoomMembers(chatRoomId)
-            .then((result)=> { 
-               return  {
-                'chatRoomId': chatRoomId,
-                'members': Object.keys(result.val())
-              };
-            })
-            .then((result)=>{
-                result.members = result.members.filter((id)=> id !== uid);
-                return result;
-            });
   };
   
   export const sendMessage = (chatRoomId, message, author, avatar, timeStamp) => {

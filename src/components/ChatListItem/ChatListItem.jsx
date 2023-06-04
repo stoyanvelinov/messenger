@@ -1,20 +1,33 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { getChatRoomMembersExceptMe } from '../../services/chat.service';
 import { AuthContext } from '../../context/authContext';
-import { getUserById, getUserData } from '../../services/users.service';
 import { AvatarGroup, Avatar, HStack, Box } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { getLiveUsersByChatRoomId } from '../../services/chat.service';
 
-const ChatListItem = ({ members }) => {
-  const [refreshKey, setRefreshKey] = useState(0);
+const ChatListItem = ({ chatRoomId }) => {
+  const navigate = useNavigate();
+  const [chatMembers, setChatMembers] = useState([]);
+  const { setUser, user } = useContext(AuthContext);
 
-  const updateChatListItem = () => {
-    setRefreshKey((prevKey) => prevKey + 1);
-  };
+  const handleClick = () => {
+    setUser((prev) => ({
+        ...prev,
+        currentChatRoomId: chatRoomId
+    }));
+    navigate(`/messages/${chatRoomId}`);
+};
 
-  useEffect(() => {
-    
-  }, [members, refreshKey]);
+  useEffect(()=>{
+    const unsubscribe = getLiveUsersByChatRoomId( chatRoomId , (members)=>{
+      const otherMembers = members.filter((member)=> member.uid !== user.uid );
+      setChatMembers(otherMembers);
+    });
+    return () => {
+      unsubscribe();
+    };
+  },[chatRoomId]);
 
+  console.log('ChatMembers',chatMembers);
   return (
     <div>
       <Box
@@ -28,24 +41,24 @@ const ChatListItem = ({ members }) => {
           cursor: 'pointer'
         }}
         rounded='md'
-        onLoad={updateChatListItem} 
+        onClick={handleClick}
       >
         <HStack p={2}>
           <AvatarGroup size="sm" max={2}>
-            {members &&
-              members.map((m, index) => {
+            {chatMembers &&
+              chatMembers.map((member, index) => {
                 return (
                   <Avatar
                     key={index}
-                    name={m[0].username}
-                    src={m[0].avatar}
+                    name={member.username}
+                    src={member.avatar}
                   />
                 );
               })}
           </AvatarGroup>
-          {members &&
-            members.map((m, index) => {
-              return <span key={index}>{m[0].username}</span>;
+          {chatMembers &&
+            chatMembers.map((member, index) => {
+              return <span key={index}>{member.username}</span>;
             })}
         </HStack>
       </Box>
