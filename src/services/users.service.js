@@ -129,3 +129,16 @@ export const updateUserProfile = (uid,form) => {
     ...form
   });
 };
+
+// export const updateUserAvatar()
+export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
+  return onValue(ref(db, `/chatRooms/${chatRoomId}/members`), snapshot => {
+    const data = snapshot.exists() ? snapshot.val() : {};
+    const userUid = Object.keys(data);
+    const usersPromises = userUid.map(uid => getUserById(uid));
+    Promise.all(usersPromises).then(usersSnapshot => {
+      const users = usersSnapshot.map(user => user.val());
+      listener(users);
+    });
+  });
+};

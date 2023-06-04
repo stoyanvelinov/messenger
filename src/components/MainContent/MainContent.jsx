@@ -11,7 +11,7 @@ const MainContent = () => {
     const { teamId, chatRoomId } = useParams();
 
     return (
-        <Flex className="main-content-box" h="100%" bg="primaryMid" >
+        <Flex className="main-content-box" h="100%" bg="primaryMid"  >
             <Flex bg="primary" direction="column" display={{ base: 'none', lg: 'flex' }} minW="250px" flexBasis={{ md: '250px', lg: '15%' }} gap={2}>
                
                 { !teamId && <ChatList /> }

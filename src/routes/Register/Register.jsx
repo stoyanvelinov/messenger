@@ -81,7 +81,7 @@ const Register = () => {
                             <Box w="100%"><FormLabel>First name*</FormLabel>
                                 <Input id="first-name" borderRadius="md" type="text" value={form.firstName} onChange={updateForm('firstName')} placeholder="First name" autoComplete="off" required />
                             </Box>
-                            <Box w="100%"><FormLabel>Last name*</FormLabel>
+                            <Box w="100%"><FormLabel >Last name*</FormLabel>
                                 <Input id="last-name" borderRadius="md" type="text" value={form.lastName} onChange={updateForm('lastName')} placeholder="Last name" autoComplete="off" required />
                             </Box>
                             <Box w="100%"><FormLabel>Username*</FormLabel>

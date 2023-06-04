@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Stack, useDisclosure, useToast } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useToast } from '@chakra-ui/react';
 import { useContext, useState } from 'react';
 import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { AuthContext } from '../../context/authContext';
@@ -41,6 +41,7 @@ const ProfileInfo = () => {
 
     const handleUploadImg = async (e) => {
         const img = await storeImage(e.target.files[0], userData.username);
+        //to do update user img
         console.log(img);
         setUser((prev) => ({
             ...prev,

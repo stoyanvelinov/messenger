@@ -39,7 +39,6 @@ const ChatList = () => {
       const chatRoomId = await createChatRoom(user.uid);
       const newUserId = await getUserByUsername(newUser);
       await addChatMember(newUserId, chatRoomId);
-      // setNewChatRoom(chatRoomId);
       navigate(`/messages/${chatRoomId}`);
     } catch (error) {
       console.log(error);

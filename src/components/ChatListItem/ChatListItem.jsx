@@ -27,7 +27,6 @@ const ChatListItem = ({ chatRoomId }) => {
     };
   },[chatRoomId]);
 
-  console.log('ChatMembers',chatMembers);
   return (
     <div>
       <Box
