@@ -49,7 +49,7 @@ const SideBar = () => {
             >
                 Logo
             </Text>
-            <Flex direction="column" p={4} gap="1rem" >
+            <Flex direction="column" p={2} gap="1rem" >
                 {/* <Box boxSize='sm'>
                     <Image src={messageIcon}  boxSize='50px' alt='message icon' />
                 </Box> */}
