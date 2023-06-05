@@ -115,6 +115,7 @@ const ProfileInfo = () => {
 
     const handleUploadImg = async (e) => {
         const img = await storeImage(e.target.files[0], userData.username);
+        //to do update user img
         console.log(img);
         setUser((prev) => ({
             ...prev,
