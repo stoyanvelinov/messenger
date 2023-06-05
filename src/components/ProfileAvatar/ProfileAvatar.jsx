@@ -1,5 +1,6 @@
 import { Avatar, Input } from '@chakra-ui/react';
 import { storeImage } from '../../services/image.service';
+import PropTypes from 'prop-types';
 
 const ProfileAvatar = ({ name, src, target, updateState }) => {
 
@@ -14,14 +15,18 @@ const ProfileAvatar = ({ name, src, target, updateState }) => {
         name={name}
         src={src}
         cursor="pointer"
-        size="xl"
+        size="2xl"
       />
       <Input id='avatar-img' type='file' accept='.jpg,.png,.jpeg' display='none' onChange={(e) => handleUploadImg(e)} />
     </label>
-    // <Avatar {...props} cursor="pointer" />
-
   );
 };
 
+ProfileAvatar.propTypes = {
+  name: PropTypes.string.isRequired,
+  src: PropTypes.string,
+  target: PropTypes.string.isRequired,
+  updateState: PropTypes.func.isRequired,
+};
+
 export default ProfileAvatar;
-{/* <AvatarBadge boxSize='15px' border='none' bg={`${style}`} onClick={e=>openChangeStatus(e)} /> */ }

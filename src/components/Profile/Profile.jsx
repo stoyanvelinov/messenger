@@ -7,20 +7,18 @@ import {
   DrawerCloseButton,
   useDisclosure,
   Box,
-  Button,
-  Avatar
+  Button
 } from '@chakra-ui/react';
 import { useContext, useState } from 'react';
 import { useRef } from 'react';
 import { Text, Flex } from '@chakra-ui/react';
 import { AuthContext } from '../../context/authContext';
-import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import ProfileInfo from '../ProfileInfo/ProfileInfo';
 import { logout } from '../../services/auth.service';
 import { updateUserStatus } from '../../services/users.service';
 import { STATUS } from '../common/status';
 import { useNavigate } from 'react-router-dom';
-import ProfileStatusIcon from '../ProfileInfo/ProfileStatusIcon';
+import UserAvatar from '../../UserAvatar/UserAvatar';
 
 const Profile = () => {
   const { userData, setUser } = useContext(AuthContext);
@@ -45,30 +43,12 @@ const Profile = () => {
     }
   };
 
-  let style;
-
-  switch (userData.status) {
-    case STATUS.ONLINE:
-      style = 'green';
-      break;
-    case STATUS.DO_NOT_DISTURB:
-      style = 'red';
-      break;
-    default:
-      style = 'gray';
-  }
-
   return (
     <Box width='100%' >
       <Flex position='relative' onClick={onOpen} ref={btnRef} w='100%' justify='center' align='center' mr='3rem'>
         <Text color='white' mr='0.4rem' fontSize='s' cursor="pointer">{`${userData.firstName} ${userData.lastName}`} </Text>
-        <Avatar name={`${userData.firstName} ${userData.lastName}`}
-          status={userData.status}
-          src={userData.avatar}
-          cursor="pointer" />
-        <ProfileStatusIcon ml='-0.6rem' zIndex='5' mt='2rem' color={style} />
+        <UserAvatar avatarSize="md" user={userData} />
       </Flex>
-
       <Drawer
         isOpen={isOpen}
         placement='right'
