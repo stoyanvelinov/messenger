@@ -130,11 +130,7 @@ const Register = () => {
                             <Box w="100%"><FormLabel htmlFor="first-name">First name</FormLabel>
                                 <Input id="first-name" borderRadius="md" type="text" value={form.firstName} onChange={updateForm('firstName')} placeholder="First name" autoComplete="off" required />
                             </Box>
-<<<<<<< HEAD
-                            <Box w="100%"><FormLabel >Last name*</FormLabel>
-=======
                             <Box w="100%"><FormLabel htmlFor='last-name'>Last name</FormLabel>
->>>>>>> dev
                                 <Input id="last-name" borderRadius="md" type="text" value={form.lastName} onChange={updateForm('lastName')} placeholder="Last name" autoComplete="off" required />
                             </Box>
                             <Box w="100%"><FormLabel htmlFor='username' >Username</FormLabel>
