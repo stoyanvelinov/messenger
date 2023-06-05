@@ -14,17 +14,18 @@ export const Message = ({ timestamp, sender, message, reactions, firstName, last
         <>
           <Flex Flex flexDirection='row'>
             <Avatar name={`${firstName} ${lastName}`} src={avatarUrl} />
-            <Flex flexDirection='column'>
-              <Box ml='0.5rem'>
+            <Flex alignItems='center'>
+              <Box ml='0.5rem' fontSize='1.4rem'>
                 {`${firstName} ${lastName}`}
               </Box>
-              <Text fontSize='sm' opacity='35%' ml='0.5rem'>
-                {new Date(parseInt(timestamp)).toLocaleString()}
-              </Text>
-              <Divider />
+                <Text fontSize='0.8rem' opacity='35%' ml='0.4rem' mt='1rem' >
+                  {new Date(parseInt(timestamp)).toLocaleString()}
+                </Text>
             </Flex>
-          </Flex>
-
+            </Flex >
+            <Box px='3rem'>
+              <Divider />
+            </Box>
             <MessagePopover message={message} reactions={reactions} msgId={msgId} />
         </>
       )}

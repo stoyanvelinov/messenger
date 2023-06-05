@@ -122,7 +122,7 @@ export const sendMessage = (chatRoomId, message, author, avatar, timeStamp) => {
     });
 };
 
-export const createMsg = async (input, sender, avatar = null, firstName, lastName, reactions = [], chatRoomId) => {
+export const createMsg = async (input, sender, avatar = null, firstName, lastName, edited, chatRoomId) => {
   const msgId = push(child(ref(db), '/messages')).key;
   const msgData = {
     msgId: msgId,
@@ -133,11 +133,11 @@ export const createMsg = async (input, sender, avatar = null, firstName, lastNam
     firstName: firstName,
     lastName: lastName,
     chatRoomId: chatRoomId,
-    reactions: reactions
+    edited: edited
   };
   const updates = {
     [`/messages/${msgId}`]: msgData,
-    [`/chatRooms/${chatRoomId}/messages/${msgId}`]: true
+    [`/chatRooms/${chatRoomId}/messages/${msgId}`]: { edited:false }
   };
   await update(ref(db), updates);
   return msgId;

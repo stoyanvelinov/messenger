@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react';
-import { Flex } from '@chakra-ui/layout';
+import { Flex, VStack } from '@chakra-ui/layout';
 import { AuthContext } from '../../context/authContext';
 import PropTypes from 'prop-types';
 
@@ -24,7 +24,7 @@ const MessagePopover = ({ message, reactions, msgId }) => {
             placement='bottom-start'
         >
             <PopoverTrigger>
-                <Flex>
+                <Flex w='30vh'>
                     <Box
                         borderRadius='0.2rem'
                         ml='4rem'

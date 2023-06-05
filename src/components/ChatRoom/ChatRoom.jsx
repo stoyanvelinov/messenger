@@ -42,20 +42,20 @@ const ChatRoom = () => {
       message: input,
       timestamp: Date.now(),
       sender: user.uid,
+
       avatarUrl: userData.avatar,
       firstName: userData.firstName,
       lastName: userData.lastName,
-      // reactions: [
-      //   {
-      //     reactionType: 'like',
-      //     userId: user.uid
-      //   }
-      // ]
+      edited: 
+        {
+          edited: false
+        }
+      
     };
 
     if (isValidMessage(input)) {
       //add error handling
-      const asd = await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.reactions, currentChatRoomId);
+      const asd = await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.edited, currentChatRoomId);
       console.log('message sent');
       setInput('');
     }
@@ -106,7 +106,7 @@ const ChatRoom = () => {
       </Box> */}
       <Flex h="93vh" flexDirection="column" p={5}>
         <Flex h="70vh" mb={5} flexDirection="column" overflowY="auto">
-          <Box>
+          <Box >
             {messages.map((message, index) => {
               return (
                 <Message
