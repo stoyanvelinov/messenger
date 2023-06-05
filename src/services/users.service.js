@@ -7,8 +7,6 @@ import {
   equalTo,
   limitToLast,
   update,
-  push,
-  child,
   onValue,
 } from 'firebase/database';
 import { db } from '../config/firebase.config';
@@ -32,22 +30,25 @@ export const getUserById = (uid) => {
   return get(ref(db, `users/${uid}`));
 };
 
-export const getUserByUsername = (username) => {
-  return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)))
-          .then((snapshot) => { 
-            if (snapshot.exists()) {
-              return Object.keys(snapshot.val())[0];
-            }
-            return null;
-          })
-          .catch(error => {
-            console.error('Error getting user:', error);
-            return null; // Return null in case of an error
-          });
-};
+// export const getUserByUsername = (username) => {
+//   return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)))
+//           .then((snapshot) => { 
+//             if (snapshot.exists()) {
+//               return Object.keys(snapshot.val())[0];
+//             }
+//             return null;
+//           })
+//           .catch(error => {
+//             console.error('Error getting user:', error);
+//             return null; // Return null in case of an error
+//           });
+// };
 
 export const getUserByEmail = (email) => {
   return get(query(ref(db, 'users'), orderByChild('email'), equalTo(email)));
+};
+export const getUserByUsername = (username) => {
+  return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)));
 };
 
 export const createUser = (
@@ -61,7 +62,7 @@ export const createUser = (
 ) => {
   const createdOn = Timestamp.fromDate(new Date()).seconds;
   const isAdmin = false;
- 
+
   return set(ref(db, `users/${uid}`), {
     uid,
     username,
@@ -78,6 +79,13 @@ export const createUser = (
 
 export const getUserData = (uid) => {
   return get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
+};
+
+export const getLiveUserData = (uid, listener) => {
+  return onValue(ref(db, `users/${uid}`), snapshot => {
+    const data = snapshot.val();
+    listener(data);
+  });
 };
 
 /**
@@ -124,13 +132,13 @@ export const updateUserStatus = (uid, status = STATUS.ONLINE) => {
   });
 };
 
-export const updateUserProfile = (uid,form) => {
+export const updateUserProfile = (uid, form) => {
   return update(ref(db, `users/${uid}`), {
     ...form
   });
 };
 
-// export const updateUserAvatar()
+// export const updateUserAvatar() to do
 export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
   return onValue(ref(db, `/chatRooms/${chatRoomId}/members`), snapshot => {
     const data = snapshot.exists() ? snapshot.val() : {};

@@ -1,11 +1,11 @@
-import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useToast } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Stack, useDisclosure, useToast } from '@chakra-ui/react';
 import { useContext, useState } from 'react';
 import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { AuthContext } from '../../context/authContext';
 import { EditIcon } from '@chakra-ui/icons';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import { updateUserProfile, updateUserStatus } from '../../services/users.service';
-import { storeImage } from '../../services/image.service';
+// import { storeImage } from '../../services/image.service';
 import { STATUS } from '../common/status';
 import ProfileStatusIcon from './ProfileStatusIcon';
 import ProfileChangePassword from '../ProfileChangePassword/ProfileChangePassword';
@@ -119,7 +119,7 @@ const ProfileInfo = () => {
         console.log(img);
         setUser((prev) => ({
             ...prev,
-            userData: { ...prev.userData, avatar: img }
+            userData: { ...prev.userData, avatar: newState }
         }));
     };
 
@@ -213,7 +213,7 @@ const ProfileInfo = () => {
             <Divider mt='0.8rem' mb='0.8rem' />
             {isEditing ? (
                 isChangingPassword ? (
-                    <ProfileChangePassword  setPassForm={setPassForm}  />
+                    <ProfileChangePassword setPassForm={setPassForm} />
                 ) : (
                     <ProfileEdit form={form} setForm={setForm} />
                 )
@@ -225,3 +225,4 @@ const ProfileInfo = () => {
 };
 
 export default ProfileInfo;
+
