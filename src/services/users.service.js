@@ -30,6 +30,9 @@ export const getAllUsers = () => {
 export const getUserByEmail = (email) => {
   return get(query(ref(db, 'users'), orderByChild('uid'), equalTo(email)));
 };
+export const getUserByUsername = (username) => {
+  return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)));
+};
 
 export const createUser = (
   username,
@@ -42,7 +45,7 @@ export const createUser = (
 ) => {
   const createdOn = Timestamp.fromDate(new Date()).seconds;
   const isAdmin = false;
- 
+
 
   return set(ref(db, `users/${uid}`), {
     uid,
@@ -60,6 +63,13 @@ export const createUser = (
 
 export const getUserData = (uid) => {
   return get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
+};
+
+export const getLiveUserData = (uid, listener) => {
+  return onValue(ref(db, `users/${uid}`), snapshot => {
+    const data = snapshot.val();
+    listener(data);
+  });
 };
 
 /**
@@ -106,7 +116,7 @@ export const updateUserStatus = (uid, status = STATUS.ONLINE) => {
   });
 };
 
-export const updateUserProfile = (uid,form) => {
+export const updateUserProfile = (uid, form) => {
   return update(ref(db, `users/${uid}`), {
     ...form
   });
