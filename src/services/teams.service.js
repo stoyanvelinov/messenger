@@ -16,12 +16,11 @@ export const createTeam = async (teamName, avatarUrl, uid) => {
         teamName: teamName,
         teamOwner: uid,
         teamAvatar: avatarUrl,
-        teamId: teamId
+        teamId: teamId,
     };
     const updates = {};
 
     updates[`/teams/${teamId}`] = teamData;
-    updates[`/users/${uid}/teams/${teamId}`] = true;
     await update(ref(db), updates);
 
     return teamId;
@@ -44,6 +43,11 @@ export const deleteTeam = async (teamId) => {
             deleteChannel(channelId, teamId);
         });
         await Promise.all(channels);
+        const memberIds = Object.keys(team.members);
+        const members = memberIds.map(uid => {
+            removeMemberFromTeam(uid, teamId);
+        });
+        await Promise.all(members);
 
         const updates = {};
 
@@ -83,6 +87,7 @@ export const getTeamByName = (teamName) => {
 
 /**
 Fetches the team object using the team's id
+@async
 @param {string}teamId the id of the team to fetch
 @returns {Promise<Object>} A Promise that resolves to the team object
  */
@@ -91,7 +96,38 @@ export const getTeamById = (teamId) => {
 };
 
 /**
+ Adds a member to a team.
+ @async
+ @param {string} uid - The id of the member to add.
+ @param {string} teamId - The id of the team to which the member should be added.
+ @returns {Promise} A Promise that resolves when the member is successfully added to the team.
+ */
+export const addMemberToTeam = (uid, teamId) => {
+    const updates = {};
+    updates[`/users/${uid}/teams/${teamId}`] = true;
+    updates[`teams/${teamId}/members/${uid}`] = true;
+
+    return update(ref(db), updates);
+};
+
+/**
+ Removes a member from a team
+ @async
+ @param {string} uid - The id of the member to remove
+ @param {string} teamId - The id of the team from which to remove the member
+ @returns {Promise} A Promise that resolves when the member is successfully removed from the team
+ */
+export const removeMemberFromTeam = (uid, teamId) => {
+    const updates = {};
+    updates[`/users/${uid}/teams/${teamId}`] = null;
+    updates[`teams/${teamId}/members/${uid}`] = null;
+
+    return update(ref(db), updates);
+};
+
+/**
 Fetches all teams in which the logged user is a member
+@async
 @param {string}uid the id of the logged user
 @param {function}listener a callback function that will use the array of team objects
 @returns {function} - A function that can be called to unsubscribe the listener.
@@ -108,16 +144,30 @@ export const getLiveTeams = (uid, listener) => {
 
 /**
  * Retrieves the team information from the database and invokes a listener function whenever the data changes.
- *
- * @param {string} teamId - The id of the team whose information is to be retrieved
- * @param {function} listener - The listener function to be invoked when the team data changes. It receives the updated team data as an argument.
- * @returns {function} - A function that can be called to unsubscribe the listener.
+ @async
+ @param {string} teamId - The id of the team whose information is to be retrieved
+ @param {function} listener - The listener function to be invoked when the team data changes. It receives the updated team data as an argument.
+ @returns {function} - A function that can be called to unsubscribe the listener.
  */
 export const getLiveTeamInfo = (teamId, listener) => {
-    // console.log("live info");
-    return onValue(
-        ref(db, `teams/${teamId}`), snapshot => {
-            const data = snapshot.exists() ? snapshot.val() : null;
-            listener(data);
-        });
+    return onValue(ref(db, `teams/${teamId}`), snapshot => {
+        const data = snapshot.exists() ? snapshot.val() : null;
+        listener(data);
+    });
+};
+
+
+/**
+Retrieves live team member ids for a given team id.
+@async
+@param {string} teamId - The id of the team.
+@param {function} listener - The callback function to handle the retrieved member ids. It receives an array of member ids as the argument.
+@returns {function} - A function that can be called to unsubscribe the listener.
+*/
+export const getLiveTeamMemberIds = (teamId, listener) => {
+    return onValue(ref(db, `teams/${teamId}/members`), snapshot => {
+        const data = snapshot.exists() ? snapshot.val() : {};
+        const memberIds = Object.keys(data);
+        listener(memberIds);
+    });
 };
