@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
-import { Flex, Input, IconButton, ButtonGroup, useToast } from '@chakra-ui/react';
+import { Flex, Input, Text, IconButton, ButtonGroup, useToast, Box } from '@chakra-ui/react';
 import ChannelUpdate from '../ChannelUpdate/ChannelUpdate';
 import { useNavigate } from 'react-router-dom';
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
@@ -24,7 +24,7 @@ const Channel = ({ channelId, channelName, team }) => {
     };
 
     const goToChannel = (e) => {
-        const id = e.target.getAttribute('id');
+        const id = e.currentTarget.getAttribute('id');
         //to ensure the dots menu can be accessed without errors due to Chakra's implementation of the popover
         if (id && !id.includes('popover')) {
             setActiveChannel(id);
@@ -64,21 +64,21 @@ const Channel = ({ channelId, channelName, team }) => {
 
     if (isEditing) return (
         <form onSubmit={handleSave}>
-            <Flex className="channel" px={2} gap="0.3rem">
+            <Flex className="channel-editing" px={2} gap="0.2rem">
                 <Input
                     className="channelNameInput"
-                    h="2.2rem"
-                    fontSize="1.1rem"
+                    h="2.1em"
+                    fontSize="1.4em"
                     type="text"
                     value={form.channelName}
                     onChange={handleChange}
                     autoComplete='off' />
                 <ButtonGroup justifyContent='center' size='xs'>
-                    <IconButton bg="green" _hover={{ bg: 'limegreen' }} type="submit" icon={<CheckIcon />} />
-                    <IconButton bg="darkRed" _hover={{ bg: 'red' }} onClick={handleCancel} icon={<CloseIcon />} />
+                    <IconButton bg="accent" _hover={{ bg: 'primary' }} type="submit" icon={<CheckIcon />} />
+                    <IconButton bg="primaryLight" _hover={{ bg: 'primary' }} onClick={handleCancel} icon={<CloseIcon />} />
                 </ButtonGroup>
             </Flex>
-        </form>
+        </form >
 
     );
 
@@ -86,12 +86,12 @@ const Channel = ({ channelId, channelName, team }) => {
         key={channelId}
         className="channel"
         id={channelId}
-        fontSize="1.1rem"
-        pl={2}
         cursor="pointer"
-        onClick={goToChannel}>
-        {form.channelName}
-        {user.uid === team.teamOwner && < ChannelUpdate channelId={channelId} setIsEditing={setIsEditing} />}</Flex>);
+        onClick={goToChannel}
+    >
+        <Text pl={2} px={2} h="2.2em" lineHeight="2.2em" fontSize="1.4em" isTruncated>{form.channelName}</Text>
+        {user.uid === team.teamOwner && < ChannelUpdate channelId={channelId} setIsEditing={setIsEditing} />}
+    </Flex>);
 };
 
 Channel.propTypes = {

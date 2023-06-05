@@ -8,14 +8,12 @@ import PropTypes from 'prop-types';
 import { AuthContext } from '../../context/authContext';
 import { FiLoader } from 'react-icons/fi';
 
-
 const TeamButton = ({ onOpen, teamId }) => {
     const [team, setTeam] = useState(null);
     const { user } = useContext(AuthContext);
-
     const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
+
     useEffect(() => {
-        // console.log("team button useEffect ran")
         const unsub1 = getLiveTeamInfo(teamId, teamObj => setTeam(teamObj));
         return () => unsub1();
     }, [teamId]);
@@ -27,7 +25,7 @@ const TeamButton = ({ onOpen, teamId }) => {
             <Avatar
                 className="team-avatar"
                 data-team-id={teamId}
-                size="md"
+                boxSize="4rem"
                 name={team.teamName}
                 src={team.teamAvatar}
                 cursor="pointer"
@@ -46,7 +44,6 @@ const TeamButton = ({ onOpen, teamId }) => {
             <TeamUpdate isDrawerOpen={isDrawerOpen} onDrawerClose={onDrawerClose} team={team} />
         </>)}
     </Flex>);
-
 };
 
 export default TeamButton;
