@@ -3,15 +3,14 @@ import { TriangleDownIcon } from '@chakra-ui/icons';
 import { useContext, useRef, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 import { TEAM_NAME_MAX_LENGTH, TEAM_NAME_MIN_LENGTH } from '../../constants/constants';
-import { getTeamByName, createTeam } from '../../services/teams.service';
+import { getTeamByName, createTeam, addMemberToTeam } from '../../services/teams.service';
 import { storeImage } from '../../services/image.service';
 import { AuthContext } from '../../context/authContext';
 import { createGeneralChannel } from '../../services/channels.service';
 
 const CreateTeam = () => {
     const toast = useToast();
-    const nameInput = useRef(null);
-    const avatarInput = useRef();
+    const nameInput = useRef();
     const [form, setForm] = useState({
         teamName: '',
         teamAvatar: '',
@@ -32,7 +31,6 @@ const CreateTeam = () => {
             if (form.teamName.length < TEAM_NAME_MIN_LENGTH || form.teamName.length > TEAM_NAME_MAX_LENGTH) {
                 throw new Error(`Team name should be between ${TEAM_NAME_MIN_LENGTH} and ${TEAM_NAME_MAX_LENGTH} symbols!`);
             }
-
             const teamSnapshot = await getTeamByName(form.teamName);
             if (teamSnapshot.exists())
                 throw new Error('Team name is already taken!');
@@ -40,9 +38,12 @@ const CreateTeam = () => {
             const imgUrl = form.teamAvatar ? await storeImage(form.teamAvatar, form.teamName) : '';
             const teamId = await createTeam(form.teamName, imgUrl, user.uid);
             await createGeneralChannel(teamId);
+            await addMemberToTeam(user.uid, teamId);
 
-            nameInput.current.value = null;
-            avatarInput.current.value = null;
+            setForm({
+                teamName: '',
+                teamAvatar: '',
+            });
 
             toast({
                 title: 'Team was created!',
@@ -67,24 +68,22 @@ const CreateTeam = () => {
             teamName: '',
             teamAvatar: '',
         });
-        nameInput.current.value = null;
-        avatarInput.current.value = null;
     }} closeOnBlur>
         <PopoverTrigger>
             <span><Tooltip label="Add Team" placement="right">
                 <IconButton
-                    icon={<TriangleDownIcon />}
+                    icon={<TriangleDownIcon boxSize="2rem" />}
                     aria-label='create team'
                     bg='accent'
                     borderRadius="50%"
-                    size="lg"
+                    boxSize="4rem"
                     _hover={{ bg: 'primaryLight', color: 'primaryDark' }}
                 /></Tooltip></span>
         </PopoverTrigger>
-        <Portal >
-            <PopoverContent textAlign="center" bg='primaryLight'>
+        <Portal>
+            <PopoverContent textAlign="center" bg='primary'>
                 <PopoverArrow />
-                <PopoverHeader as="h2" bg="primary" fontWeight="bold" letterSpacing={2}>CREATE&nbsp; A&nbsp; NEW&nbsp; TEAM</PopoverHeader>
+                <PopoverHeader as="h2" bg="primaryLight" fontWeight="bold" letterSpacing={2}>CREATE&nbsp; A&nbsp; NEW&nbsp; TEAM</PopoverHeader>
                 <PopoverCloseButton />
                 <PopoverBody>
                     <form onSubmit={onCreate}>
@@ -95,21 +94,20 @@ const CreateTeam = () => {
                                     id="team-name"
                                     ref={nameInput}
                                     type="text"
-                                    bg="tertiary"
+                                    bg="primary"
                                     value={form.teamName}
                                     onChange={updateForm('teamName')}
                                     autoComplete="off"
                                     placeholder="Team Name"
                                     required></Input>
-                                <FormHelperText color="primaryDark">Name should be between 3 and 40 symbols</FormHelperText>
+                                <FormHelperText color="primaryLight">Name should be between 3 and 40 symbols</FormHelperText>
                             </Box>
                             <Box>
                                 <FormLabel >Team Avatar</FormLabel>
                                 <Input
                                     id="team-avatar"
-                                    ref={avatarInput}
                                     type="file"
-                                    bg="tertiary"
+                                    bg="primary"
                                     pt="4px"
                                     borderRadius="md"
                                     onChange={updateAvatar}

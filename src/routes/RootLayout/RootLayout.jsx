@@ -9,7 +9,7 @@ const RootLayout = () => {
     return (
         <>
             <SideBar />
-            <Stack h='100%' ml={{ base: 0, md: 20 }}>
+            <Stack h='100%' ml={{ base: 0, md: '6rem' }}>
                 <Header />
                 {/* <Outlet /> */}
                 <MainContent />

@@ -13,13 +13,11 @@ const SideBar = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // console.log("sidebar useEffect ran")
         const unsub = getLiveTeams(user.uid, (t) => setTeamIds([...t]));
         return () => unsub();
     }, [user.uid]);
 
     const onOpen = (e) => {
-
         const teamId = e.target.closest('span').getAttribute('data-team-id');
         navigate(`/teams/${teamId}`);
     };
@@ -30,7 +28,7 @@ const SideBar = () => {
             borderRight="1px"
             borderRightColor="primaryLight"
             display={{ base: 'none', md: 'block' }}
-            w={{ md: 20 }}
+            w={{ md: '6rem' }}
             pos="fixed"
             h="full"
         // overflowY="scroll"
