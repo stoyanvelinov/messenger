@@ -148,7 +148,7 @@ const ProfileInfo = () => {
     return (
         <Flex flexDirection='column' >
             <Flex alignContent='center' justify='center' position='relative'>
-                {/* <label htmlFor='avatar-img'>
+                <label htmlFor='avatar-img'>
 
                     <ProfileAvatar
                         name={`${userData.firstName} ${userData.lastName}`}
@@ -157,8 +157,7 @@ const ProfileInfo = () => {
                         size='xl'
                     />
                     <Input id='avatar-img' type='file' accept='.jpg,.png,.jpeg' display='none' onChange={(e) => handleUploadImg(e)} />
-                </label> */}
-                <ProfileAvatar name={`${userData.firstName} ${userData.lastName}`} src={userData.avatar} target={userData.username} updateState={updateAvatarState} />
+                </label>
                 <Popover placement='bottom-start' >
                     <PopoverTrigger>
                         <Icon viewBox='0 0 200 200' ml='-0.8rem' color={`${style}`} cursor='pointer'>
@@ -170,10 +169,6 @@ const ProfileInfo = () => {
                         {/* <ProfileStatusIcon color={`${style}`} cursor='pointer' /> */}
                     </PopoverTrigger>
                     <PopoverContent w='12rem' bg='primaryDark'>
-                        <PopoverArrow bg='primaryDark' />
-                        <PopoverBody w='100%'>
-                            <Flex w='100%' flexDirection='column'>
-                                <Button justifyContent='flex-start' size='sm' leftIcon={<ProfileStatusIcon color='green' ml='' />} mb='0.6rem' variant='outline' onClick={() => handleStatusChange(STATUS.ONLINE)}>
                         <PopoverArrow bg='primaryDark' />
                         <PopoverBody w='100%'>
                             <Flex w='100%' flexDirection='column'>
@@ -218,7 +213,7 @@ const ProfileInfo = () => {
             <Divider mt='0.8rem' mb='0.8rem' />
             {isEditing ? (
                 isChangingPassword ? (
-                    <ProfileChangePassword  setPassForm={setPassForm}  />
+                    <ProfileChangePassword setPassForm={setPassForm} />
                 ) : (
                     <ProfileEdit form={form} setForm={setForm} />
                 )
@@ -230,3 +225,4 @@ const ProfileInfo = () => {
 };
 
 export default ProfileInfo;
+
