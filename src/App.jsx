@@ -13,6 +13,7 @@ function App() {
   const [appState, setAppState] = useState({
     user,
     userData: null,
+    currentChatRoomId: null
   });
 
   if (appState.user !== user) {

@@ -15,6 +15,7 @@ const SearchUsers = ({ addMember, width }) => {
   const [users, setUsers] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const searchInput = useRef();
+
   useEffect(() => {
     const getUsers = async () => {
       const allUsers = await getAllUsers();

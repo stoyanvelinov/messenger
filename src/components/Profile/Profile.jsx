@@ -36,8 +36,11 @@ const Profile = () => {
     try {
       await logout();
       await updateUserStatus(userData.uid, STATUS.OFFLINE);
-      setUser({});
-      navigate('/login');
+      setUser({
+        user: null,
+        userData: null,
+      });
+      navigate('/');
     } catch (err) {
       console.log(err);
     }

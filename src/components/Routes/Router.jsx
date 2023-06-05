@@ -15,6 +15,8 @@ function Router() {
         <Route index element={<MainContent />} />
         <Route path="teams/:teamId" element={<MainContent />} />
         <Route path="teams/:teamId/:channelId" element={<MainContent />} />
+        <Route path="messages/" element={<MainContent />} />
+        <Route path="messages/:chatRoomId" element={<MainContent />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

@@ -7,8 +7,6 @@ import {
   equalTo,
   limitToLast,
   update,
-  push,
-  child,
   onValue,
 } from 'firebase/database';
 import { db } from '../config/firebase.config';
@@ -18,6 +16,7 @@ import { STATUS } from '../components/common/status';
 export const getUserByHandle = (handle) => {
   return get(ref(db, `users/${handle}`));
 };
+
 export const getAllUsers = () => {
   return get(query(ref(db, 'users'))).then((snapshot) => {
     if (!snapshot.exists()) return [];
@@ -27,8 +26,26 @@ export const getAllUsers = () => {
   });
 };
 
+export const getUserById = (uid) => {
+  return get(ref(db, `users/${uid}`));
+};
+
+// export const getUserByUsername = (username) => {
+//   return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)))
+//           .then((snapshot) => { 
+//             if (snapshot.exists()) {
+//               return Object.keys(snapshot.val())[0];
+//             }
+//             return null;
+//           })
+//           .catch(error => {
+//             console.error('Error getting user:', error);
+//             return null; // Return null in case of an error
+//           });
+// };
+
 export const getUserByEmail = (email) => {
-  return get(query(ref(db, 'users'), orderByChild('uid'), equalTo(email)));
+  return get(query(ref(db, 'users'), orderByChild('email'), equalTo(email)));
 };
 export const getUserByUsername = (username) => {
   return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)));
@@ -45,7 +62,6 @@ export const createUser = (
 ) => {
   const createdOn = Timestamp.fromDate(new Date()).seconds;
   const isAdmin = false;
-
 
   return set(ref(db, `users/${uid}`), {
     uid,
@@ -119,5 +135,18 @@ export const updateUserStatus = (uid, status = STATUS.ONLINE) => {
 export const updateUserProfile = (uid, form) => {
   return update(ref(db, `users/${uid}`), {
     ...form
+  });
+};
+
+// export const updateUserAvatar() to do
+export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
+  return onValue(ref(db, `/chatRooms/${chatRoomId}/members`), snapshot => {
+    const data = snapshot.exists() ? snapshot.val() : {};
+    const userUid = Object.keys(data);
+    const usersPromises = userUid.map(uid => getUserById(uid));
+    Promise.all(usersPromises).then(usersSnapshot => {
+      const users = usersSnapshot.map(user => user.val());
+      listener(users);
+    });
   });
 };
