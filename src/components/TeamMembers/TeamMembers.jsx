@@ -40,7 +40,7 @@ const TeamMembers = () => {
     useEffect(() => {
         const unsubscribe = getLiveTeamMemberIds(teamId, mbs => setMemberIds(mbs));
         return () => unsubscribe();
-    }, [teamId]);
+    }, [team]);
 
     if (team === null) return <FiLoader />;
 
