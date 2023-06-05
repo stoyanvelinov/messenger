@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Icon, Link, Select } from '@chakra-ui/react';
 import { PhoneIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { Button } from '@chakra-ui/button';
@@ -8,7 +9,8 @@ import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
 import Flag from 'react-world-flags';
 import { AsYouType } from 'libphonenumber-js';
 import { getCountryTelCode } from '../../services/countries';
-export default function PhoneNumberInput({
+
+const PhoneNumberInput = ({
   size,
   value,
   country,
@@ -16,7 +18,7 @@ export default function PhoneNumberInput({
   onChange,
   placeholder,
   ...rest
-}) {
+}) => {
   const [number, setNumber] = useState(value || '');
   const [selectedCountry, setSelectedCountry] = useState(country || '');
   const [countryCode, setCountryCode] = useState(
@@ -78,6 +80,7 @@ export default function PhoneNumberInput({
         </Flex>
       </InputLeftElement>
       <Input
+        id='input-number'
         pl="4rem"
         type="tel"
         value={number}
@@ -87,4 +90,20 @@ export default function PhoneNumberInput({
       />
     </InputGroup>
   );
-}
+};
+
+PhoneNumberInput.propTypes = {
+  size: PropTypes.string,
+  value: PropTypes.string,
+  country: PropTypes.string,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+    })
+  ),
+  onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+};
+
+export default PhoneNumberInput;

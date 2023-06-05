@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Stack, useDisclosure, useToast } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useToast } from '@chakra-ui/react';
 import { useContext, useState } from 'react';
 import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { AuthContext } from '../../context/authContext';
@@ -8,11 +8,20 @@ import { updateUserProfile, updateUserStatus } from '../../services/users.servic
 import { storeImage } from '../../services/image.service';
 import { STATUS } from '../common/status';
 import ProfileStatusIcon from './ProfileStatusIcon';
+import ProfileChangePassword from '../ProfileChangePassword/ProfileChangePassword';
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH, TOAST_DURATION } from '../common/constants';
 
 const ProfileInfo = () => {
-    const { userData, setUser } = useContext(AuthContext);
+    const { user, userData, setUser } = useContext(AuthContext);
     const [isEditing, setIsEditing] = useState(false);
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
     const toast = useToast();
+    const [passForm, setPassForm] = useState({
+        currentPass: null,
+        newPass: null,
+        confirmPass: null
+    });
     const [form, setForm] = useState({
         email: userData.email,
         username: userData.username,
@@ -22,22 +31,87 @@ const ProfileInfo = () => {
     });
     const handleSave = async () => {
         try {
-            await updateUserProfile(userData.uid, form);
-            setUser((prev) => ({
-                ...prev,
-                userData: { ...prev.userData, ...form }
-            }));
-            toast({
-                title: 'Profile updated',
-                status: 'success',
-                duration: 2000,
-                isClosable: true,
-                position: 'top-left'
-            });
+            if (isChangingPassword) {
+                // Perform reauthentication
+                const reauthenticateUser = async (email, password) => {
+                    try {
+                        const credential = EmailAuthProvider.credential(email, passForm.currentPass);
+                        await reauthenticateWithCredential(user, credential);
+                        return true; // Reauthentication successful
+                    } catch (error) {
+                        console.log(error);
+                        return false; // Reauthentication failed
+                    }
+                };
+
+                const isReauthenticated = await reauthenticateUser(userData.email, passForm.currentPass);
+                if (isReauthenticated) {
+                    // Check if the new password and confirm password match
+                    const passwordsMatch = passForm.newPass === passForm.confirmPass;
+                    if (!passwordsMatch) {
+                        toast({
+                            title: 'New password and confirm password do not match',
+                            status: 'error',
+                            duration: `${TOAST_DURATION}`,
+                            isClosable: true,
+                            position: 'top-left',
+                        });
+                        return;
+                    }
+
+                    // Check if the new password meets the length requirements
+                    const passwordLength = passForm.newPass.length >= MIN_PASSWORD_LENGTH && passForm.newPass.length <= MAX_PASSWORD_LENGTH;
+                    if (!passwordLength) {
+                        toast({
+                            title: 'Password should be between 8 and 20 characters',
+                            status: 'error',
+                            duration: `${TOAST_DURATION}`,
+                            isClosable: true,
+                            position: 'top-left',
+                        });
+                        return;
+                    }
+
+                    // Update the user password
+                    await updatePassword(user, passForm.newPass);
+
+                    toast({
+                        title: 'Password changed',
+                        status: 'success',
+                        duration: `${TOAST_DURATION}`,
+                        isClosable: true,
+                        position: 'top-left',
+                    });
+                } else {
+                    toast({
+                        title: 'Incorrect current password',
+                        status: 'error',
+                        duration: `${TOAST_DURATION}`,
+                        isClosable: true,
+                        position: 'top-left',
+                    });
+                    return;
+                }
+            } else {
+                // Perform profile update logic
+                await updateUserProfile(userData.uid, form);
+                setUser((prev) => ({
+                    ...prev,
+                    userData: { ...prev.userData, ...form },
+                }));
+                toast({
+                    title: 'Profile updated',
+                    status: 'success',
+                    duration: `${TOAST_DURATION}`,
+                    isClosable: true,
+                    position: 'top-left',
+                });
+            }
         } catch (err) {
             console.log(err);
         }
     };
+
 
     const handleUploadImg = async (e) => {
         const img = await storeImage(e.target.files[0], userData.username);
@@ -94,16 +168,16 @@ const ProfileInfo = () => {
                         {/* <ProfileStatusIcon color={`${style}`} cursor='pointer' /> */}
                     </PopoverTrigger>
                     <PopoverContent w='12rem' bg='primaryDark'>
-                        <PopoverArrow bg='primaryDark'  />
-                            <PopoverBody w='100%'>
-                                <Flex w='100%' flexDirection='column'>
-                                <Button justifyContent='flex-start' size='sm' leftIcon={<ProfileStatusIcon color='green' ml='' />} mb='0.6rem' variant='outline'  onClick={() => handleStatusChange(STATUS.ONLINE)}>
+                        <PopoverArrow bg='primaryDark' />
+                        <PopoverBody w='100%'>
+                            <Flex w='100%' flexDirection='column'>
+                                <Button justifyContent='flex-start' size='sm' leftIcon={<ProfileStatusIcon color='green' ml='' />} mb='0.6rem' variant='outline' onClick={() => handleStatusChange(STATUS.ONLINE)}>
                                     Online
                                 </Button>
                                 <Button justifyContent='flex-start' size='sm' leftIcon={<ProfileStatusIcon color='red' ml='' />} variant='outline' onClick={() => handleStatusChange(STATUS.DO_NOT_DISTURB)}>
                                     Do not disturb
                                 </Button>
-                                </Flex>
+                            </Flex>
                         </PopoverBody>
                     </PopoverContent>
                 </Popover>
@@ -113,20 +187,38 @@ const ProfileInfo = () => {
                 <Box>{`${userData.email}`}</Box>
 
                 <Flex w='100%' justifyContent='center' mt='0.5rem' >
-                    {isEditing ?
+                    {isEditing ? (
                         <>
-                            <Button color='primaryDark' bg='primaryLight' pl='1.4rem' pr='1.4rem' size='sm' onClick={handleSave}>Save</Button>
-                            <Button variant='outline' ml='1rem' pl='1.4rem' pr='1.4rem' size='sm' onClick={() => setIsEditing(false)}>Cancel</Button>
+                            <Button color='primaryDark' bg='primaryLight' pl='1.4rem' pr='1.4rem' size='sm' onClick={handleSave}>
+                                {/* {isChangingPassword ? 'Change Password' : 'Save'} */}Save
+                            </Button>
+                            <Button variant='outline' ml='1rem' pl='1.4rem' pr='1.4rem' size='sm' onClick={() => setIsEditing(false)}>
+                                Cancel
+                            </Button>
                         </>
-                        :
-                        <Button leftIcon={<EditIcon />} color='primaryDark' bg='primaryLight' size='sm' onClick={() => setIsEditing(true)}>
-                            Edit Profile
-                        </Button>
-                    }
+                    ) : (
+                        <Box>
+                            <Button leftIcon={<EditIcon />} color='primaryDark' bg='primaryLight' size='sm' mr='1rem' onClick={() => { setIsChangingPassword(false); setIsEditing(true); }}>
+                                Edit Profile
+                            </Button>
+
+                            <Button leftIcon={<EditIcon />} color='primaryDark' bg='primaryLight' size='sm' onClick={() => { setIsEditing(true); setIsChangingPassword(true); }}>
+                                Password
+                            </Button>
+                        </Box>
+                    )}
                 </Flex>
             </Flex>
             <Divider mt='0.8rem' mb='0.8rem' />
-            {isEditing ? <ProfileEdit form={form} setForm={setForm} /> : <Box></Box>}
+            {isEditing ? (
+                isChangingPassword ? (
+                    <ProfileChangePassword  setPassForm={setPassForm}  />
+                ) : (
+                    <ProfileEdit form={form} setForm={setForm} />
+                )
+            ) : (
+                <Box></Box>
+            )}
         </Flex>
     );
 };

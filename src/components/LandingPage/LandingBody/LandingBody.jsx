@@ -1,10 +1,14 @@
 import React from 'react';
 import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import InfoBar from '../InfoBar/InfoBar';
 import Carousel from '../Carousel/Carousel';
+import './LandingBody.css'
+import { LANDING_TEXT } from '../../common/constants';
 
 const LandingBody = () => {
   const showInfoBar = useBreakpointValue({ base: false, md: true }); // Show InfoBar on medium screens and above
+  const showAnimationBox = useBreakpointValue({ base: false, md: true }); // Show the animation box on medium screens and above
 
   return (
     <Box
@@ -19,13 +23,27 @@ const LandingBody = () => {
         className='body-center'
         width={{ base: '100%', md: '35%' }} // Take full width on smaller screens, 35% width on medium screens and above
         height="100%"
-        bg="white"
+        bg="primary"
         justifyContent="center"
-        alignItems="center"
         fontWeight="bold"
         fontSize="xl"
+        position="relative"
       >
-        <Text fontSize='xs'>Enhance your team's communication and collaboration with our powerful messenger platform. Stay connected with your colleagues, exchange ideas, share files, and work together seamlessly. Our feature-rich messenger provides a streamlined experience designed to boost productivity and foster teamwork.</Text>
+        <Text fontSize='m' p='1rem'>{LANDING_TEXT}
+        </Text>
+        {showAnimationBox && ( // Render the animation box only when showAnimationBox is true
+          <Box
+            className='gtp-animation'
+            position="absolute"
+            top="60%"
+            transform="translate(-50%, -50%)" // Center the box precisely
+          >
+            {/* Add your animation styles here */}
+            <Link to="/login">
+              <button className="cta-button">Get Started</button>
+            </Link>
+          </Box>
+        )}
       </Flex>
       <Flex
         className='body-right-side'
