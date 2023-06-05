@@ -68,6 +68,7 @@ const SearchUsers = ({ addChatRoom }) => {
         <FormLabel>Start a chat</FormLabel>
         <AutoComplete openOnFocus onSelectOption={e => handleSelectOption(e)}>
           <AutoCompleteInput
+            
             variant="filled"
             placeholder="Search..."
             bg='#12213c'
@@ -75,7 +76,7 @@ const SearchUsers = ({ addChatRoom }) => {
             value={inputValue} 
             onChange={(e) => setInputValue(e.target.value)} 
           />
-          <AutoCompleteList className='autoCompleteList' bg='#12213c' padding='0' margin='8px' width='14rem'>
+          <AutoCompleteList className='autoCompleteList' bg='#12213c' padding='0' margin='8px' width='14rem' >
             {(users.length !== 0) && users.map((user, cid) => (
               <AutoCompleteItem
                 key={`option-${cid}`}
