@@ -49,7 +49,18 @@ const Login = () => {
 
     return (
         <>
-            <Container maxW='2xl' mt='6rem' borderColor='primaryLight' border='1px' borderRadius='1rem' >
+            <Box ml='3rem' mt='2rem' cursor='pointer'  onClick={()=>navigate('/')} >
+                <Text
+                fontSize="2xl"
+                fontWeight="bold"
+                ml='1rem'
+                _hover={{ bg: 'primaryLight' }}
+                maxW='5rem'
+            >
+                Logo
+            </Text>
+            </Box>
+            <Container maxW='2xl' mt='3rem' borderColor='primaryLight' border='1px' borderRadius='1rem' >
                 <Flex w="100%" direction='column' p='1rem'>
                     <FormControl display="flex" flexDirection="column" justify="center" alignItems="center" gap="10px">
                         <Box w="100%"><FormLabel>Email</FormLabel>
@@ -64,7 +75,7 @@ const Login = () => {
                     </FormControl>
                     <Box>
                         <Flex justifyContent='space-around' mt='0.2rem' opacity='0.5'>
-                            <Text >Not a member yet? <Link btn-id="toRegisterBtn" pl={2} onClick={() => { navigate('/register'); }}>Sign up</Link></Text>
+                            <Text >Not a member yet? <Link btn-id="toRegisterBtn" pl={2} onClick={() => { navigate('/register'); }} fontSize='1.3rem' color="blue.400" >Sign up</Link></Text>
                             <Link btn-id='forgotPassBtn' onClick={onModalOpen}>Forgot your password?</Link>
                         </Flex>
                     </Box>

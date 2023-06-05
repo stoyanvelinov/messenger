@@ -68,8 +68,8 @@ const TermsModal = ({ isOpen, onClose }) => {
         <>
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
-                <ModalContent bg="primaryLight">
-                    <ModalHeader color="primaryDark">Terms and Conditions</ModalHeader>
+                <ModalContent bg="primaryDark">
+                    <ModalHeader color="primaryLight">Terms and Conditions</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <Box
@@ -87,7 +87,7 @@ const TermsModal = ({ isOpen, onClose }) => {
                             onScroll={handleScroll}
                             ref={contentRef}
                         >
-                            <Text color='primaryDark'>
+                            <Text color='primaryLight'>
                                 Please read these terms and conditions carefully before using our collaboration messenger app. :)
                             </Text>
 
@@ -97,15 +97,15 @@ const TermsModal = ({ isOpen, onClose }) => {
                                 </Text>
                             ) : (
                                 <>
-                                    <Text mt='1rem' fontWeight="bold">
+                                        <Text mt='1rem' fontWeight="bold" color="primaryLight" >
                                         Recipes:
                                     </Text>
 
                                     {/* Display the list of recipes */}
                                     {recipes.map((recipe) => (
-                                        <Box key={recipe.id} mt='1rem' p='1rem' bg="primaryDark" borderRadius='0.3rem'>
+                                        <Box key={recipe.id} mt='1rem' p='1rem' bg="primaryLight" borderRadius='0.3rem'>
                                             <Text fontWeight="bold">{recipe.title}</Text>
-                                            <Text>{recipe.instructions}</Text>
+                                            <Text dangerouslySetInnerHTML={{ __html: recipe.instructions }} p='1rem'/>
                                         </Box>
                                     ))}
 

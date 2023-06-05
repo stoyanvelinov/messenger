@@ -18,6 +18,7 @@ import './Register.css';
 import { validateForm } from '../../components/common/helperFuncs';
 import { TOAST_DURATION } from '../../components/common/constants';
 import TermsModal from './TermsModal';
+import { updateInfo } from '../../services/infoBar.service';
 
 const Register = () => {
     const [form, setForm] = useState({
@@ -95,6 +96,7 @@ const Register = () => {
 
             const credential = await registerUser(form.email, form.password);
             await createUser(form.username, credential.user.uid, credential.user.email, form.firstName, form.lastName, imgUrl, phoneValue);
+            await updateInfo(form.username);
 
             setUser({
                 user: credential.user,
@@ -110,7 +112,18 @@ const Register = () => {
 
     return (
         <>
-            <Container maxW='2xl' mt='6rem' borderColor='primaryLight' border='1px' borderRadius='1rem'>
+            <Box ml='3rem' mt='2rem' cursor='pointer' onClick={() => navigate('/')} >
+                <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    ml='1rem'
+                    _hover={{ bg: 'primaryLight' }}
+                    maxW='5rem'
+                >
+                    Logo
+                </Text>
+            </Box>
+            <Container maxW='2xl' mt='3rem' borderColor='primaryLight' border='1px' borderRadius='1rem'>
                 <Flex w="100%" direction='column' p='1rem'>
                     <form onSubmit={onRegister}>
                         <FormControl display="flex" flexDirection="column" justify="center" alignItems="center" gap="10px">
@@ -158,7 +171,9 @@ const Register = () => {
                             <Button borderRadius="md" w="100%" type='submit' color='primaryDark' _hover={{ bg: 'primaryLight', color: '#fff' }} >Register</Button>
                         </FormControl>
                     </form>
-                    <Text mt='0.2rem' opacity='0.5'>Already registered? <Link btn-id="toLoginBtn" pl={2} onClick={() => { navigate('/login'); }}>Login</Link></Text>
+                    <Text mt='0.2rem' opacity='0.5'>Already registered?
+                        <Link btn-id="toLoginBtn" pl={2} onClick={() => { navigate('/login'); }} fontSize='1.3rem' color="blue.400">Login</Link>
+                    </Text>
                 </Flex>
             </Container>
             <TermsModal isOpen={ isOpen } onClose={ onClose } />

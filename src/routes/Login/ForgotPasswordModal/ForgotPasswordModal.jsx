@@ -31,16 +31,15 @@ const ForgotPasswordModal = ({ isModalOpen, onModalClose }) => {
     }
 
     try {
-        const auth = getAuth();
-        await sendPasswordResetEmail(auth, email);
-        toast({
-          title: 'Password reset email sent',
-          status: 'success',
-          duration: `${TOAST_DURATION}`,
-          isClosable: true,
-        });
-        onModalClose();
-      
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
+      toast({
+        title: 'Password reset email sent',
+        status: 'success',
+        duration: `${TOAST_DURATION}`,
+        isClosable: true,
+      });
+      onModalClose();
     } catch (error) {
       toast({
         title: 'Error',
@@ -52,28 +51,27 @@ const ForgotPasswordModal = ({ isModalOpen, onModalClose }) => {
     }
   };
 
-
   return (
     <>
       <Modal isCentered isOpen={isModalOpen} onClose={onModalClose}>
-        <ModalOverlay bg='none' backdropFilter='auto' backdropInvert='80%' backdropBlur='2px' />
-        <ModalContent alignItems='center' bg='primaryLight'>
-          <ModalHeader color='primaryDark'>Send reset password email.</ModalHeader>
+        <ModalOverlay />
+        <ModalContent bg="primaryLight" color="primaryDark">
+          <ModalHeader>Send Reset Password Email</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Input
               placeholder="Enter your email"
               value={email}
-              borderColor='primaryDark'
+              borderColor="primaryDark"
               onChange={(e) => setEmail(e.target.value)}
               mt="4"
             />
           </ModalBody>
           <ModalFooter>
-            <Button bg='primaryDark' onClick={handleResetPassword} colorScheme="blue" mr={3}>
+            <Button bg="primaryDark" colorScheme="blue" mr={3} onClick={handleResetPassword}>
               Reset Password
             </Button>
-            <Button bg='primaryLight' color='primaryDark' onClick={onModalClose}>
+            <Button bg="primaryLight" color="primaryDark" onClick={onModalClose}>
               Close
             </Button>
           </ModalFooter>

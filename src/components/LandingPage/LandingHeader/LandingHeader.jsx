@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Flex, Link } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { Text } from '@chakra-ui/layout';
 
 const LandingHeader = () => {
   const navigate = useNavigate();
@@ -15,15 +16,23 @@ const LandingHeader = () => {
       justifyContent="space-between"
     >
       <Flex alignItems='center'>
-        <Box m="1rem" color='white'>Logo</Box>
+        <Text
+          fontSize="2xl"
+          fontWeight="bold"
+          ml='1rem'
+          _hover={{ bg: 'primaryLight' }}
+          maxW='5rem'
+        >
+          Logo
+        </Text>
         {/* <Box>title</Box> */}
       </Flex>
       <Flex flexDirection="row" alignItems="center" justifyContent='space-between'>
-        <Link opacity={0.6} onClick={() => navigate('/login')}>Log in</Link>
-        <Link fontSize="sm" opacity={0.6} m="0 0.5rem" onClick={() => navigate('/register')}>
+        <Link fontSize='1.4rem' opacity={0.6} onClick={() => navigate('/login')}>Log in</Link>
+        <Link fontSize='1.4rem' opacity={0.6} m="1rem" onClick={() => navigate('/register')}>
           Sign Up
         </Link>
-        <Link fontSize='sm' color="blue.500" pr='1rem'>Contacts</Link>
+        <Link fontSize='1.4rem' color="blue.500" mr='1rem'>Contacts</Link>
       </Flex>
     </Flex>
   );
