@@ -10,23 +10,22 @@ import {
 import { Message } from '../Message/Message';
 import { AuthContext } from '../../context/authContext';
 import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service';
-import { getLiveUsersByChatRoomId } from '../../services/users.service';
 
 
 const ChatRoom = () => {
   const [input, setInput] = useState('');
   const scrollToMyRef = useRef(null);
   const [messages, setMessages] = useState([]);
-  const [members, setMembers] = useState([]);
   const { user, userData, currentChatRoomId } = useContext(AuthContext);
+
+  console.log('pisnamiotkod', messages);
   // Listen for messages received
 
 
   useEffect(() => {
     const unsub = getLiveMsgByChatRoomId(currentChatRoomId, (c) => setMessages([...c]));
-    const unsub2 = getLiveUsersByChatRoomId(currentChatRoomId, (c) => setMembers([...c]));
 
-    return () => { unsub(), unsub2(); };
+    return () => unsub() ;
   }, [currentChatRoomId]);
 
   // Scroll to the bottom of the element upon message submission
@@ -55,7 +54,7 @@ const ChatRoom = () => {
 
     if (isValidMessage(input)) {
       //add error handling
-      const asd = await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.edited, currentChatRoomId);
+      await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.edited, currentChatRoomId);
       console.log('message sent');
       setInput('');
     }
@@ -119,7 +118,6 @@ const ChatRoom = () => {
                   lastName={message.lastName}
                   reactions={message.reactions}
                   timestamp={message.timestamp}
-                  sender={message.sender}
                   msgId={message.msgId}
                 />
               );

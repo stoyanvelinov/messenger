@@ -2,7 +2,7 @@ import { Divider } from '@chakra-ui/layout';
 import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
 import MessagePopover from './MessagePopover';
 
-export const Message = ({ timestamp, sender, message, reactions, firstName, lastName, avatarUrl, prevSameUser, nextSameUser, msgId  }) => {
+export const Message = ({ timestamp, message, reactions, firstName, lastName, avatarUrl, prevSameUser, nextSameUser, msgId  }) => {
 
 
   //listen for changing 
