@@ -43,6 +43,7 @@ const ChatRoom = () => {
       sender: user.uid,
 
       avatarUrl: userData.avatar,
+      username: userData.username,
       firstName: userData.firstName,
       lastName: userData.lastName,
       edited: 
@@ -54,7 +55,7 @@ const ChatRoom = () => {
 
     if (isValidMessage(input)) {
       //add error handling
-      await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.edited, currentChatRoomId);
+      await createMsg(input, data.sender, data.avatarUrl, data.username, data.edited, currentChatRoomId, data.firstName, data.lastName);
       console.log('message sent');
       setInput('');
     }
@@ -114,11 +115,12 @@ const ChatRoom = () => {
                   nextSameUser={messages?.[index + 1]?.sender === message.sender}
                   message={message.message}
                   avatarUrl={message.avatar}
-                  firstName={message.firstName}
-                  lastName={message.lastName}
+                  username={message.username}
                   reactions={message.reactions}
                   timestamp={message.timestamp}
                   msgId={message.msgId}
+                  firstName={message.firstName}
+                  lastName={message.lastName}
                 />
               );
             })}

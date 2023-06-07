@@ -1,39 +1,30 @@
 import { useContext, useState } from 'react';
-import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text } from '@chakra-ui/react';
+import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text, Tooltip } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react';
-import { Flex, VStack } from '@chakra-ui/layout';
+import { Flex } from '@chakra-ui/layout';
 import { AuthContext } from '../../context/authContext';
 import { createReaction, deleteReaction } from '../../services/reactions.service';
 
-const MessagePopover = ({ message, reactions = {}, msgId }) => {
+const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const { user, currentChatRoomId } = useContext(AuthContext);
-    
+    const { user, userData, currentChatRoomId } = useContext(AuthContext);
+
     const handleEmojiClick = async (emojiLabel) => {
         const found = Object.values(reactions).find(e => e.reactedUserId === user.uid);
         const alreadyReacted = Object.values(reactions).find(e => e.emojiLabel === emojiLabel);
-        console.log(found, 'found');
-        console.log('logvamtuka',alreadyReacted);
-        console.log(`${emojiLabel} clicked by ${user.uid} in chatRoom ${currentChatRoomId} with msg id ${msgId}`);
+        // console.log(`${emojiLabel} clicked by ${user.uid} in chatRoom ${currentChatRoomId} on msg with id ${msgId}`);
         if (!found) {
-            console.log('in here55555');
-            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId);
-            
+            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+            console.log('user', user);
+
         } else if (alreadyReacted) {
-            console.log('in here');
             await deleteReaction(found.reactionId, msgId, currentChatRoomId);
         } else {
-            console.log('in here2222');
-            await deleteReaction(found.reactionId, msgId);
-            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId);
+            await deleteReaction(found.reactionId, msgId, currentChatRoomId);
+            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
         }
-        //if reactionId already in chatroom, delete reactionId, delete the reaction object
-        //add reaction=>reaction id to chat room
-        //create reaction => {date,user,reactionType,msgId}
-        // if (false//reaction in chatroom){
-        };
- //ako nqmash found => create reaction}else{ found.emojilabel=== current emojilabel delete reaction, else delete reaction,create reaction
-    
+    };
+
     console.log('reactions', Object.values(reactions).map(e => e.emojiLabel));
     return (
         <Popover
@@ -47,22 +38,34 @@ const MessagePopover = ({ message, reactions = {}, msgId }) => {
                     <Box
                         borderRadius='0.2rem'
                         ml='4rem'
-                        _hover={{ bg: 'primaryLight' }}
+                        _hover={{ bg: 'primary' }}
                         transition='background-color 0.5s'
                         cursor='pointer'
                         w='100%'
                     >
-                        {message}
-                    </Box>
-                    <Box
-                        borderRadius='0.2rem'
-                        ml='4rem'
-                        _hover={{ bg: 'primaryLight' }}
-                        transition='background-color 0.5s'
-                        cursor='pointer'
-                        w='100%'
-                    >
-                        {Object.values(reactions).map(e => { return getEmoji(e.emojiLabel); })}
+                        <Tooltip
+                            backgroundColor={'primaryLight'}
+                            label={new Date(parseInt(timestamp)).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })}
+                            placement='left'
+                        >
+                            <Text opacity={0.5}>{message}</Text>
+                        </Tooltip>
+                        <Flex direction='row'>
+                            {Object.values(reactions).map((e) => (
+                                <Tooltip
+                                    key={e.reactionId}
+                                    fontSize='1.2rem'
+                                    label={e.username}
+                                    backgroundColor={'primary'}
+                                    placement='bottom'
+                                >
+                                    <Text fontSize='1.2rem'>{getEmoji(e.emojiLabel)}</Text>
+                                </Tooltip>
+                            ))}
+                        </Flex>
                     </Box>
                 </Flex>
             </PopoverTrigger>
@@ -78,7 +81,7 @@ const MessagePopover = ({ message, reactions = {}, msgId }) => {
                                 borderRadius='0.2rem'
                                 aria-label={emojiLabel}
                                 onClick={() => handleEmojiClick(emojiLabel)}
-                                >
+                            >
                                 {getEmoji(emojiLabel)}
                             </Text>
                         ))}

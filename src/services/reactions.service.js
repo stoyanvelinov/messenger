@@ -1,7 +1,7 @@
 import { child, get, onValue, push, ref, update } from '@firebase/database';
 import { db } from '../config/firebase.config';
 
-export const createReaction = async (user, chatRoomId, emojiLabel, messageId) => {
+export const createReaction = async (user, chatRoomId, emojiLabel, messageId, username) => {
     const reactionId = push(child(ref(db), '/reactions')).key;
     const reactionData = {
         reactionId: reactionId,
@@ -9,7 +9,8 @@ export const createReaction = async (user, chatRoomId, emojiLabel, messageId) =>
         chatRoomId: chatRoomId,
         timestamp: Date.now(),
         emojiLabel: emojiLabel,
-        messageId: messageId
+        messageId: messageId,
+        username: username
     };
     const updates = {
         [`/messages/${messageId}/reactions/${reactionId}`]: reactionData,

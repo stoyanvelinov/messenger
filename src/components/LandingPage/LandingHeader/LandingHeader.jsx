@@ -1,5 +1,4 @@
-import React from 'react';
-import { Box, Flex, Link } from '@chakra-ui/react';
+import { Flex, Link } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { Text } from '@chakra-ui/layout';
 
@@ -20,7 +19,6 @@ const LandingHeader = () => {
           fontSize="2xl"
           fontWeight="bold"
           ml='1rem'
-          _hover={{ bg: 'primaryLight' }}
           maxW='5rem'
         >
           Logo

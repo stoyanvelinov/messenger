@@ -142,3 +142,9 @@ export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
     });
   });
 };
+
+export const updateUserAvatarUrl = (uid, avatarUrl) => {
+  return update(ref(db, `users/${uid}`), {
+    avatar: avatarUrl
+  });
+};
