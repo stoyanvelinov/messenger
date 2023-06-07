@@ -1,4 +1,3 @@
-import { Box } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import Router from './components/routes/Router';
 import { auth } from './config/firebase.config';
@@ -29,7 +28,7 @@ function App() {
         if (!snapshot.exists()) {
           throw new Error('Something went wrong!');
         }
-        updateUserStatus(user.uid,STATUS.ONLINE);
+        updateUserStatus(user.uid, STATUS.ONLINE);
 
         setAppState({
           ...appState,
@@ -37,7 +36,7 @@ function App() {
         });
       })
       .catch(e => alert(e.message));
-    
+
     // return () => {
     //   updateUserStatus(user.uid, STATUS.OFFLINE);
     // };
@@ -46,9 +45,7 @@ function App() {
   return (
     <>
       <AuthContext.Provider value={{ ...appState, setUser: setAppState }}>
-        <Box className='app' h='100vh'>
-          <Router />
-        </Box>
+        <Router />
       </AuthContext.Provider>
     </>
   );
