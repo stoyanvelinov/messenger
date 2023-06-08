@@ -11,16 +11,14 @@ Creates General channel in the specified Team and in channels entity in Firebase
 */
 export const createGeneralChannel = async (teamId) => {
     const channelId = push(child(ref(db), '/channels')).key;
-    // console.log('channelId',channelId);
     const team = await getTeamById(teamId);
     const teamOwner = team.val().teamOwner;
-    // console.log('owner',teamOwner);
-    const chatRoom = await createChatRoom(teamOwner);
-    // console.log('chatRoom',chatRoom);
-    const channelData = { channelName: 'General', channelId: channelId, channelTeam: teamId, chatRoom: chatRoom };
+    const chatRoomId = await createChatRoom(teamOwner);
+    const channelData = { channelName: 'General', channelId: channelId, channelTeam: teamId, chatRoom: chatRoomId };
     const updates = {};
 
     updates[`/teams/${teamId}/channels/${channelId}`] = true;
+    updates[`/teams/${teamId}/chatRooms/${chatRoomId}`] = true;
     updates[`/channels/${channelId}`] = channelData;
 
     return update(ref(db), updates);
@@ -35,18 +33,16 @@ Creates a new channel with the specified name in the specified Team
 */
 export const addNewChannel = async (channelName, teamId) => {
     const channelId = push(child(ref(db), '/channels')).key;
-    // console.log('channelId',channelId);
     const team = await getTeamById(teamId);
     const teamOwner = team.val().teamOwner;
     const teamMembers = Object.keys(team.val().members);
-    // console.log('owner',teamOwner, 'members:', teamMembers);
-    const chatRoom = await createChatRoom(teamOwner);
-    await addMultipleChatRoomMembers(teamMembers, chatRoom);
-    // console.log('chatRoom',chatRoom);
-    const channelData = { channelName: channelName, channelId: channelId, channelTeam: teamId, chatRoom: chatRoom };
+    const chatRoomId = await createChatRoom(teamOwner);
+    await addMultipleChatRoomMembers(teamMembers, chatRoomId);
+    const channelData = { channelName: channelName, channelId: channelId, channelTeam: teamId, chatRoom: chatRoomId };
     const updates = {};
 
     updates[`/teams/${teamId}/channels/${channelId}`] = true;
+    updates[`/teams/${teamId}/chatRooms/${chatRoomId}`] = true;
     updates[`/channels/${channelId}`] = channelData;
 
     return update(ref(db), updates);

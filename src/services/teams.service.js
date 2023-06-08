@@ -1,6 +1,7 @@
 import { db } from '../config/firebase.config';
 import { ref, push, child, update, get, query, orderByChild, equalTo, onValue } from 'firebase/database';
 import { deleteChannel } from './channels.service';
+import { removeChatRoom, removeChatRoomMember } from './chat.service';
 
 /**
 Creates a new team and adds its id to the teams of the logged user and in teams entity in Firebase Realtime Database
@@ -35,6 +36,15 @@ Deletes team from database along with its channels
  */
 export const deleteTeam = async (teamId) => {
     try {
+        // remove all team's chatRooms
+        const teamChatRoomsSnapshot = await getTeamChatRooms(teamId);
+        const teamChatRooms = Object.keys(teamChatRoomsSnapshot.val());
+        const removeChatRoomsPromises = teamChatRooms.map((chatRoomId)=>{
+            removeChatRoom(chatRoomId);
+        });
+        await Promise.all(removeChatRoomsPromises);
+
+        // remove all team's channels
         const teamSnapshot = await getTeamById(teamId);
         const team = teamSnapshot.val();
         const owner = team.teamOwner;
@@ -43,6 +53,8 @@ export const deleteTeam = async (teamId) => {
             deleteChannel(channelId, teamId);
         });
         await Promise.all(channels);
+
+        // remove team from members records
         const memberIds = Object.keys(team.members);
         const members = memberIds.map(uid => {
             removeMemberFromTeam(uid, teamId);
@@ -50,7 +62,6 @@ export const deleteTeam = async (teamId) => {
         await Promise.all(members);
 
         const updates = {};
-
         updates[`/teams/${teamId}`] = null;
         updates[`/users/${owner}/teams/${teamId}`] = null;
 
@@ -117,7 +128,14 @@ export const addMemberToTeam = (uid, teamId) => {
  @param {string} teamId - The id of the team from which to remove the member
  @returns {Promise} A Promise that resolves when the member is successfully removed from the team
  */
-export const removeMemberFromTeam = (uid, teamId) => {
+export const removeMemberFromTeam = async (uid, teamId) => {
+    const teamChatRoomsSnapshot = await getTeamChatRooms(teamId);
+    const teamChatRooms = Object.keys(teamChatRoomsSnapshot.val());
+    const removeMemberPromises = teamChatRooms.map((chatRoomId)=>{
+        removeChatRoomMember(uid, chatRoomId);
+    });
+    await Promise.all(removeMemberPromises);
+
     const updates = {};
     updates[`/users/${uid}/teams/${teamId}`] = null;
     updates[`teams/${teamId}/members/${uid}`] = null;
@@ -156,7 +174,6 @@ export const getLiveTeamInfo = (teamId, listener) => {
     });
 };
 
-
 /**
 Retrieves live team member ids for a given team id.
 @async
@@ -171,3 +188,8 @@ export const getLiveTeamMemberIds = (teamId, listener) => {
         listener(memberIds);
     });
 };
+
+export const getTeamChatRooms = (teamId) => {
+    return get((ref(db, `teams/${teamId}/chatRooms/`)));
+};
+

@@ -1,6 +1,6 @@
 //chatlist.jsx
 import { useState, useEffect, useContext } from 'react';
-import { addChatMember, createChatRoom, getCurrentUserChatRooms, toggleChatRoomVisibility, findActiveRoom, getUserChatRooms ,addChatRoom, isOpenChatRoom } from '../../services/chat.service';
+import { addChatRoomMember, createChatRoom, getCurrentUserChatRooms, toggleChatRoomVisibility, findActiveRoom, getUserChatRooms ,addChatRoom, isOpenChatRoom } from '../../services/chat.service';
 import { AuthContext } from '../../context/authContext';
 import { Flex, Container, Box, Text } from '@chakra-ui/layout';
 import ChatListItem from '../ChatListItem/ChatListItem';

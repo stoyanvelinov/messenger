@@ -8,8 +8,7 @@ import ChatList from '../ChatList/ChatList';
 import ChatRoom from '../ChatRoom/ChatRoom';
 
 const MainContent = () => {
-    const { teamId, channelId, chatRoomId } = useParams();
-    // console.log('channelId',channelId,'chatRoomId',chatRoomId);
+    const { teamId, chatRoomId } = useParams();
 
     return (
         <Flex className="main-content-box" h="100%" bg="primaryMid"  >

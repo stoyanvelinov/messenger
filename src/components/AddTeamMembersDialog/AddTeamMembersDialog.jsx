@@ -3,8 +3,9 @@ import { AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader,
 import { FiUserPlus } from 'react-icons/fi';
 import { useState } from 'react';
 import { getUserByUsername } from '../../services/users.service';
-import { addMemberToTeam } from '../../services/teams.service';
+import { addMemberToTeam, getTeamChatRooms } from '../../services/teams.service';
 import PropTypes from 'prop-types';
+import { addChatRoomMember } from '../../services/chat.service';
 
 const AddTeamMembersDialog = ({ teamId, memberIds }) => {
     const { isOpen, onClose, onOpen } = useDisclosure();
@@ -24,6 +25,13 @@ const AddTeamMembersDialog = ({ teamId, memberIds }) => {
                 throw new Error('The user is already part of the team!');
             }
             await addMemberToTeam(memberUid, teamId);
+            const teamChatRoomsSnapshot = await getTeamChatRooms(teamId);
+            const teamChatRooms = Object.keys(teamChatRoomsSnapshot.val());
+            // console.log('teamChatRooms',teamChatRooms);
+            const addMembersPromises = teamChatRooms.map((chatRoomId)=>{
+                addChatRoomMember(memberUid, chatRoomId);
+            });
+            await Promise.all(addMembersPromises);
         } catch (error) {
             toast({
                 title: error.message,

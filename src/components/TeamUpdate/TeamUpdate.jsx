@@ -6,6 +6,7 @@ import { deleteTeam, updateTeam } from '../../services/teams.service';
 import PropTypes from 'prop-types';
 import { useToast } from '@chakra-ui/react';
 import { TEAM_NAME_MIN_LENGTH, TEAM_NAME_MAX_LENGTH } from '../../constants/constants';
+import { useNavigate } from 'react-router-dom';
 
 const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {
     const { isOpen: isDialogOpen, onClose: onDialogClose, onOpen: onDialogOpen } = useDisclosure();
@@ -14,6 +15,7 @@ const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {
         teamAvatar: team.teamAvatar,
     });
     const toast = useToast();
+    const navigate = useNavigate();
 
     const handleChange = e => {
         setForm({
@@ -54,6 +56,11 @@ const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {
         }
     };
 
+    const handleDeleteTeam = () => {
+        deleteTeam(team.teamId);
+        navigate('/');
+    };
+
     //to reset input fields if text was changed but drawer was closed without clicking Save
     const onHideDrawer = () => {
         onDrawerClose();
@@ -86,7 +93,7 @@ const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {
                             <Input id="teamName" name="teamName" type="text" value={form.teamName} onChange={handleChange} autoComplete="off" />
                         </Box>
                         <Button bg="darkRed" _hover={{ bg: 'red' }} onClick={onDialogOpen} >Delete Team</Button>
-                        <DeleteTeamAlert isOpen={isDialogOpen} onClose={onDialogClose} deleteFn={deleteTeam} heading="Delete Team" id={team.teamId} />
+                        <DeleteTeamAlert isOpen={isDialogOpen} onClose={onDialogClose} deleteFn={handleDeleteTeam} heading="Delete Team" id={team.teamId} />
                     </Flex>
                 </DrawerBody>
                 <DrawerFooter>
