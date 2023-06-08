@@ -7,6 +7,7 @@ import { CHANNEL_NAME_MAX_LENGTH, CHANNEL_NAME_MIN_LENGTH } from '../../constant
 import Channel from '../../components/Channel/Channel';
 import { AuthContext } from '../../context/authContext';
 import CreateNewChannel from '../../components/CreateNewChannel/CreateNewChannel';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 
 const ChannelsSideBar = () => {
     const { user } = useContext(AuthContext);
@@ -23,7 +24,7 @@ const ChannelsSideBar = () => {
         };
     }, [teamId]);
 
-    return (<><Flex justifyContent="space-between" alignItems="center"
+    return (<><Flex justifyContent="space-between" alignItems="center" pos="sticky"
         bg="primaryLight" fontWeight="bold" px={2} mb="0.6rem">
         <Box fontSize="2.1em" h="3.5rem" flexGrow={1} isTruncated>
             {team && team.teamName}
@@ -31,13 +32,16 @@ const ChannelsSideBar = () => {
         {team && team.teamOwner === user.uid && <CreateNewChannel />
         }
     </Flex >
-        <Flex direction="column" px="0.5px" gap="0.8rem">
-            {channels && channels.map(channel => {
-                const id = channel.channelId;
-                const name = channel.channelName;
-                return <Channel key={id} channelId={id} channelName={name} team={team} />;
-            })}
-        </Flex>
+        <Scrollbars style={{ width: '100%', height: '100%' }} autoHide>
+            <Flex direction="column" px="0.5px" gap="0.8rem" overflowX="hidden"  >
+                {channels && channels.map(channel => {
+                    const id = channel.channelId;
+                    const name = channel.channelName;
+                    return <Channel key={id} channelId={id} channelName={name} team={team} />;
+                })}
+            </Flex>
+        </Scrollbars>
+
     </>);
 };
 export default ChannelsSideBar;

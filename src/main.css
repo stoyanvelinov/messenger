@@ -7,4 +7,5 @@ html {
     --accent: #3182ce;
     --accent-dark: #2C5282;
     --tertiary: #29416d;
+    --primary-dark-alpha: rgba(18, 33, 60, 0.8);
 }

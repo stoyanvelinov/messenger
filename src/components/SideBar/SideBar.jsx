@@ -1,4 +1,4 @@
-import { Box, Tooltip, Text, Flex,  Divider, Image } from '@chakra-ui/react';
+import { Box, Tooltip, Text, Flex, Divider, Image } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { getLiveTeams } from '../../services/teams.service';
@@ -30,16 +30,15 @@ const SideBar = () => {
     };
 
     return (
-        <Box
+        <Flex
             bg="primaryDark"
             borderRight="1px"
             borderRightColor="primaryLight"
             display={{ base: 'none', md: 'block' }}
-            w={{ md: '6rem' }}
-            pos="fixed"
-            h="full"
-        // overflowY="scroll"
-        // overflowX="hidden"
+            w={{ md: '7rem' }}
+            overflowY="hidden"
+            // overflowY="auto"
+            overflowX="hidden"
         >
             <Text
                 display="flex"
@@ -55,8 +54,8 @@ const SideBar = () => {
                 </Box> */}
                 <span>
                     <Tooltip label='Direct Messages' openDelay={300} placement="right">
-                        <Image src={iconMsg} 
-                            boxSize='50px'
+                        <Image src={iconMsg}
+                            boxSize='5em'
                             onMouseEnter={() => setIconMsg(messageIconHover)}
                             onMouseOut={() => setIconMsg(messageIcon)}
                             onClick={onOpenDirectMessages}
@@ -66,12 +65,14 @@ const SideBar = () => {
                 <span>
                     <Divider />
                 </span>
-                <CreateTeam/>
+                <CreateTeam />
+            </Flex>
+            <Flex id="teams" p={2} direction="column" gap="1rem" overflowY="auto" overflowX="hidden">
                 {teamIds.length > 0 && teamIds.map(teamId => {
                     return <TeamButton key={teamId} onOpen={onOpen} teamId={teamId} uid={user.uid} />;
                 })}
             </Flex>
-        </Box >
+        </ Flex>
     );
 };
 

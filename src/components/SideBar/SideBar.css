@@ -7,3 +7,24 @@
     transform: scale(1.2);
     box-shadow: 2px 1px 6px 2px #0d0127;
 }
+
+#teams {
+    height: calc(100vh - 17.4rem);
+}
+
+#teams::-webkit-scrollbar {
+    /* width: 3px;
+    background-color: var(accent); */
+    display: none;
+}
+
+/* #teams::-webkit-scrollbar-track {
+    background-color: var(primary-dark-alpha);
+}
+
+
+#teams::-webkit-scrollbar-thumb {
+    background-color: var(--accent);
+    border-radius: 15px;
+
+} */
