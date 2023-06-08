@@ -32,6 +32,7 @@ const SearchUsers = ({ addMember, width }) => {
   const handleClick = (e) => {
     setInputValue(e.item.value);
     addMember(e.item.value);
+    setInputValue('');
   };
 
   if (!users) {

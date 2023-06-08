@@ -11,23 +11,22 @@ import { Message } from '../Message/Message';
 import { AuthContext } from '../../context/authContext';
 import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service';
 import { getLiveUsersByChatRoomId } from '../../services/users.service';
+import { useParams } from 'react-router-dom';
 
 
-const ChatRoom = () => {
+const ChatRoom = ({ chatRoomId }) => {
   const [input, setInput] = useState('');
   const scrollToMyRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [members, setMembers] = useState([]);
-  const { user, userData, currentChatRoomId } = useContext(AuthContext);
-  // Listen for messages received
-
+  const { user, userData } = useContext(AuthContext);
 
   useEffect(() => {
-    const unsub = getLiveMsgByChatRoomId(currentChatRoomId, (c) => setMessages([...c]));
-    const unsub2 = getLiveUsersByChatRoomId(currentChatRoomId, (c) => setMembers([...c]));
+    const unsubscribeMessages = getLiveMsgByChatRoomId(chatRoomId, (c) => setMessages([...c]));
+    const unsubscribeUsers = getLiveUsersByChatRoomId(chatRoomId, (c) => setMembers([...c]));
 
-    return () => { unsub(), unsub2(); };
-  }, [currentChatRoomId]);
+    return () => { unsubscribeMessages(), unsubscribeUsers(); };
+  }, [chatRoomId]);
 
   // Scroll to the bottom of the element upon message submission
   useEffect(() => {
@@ -42,7 +41,6 @@ const ChatRoom = () => {
       message: input,
       timestamp: Date.now(),
       sender: user.uid,
-
       avatarUrl: userData.avatar,
       firstName: userData.firstName,
       lastName: userData.lastName,
@@ -50,13 +48,11 @@ const ChatRoom = () => {
         {
           edited: false
         }
-      
     };
 
     if (isValidMessage(input)) {
       //add error handling
-      const asd = await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.edited, currentChatRoomId);
-      console.log('message sent');
+      await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.edited, chatRoomId);
       setInput('');
     }
   };
@@ -65,7 +61,6 @@ const ChatRoom = () => {
   const isValidMessage = input => {
     let validMessage = true;
 
-    console.log(input.trim());
     if (input.trim() === '') validMessage = false;
     return validMessage;
   };
@@ -82,28 +77,14 @@ const ChatRoom = () => {
     scrollToMyRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // const history = useHistory();
-
-  const logout = () => {
-    handleLogout(() => {
-      history.push('/login');
-    });
-  };
+//   const logout = () => {
+//     handleLogout(() => {
+//       history.push('/login');
+//     });
+//   };
 
   return (
     <Flex fontSize="md" flexDirection="column">
-      {/* <Box border='solid' mt='0.2rem'>
-        {members.map((member) => (
-
-          <Avatar
-              key={member.uid}
-              name={`${member.firstName} ${member.lastName}`}
-              src={member.avatar}
-              status={member.status}
-            />
-
-        ))}
-      </Box> */}
       <Flex h="93vh" flexDirection="column" p={5}>
         <Flex h="70vh" mb={5} flexDirection="column" overflowY="auto">
           <Box >

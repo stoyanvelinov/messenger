@@ -1,5 +1,7 @@
 import { get, push, ref, child, update, onValue } from 'firebase/database';
 import { db } from '../config/firebase.config';
+import { addMultipleChatRoomMembers, createChatRoom } from './chat.service';
+import { getTeamById } from './teams.service';
 
 /**
 Creates General channel in the specified Team and in channels entity in Firebase Realtime Database
@@ -7,9 +9,15 @@ Creates General channel in the specified Team and in channels entity in Firebase
 @param {string}teamId the id of the team where the channel is created
 @returns {Promise<void>} void
 */
-export const createGeneralChannel = (teamId) => {
+export const createGeneralChannel = async (teamId) => {
     const channelId = push(child(ref(db), '/channels')).key;
-    const channelData = { channelName: 'General', channelId: channelId, channelTeam: teamId };
+    // console.log('channelId',channelId);
+    const team = await getTeamById(teamId);
+    const teamOwner = team.val().teamOwner;
+    // console.log('owner',teamOwner);
+    const chatRoom = await createChatRoom(teamOwner);
+    // console.log('chatRoom',chatRoom);
+    const channelData = { channelName: 'General', channelId: channelId, channelTeam: teamId, chatRoom: chatRoom };
     const updates = {};
 
     updates[`/teams/${teamId}/channels/${channelId}`] = true;
@@ -25,9 +33,17 @@ Creates a new channel with the specified name in the specified Team
 @param {string}teamId the id of the team where the channel is added
 @returns {Promise<void>} void
 */
-export const addNewChannel = (channelName, teamId) => {
+export const addNewChannel = async (channelName, teamId) => {
     const channelId = push(child(ref(db), '/channels')).key;
-    const channelData = { channelName: channelName, channelId: channelId, channelTeam: teamId };
+    // console.log('channelId',channelId);
+    const team = await getTeamById(teamId);
+    const teamOwner = team.val().teamOwner;
+    const teamMembers = Object.keys(team.val().members);
+    // console.log('owner',teamOwner, 'members:', teamMembers);
+    const chatRoom = await createChatRoom(teamOwner);
+    await addMultipleChatRoomMembers(teamMembers, chatRoom);
+    // console.log('chatRoom',chatRoom);
+    const channelData = { channelName: channelName, channelId: channelId, channelTeam: teamId, chatRoom: chatRoom };
     const updates = {};
 
     updates[`/teams/${teamId}/channels/${channelId}`] = true;

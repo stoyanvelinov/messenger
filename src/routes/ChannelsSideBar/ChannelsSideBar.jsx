@@ -35,7 +35,8 @@ const ChannelsSideBar = () => {
             {channels && channels.map(channel => {
                 const id = channel.channelId;
                 const name = channel.channelName;
-                return <Channel key={id} channelId={id} channelName={name} team={team} />;
+                const channelCR = channel.chatRoom;
+                return <Channel key={id} channelId={id} channelName={name} team={team} channelChatRoom={channelCR} />;
             })}
         </Flex>
     </>);

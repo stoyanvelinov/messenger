@@ -9,7 +9,7 @@ import { CHANNEL_NAME_MIN_LENGTH, CHANNEL_NAME_MAX_LENGTH } from '../../constant
 import PropTypes from 'prop-types';
 import './Channel.css';
 
-const Channel = ({ channelId, channelName, team }) => {
+const Channel = ({ channelId, channelName, team, channelChatRoom }) => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
@@ -28,7 +28,7 @@ const Channel = ({ channelId, channelName, team }) => {
         //to ensure the dots menu can be accessed without errors due to Chakra's implementation of the popover
         if (id && !id.includes('popover')) {
             setActiveChannel(id);
-            navigate(`/teams/${team.teamId}/${id}`);
+            navigate(`/teams/${team.teamId}/${id}/${channelChatRoom}`);
         }
     };
 

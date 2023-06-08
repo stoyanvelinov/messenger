@@ -11,13 +11,23 @@ import {
   equalTo,
 } from 'firebase/database';
 import { db } from '../config/firebase.config';
-import { getUserById, getUserByUsername } from './users.service';
+import { getUserById, getUserValueByUsername, getUserByUsername } from './users.service';
 import { isEmpty } from 'lodash';
 
 export const addChatMember = (uid, chatRoomId) => {
   const updates = {};
   updates[`chatRooms/${chatRoomId}/members/${uid}`] = true;
   updates[`users/${uid}/chatRooms/${chatRoomId}`] = true;
+  update(ref(db), updates);
+  return chatRoomId;
+};
+
+export const addMultipleChatRoomMembers = (usersList, chatRoomId) => {
+  const updates = {};
+  usersList.forEach((uid) => {
+    updates[`chatRooms/${chatRoomId}/members/${uid}`] = true;
+    // updates[`users/${uid}/chatRooms/${chatRoomId}`] = true;
+  });
   update(ref(db), updates);
   return chatRoomId;
 };
@@ -43,7 +53,7 @@ export const findActiveRoom = async (chatRoomId, uid) => {
 
 export const isOpenChatRoom = async (username) => {
   try {
-    const userId = await getUserByUsername(username);
+    const userId = await getUserValueByUsername(username);
     const snapshot = await getUserChatRooms(userId);
     const data = snapshot.exists() ? snapshot.val() : {};
     if(isEmpty(data)){
@@ -65,7 +75,7 @@ export const isOpenChatRoom = async (username) => {
 export const addChatRoom = async (myUserId,newUserUsername) => {
   try {
     const chatRoomId = await createChatRoom(myUserId);
-    const newUserId = await getUserByUsername(newUserUsername);
+    const newUserId = await getUserValueByUsername(newUserUsername);
     await addChatMember(newUserId, chatRoomId);
     
   } catch (error) {

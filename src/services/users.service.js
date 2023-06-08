@@ -30,19 +30,19 @@ export const getUserById = (uid) => {
   return get(ref(db, `users/${uid}`));
 };
 
-// export const getUserByUsername = (username) => {
-//   return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)))
-//           .then((snapshot) => { 
-//             if (snapshot.exists()) {
-//               return Object.keys(snapshot.val())[0];
-//             }
-//             return null;
-//           })
-//           .catch(error => {
-//             console.error('Error getting user:', error);
-//             return null; // Return null in case of an error
-//           });
-// };
+export const getUserValueByUsername = (username) => {
+  return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)))
+          .then((snapshot) => { 
+            if (snapshot.exists()) {
+              return Object.keys(snapshot.val())[0];
+            }
+            return null;
+          })
+          .catch(error => {
+            console.error('Error getting user:', error);
+            return null; // Return null in case of an error
+          });
+};
 
 export const getUserByEmail = (email) => {
   return get(query(ref(db, 'users'), orderByChild('email'), equalTo(email)));
