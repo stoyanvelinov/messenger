@@ -3,9 +3,7 @@ import {
   Box,
   Flex,
   Button,
-  FormControl,
   Textarea,
-  HStack,
 } from '@chakra-ui/react';
 import { Message } from '../Message/Message';
 import { AuthContext } from '../../context/authContext';
@@ -46,11 +44,11 @@ const ChatRoom = () => {
       avatarUrl: userData.avatar,
       firstName: userData.firstName,
       lastName: userData.lastName,
-      edited: 
-        {
-          edited: false
-        }
-      
+      edited:
+      {
+        edited: false
+      }
+
     };
 
     if (isValidMessage(input)) {
@@ -90,63 +88,47 @@ const ChatRoom = () => {
     });
   };
 
-  return (
-    <Flex fontSize="md" flexDirection="column">
-      {/* <Box border='solid' mt='0.2rem'>
-        {members.map((member) => (
-
-          <Avatar
-              key={member.uid}
-              name={`${member.firstName} ${member.lastName}`}
-              src={member.avatar}
-              status={member.status}
+  return (<>
+    <Flex flexDirection="column" minWidth="250px" px={5} h="100%" >
+      <Box flexGrow="1" flexShrink="1" overflowY="auto" h="100%">
+        {messages.map((message, index) => {
+          return (
+            <Message
+              key={message.msgId}
+              prevSameUser={messages?.[index - 1]?.sender === message.sender}
+              nextSameUser={messages?.[index + 1]?.sender === message.sender}
+              message={message.message}
+              avatarUrl={message.avatar}
+              firstName={message.firstName}
+              lastName={message.lastName}
+              reactions={message.reactions}
+              timestamp={message.timestamp}
+              sender={message.sender}
+              msgId={message.msgId}
             />
-
-        ))}
-      </Box> */}
-      <Flex h="93vh" flexDirection="column" p={5}>
-        <Flex h="70vh" mb={5} flexDirection="column" overflowY="auto">
-          <Box >
-            {messages.map((message, index) => {
-              return (
-                <Message
-                  key={message.msgId}
-                  prevSameUser={messages?.[index - 1]?.sender === message.sender}
-                  nextSameUser={messages?.[index + 1]?.sender === message.sender}
-                  message={message.message}
-                  avatarUrl={message.avatar}
-                  firstName={message.firstName}
-                  lastName={message.lastName}
-                  reactions={message.reactions}
-                  timestamp={message.timestamp}
-                  sender={message.sender}
-                  msgId={message.msgId}
-                />
-              );
-            })}
-            <div ref={scrollToMyRef} />
-          </Box>
-        </Flex>
-        <FormControl>
-          <Flex justifyContent="center" alignItems="center" flexDirection="row">
-            <Textarea
-              w="50vw"
-              placeholder="Enter message"
-              value={input}
-              onChange={event => {
-                setInput(event.target.value);
-              }}
-              onKeyPress={e => handleKeyPress(e)}
-              size="sm"
-              resize="none"
-            />
-            <Button h={20} w={150} m={5} onClick={e => sendMessage(e)}>
-              Send Message
-            </Button>
-          </Flex>
-        </FormControl>
+          );
+        })}
+        <div ref={scrollToMyRef} />
+      </Box>
+      <Flex className="text-input" px={{ base: '0.5rem', md: '1rem', lg: '1.5rem', '2xl': '3.5rem' }} minHeight="4.5rem" minWidth="12.5rem" gap="1rem" justifyContent="center" alignItems="center"  >
+        <Textarea
+          minHeight="2.5rem"
+          minWidth="11.5rem"
+          w="90%"
+          placeholder="Enter message"
+          value={input}
+          onChange={event => {
+            setInput(event.target.value);
+          }}
+          onKeyPress={e => handleKeyPress(e)}
+          resize="none"
+        />
+        <Button bg="accent" _hover={{ bg: 'primaryLight', color: 'primaryDark' }} minHeight="40px" minWidth="30px" maxWidth="85%" onClick={e => sendMessage(e)}>
+          Send
+        </Button>
       </Flex>
-    </Flex>
+    </Flex >
+  </>
   );
 };
 
