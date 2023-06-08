@@ -7,9 +7,9 @@ import {
   Textarea,
   HStack,
 } from '@chakra-ui/react';
-import { Message } from '../Message/Message';
 import { AuthContext } from '../../context/authContext';
 import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service';
+import Message from '../Message/Message';
 
 
 const ChatRoom = () => {

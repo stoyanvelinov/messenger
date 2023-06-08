@@ -11,18 +11,18 @@ const Message = ({ timestamp, message, reactions, username, avatarUrl, prevSameU
       ) : (
         <>
           <Flex Flex flexDirection='row'>
-            <Avatar name={`${firstName} ${lastName}`} src={avatarUrl} />
-            <Flex alignItems='center'>
+            <Avatar name={`${firstName} ${lastName}`} src={avatarUrl}  />
+            <Flex alignItems='flex-start' flexDirection='column'>
               <Box ml='0.5rem' fontSize='1.4rem'>
                 {`${username}`}
               </Box>
-              <Text fontSize='0.8rem' opacity='35%' ml='0.4rem' mt='1rem'>
+              <Text fontSize='0.8rem' opacity='35%' ml='0.4rem' >
                 {new Date(parseInt(timestamp)).toLocaleString()}
               </Text>
             </Flex>
           </Flex>
           <Box px='3rem'>
-            <Divider maxW='15rem' />
+            <Divider maxW='9rem'  borderColor='primaryLight' />
           </Box>
           <MessagePopover message={message} reactions={reactions} msgId={msgId} timestamp={timestamp} />
         </>

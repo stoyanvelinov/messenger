@@ -51,7 +51,7 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
                             })}
                             placement='left'
                         >
-                            <Text opacity={0.5}>{message}</Text>
+                            <Text opacity={0.8}>{message}</Text>
                         </Tooltip>
                         <Flex direction='row'>
                             {Object.values(reactions).map((e) => (
