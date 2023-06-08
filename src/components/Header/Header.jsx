@@ -1,5 +1,5 @@
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { Text, Flex, MenuButton, MenuList, Menu, MenuItem, Box } from '@chakra-ui/react';
+import { Text, Flex, MenuButton, MenuList, Menu, MenuItem, Box, IconButton } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import Profile from '../Profile/Profile';
 
@@ -9,9 +9,8 @@ const Header = () => {
         bg="primaryDark"
         as="header"
         px="4"
-        position="sticky"
         top="0"
-        height="20"
+        height="5rem"
         zIndex="1"
         alignItems="center"
         borderBottomWidth="1px"
