@@ -72,7 +72,7 @@ const SearchUsers = ({ addMember, width }) => {
 
 SearchUsers.propTypes = {
   addMember: PropTypes.func.isRequired,
-  width: PropTypes.string.isRequired,
+  // width: PropTypes.string.isRequired,
 };
 
 export default SearchUsers;
