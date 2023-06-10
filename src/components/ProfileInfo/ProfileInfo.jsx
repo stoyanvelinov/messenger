@@ -23,7 +23,6 @@ const ProfileInfo = () => {
         confirmPass: null
     });
     const [form, setForm] = useState({
-        email: userData.email,
         username: userData.username,
         firstName: userData.firstName,
         lastName: userData.lastName,
@@ -35,7 +34,7 @@ const ProfileInfo = () => {
                 // Perform reauthentication
                 const reauthenticateUser = async (email, password) => {
                     try {
-                        const credential = EmailAuthProvider.credential(email, passForm.currentPass);
+                        const credential = EmailAuthProvider.credential(email, password);
                         await reauthenticateWithCredential(user, credential);
                         return true; // Reauthentication successful
                     } catch (error) {
@@ -116,6 +115,8 @@ const ProfileInfo = () => {
     const handleUploadImg = async (e) => {
         const img = await storeImage(e.target.files[0], userData.username);
         await updateUserAvatarUrl(user.uid, img);
+
+        //to do
         setUser((prev) => ({
             ...prev,
             userData: { ...prev.userData, avatar: newState }

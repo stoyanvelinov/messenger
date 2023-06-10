@@ -16,8 +16,6 @@ const ProfileEdit = ({ form, setForm }) => {
   return (
     <Flex mt='1rem' alignContent='center' justify='center' flexDirection='column' >
       <FormControl>
-        <FormLabel fontSize='sm' opacity='0.5'>Email address</FormLabel>
-        <Input name='email' type='email' value={form.email} onChange={(e) => handleChange(e)} />
         <FormLabel fontSize='sm' mt='0.2rem' opacity='0.5'>First name</FormLabel>
         <Input name='firstName' type='text' value={form.firstName} onChange={(e) => handleChange(e)} />
         <FormLabel fontSize='sm' mt='0.2rem' opacity='0.5'>Last name</FormLabel>
