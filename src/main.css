@@ -1,0 +1,10 @@
+html {
+    /**colors**/
+    --primary: #142543;
+    --primary-mid: #203355;
+    --primary-dark: #12213c;
+    --primary-light: #52688E;
+    --accent: #3182ce;
+    --accent-dark: #2C5282;
+    --tertiary: #29416d;
+}

@@ -11,13 +11,31 @@ import {
   equalTo,
 } from 'firebase/database';
 import { db } from '../config/firebase.config';
-import { getUserById, getUserByUsername } from './users.service';
+import { getUserById, getUserValueByUsername, getUserByUsername } from './users.service';
 import { isEmpty } from 'lodash';
 
-export const addChatMember = (uid, chatRoomId) => {
+export const addChatRoomMember = (uid, chatRoomId) => {
   const updates = {};
   updates[`chatRooms/${chatRoomId}/members/${uid}`] = true;
   updates[`users/${uid}/chatRooms/${chatRoomId}`] = true;
+  update(ref(db), updates);
+  return chatRoomId;
+};
+
+export const addMultipleChatRoomMembers = (usersList, chatRoomId) => {
+  const updates = {};
+  usersList.forEach((uid) => {
+    updates[`chatRooms/${chatRoomId}/members/${uid}`] = true;
+    // updates[`users/${uid}/chatRooms/${chatRoomId}`] = true;
+  });
+  update(ref(db), updates);
+  return chatRoomId;
+};
+
+export const removeChatRoomMember = (uid, chatRoomId) => {
+  const updates = {};
+  updates[`chatRooms/${chatRoomId}/members/${uid}`] = null;
+  updates[`users/${uid}/chatRooms/${chatRoomId}`] = null;
   update(ref(db), updates);
   return chatRoomId;
 };
@@ -43,7 +61,7 @@ export const findActiveRoom = async (chatRoomId, uid) => {
 
 export const isOpenChatRoom = async (username) => {
   try {
-    const userId = await getUserByUsername(username);
+    const userId = await getUserValueByUsername(username);
     const snapshot = await getUserChatRooms(userId);
     const data = snapshot.exists() ? snapshot.val() : {};
     if(isEmpty(data)){
@@ -65,8 +83,8 @@ export const isOpenChatRoom = async (username) => {
 export const addChatRoom = async (myUserId,newUserUsername) => {
   try {
     const chatRoomId = await createChatRoom(myUserId);
-    const newUserId = await getUserByUsername(newUserUsername);
-    await addChatMember(newUserId, chatRoomId);
+    const newUserId = await getUserValueByUsername(newUserUsername);
+    await addChatRoomMember(newUserId, chatRoomId);
     
   } catch (error) {
     console.log(error);
@@ -75,7 +93,7 @@ export const addChatRoom = async (myUserId,newUserUsername) => {
 
 export const createChatRoom = (uid) => {
   return push(ref(db, 'chatRooms/'), {}).then((chatRoomId) => {
-    return addChatMember(uid, chatRoomId.key);
+    return addChatRoomMember(uid, chatRoomId.key);
   });
 };
 
@@ -86,12 +104,41 @@ export const getUserChatRooms = (uid) =>{
 };
 
 export const getCurrentUserChatRooms = (uid, listener) => {
-    const chatRoomsRef = ref(db, `users/${uid}/chatRooms/`);
-    return onValue(chatRoomsRef, (snapshot) => {
-      const data = snapshot.exists() ? snapshot.val() : {};
-      // const chatRoomIds = Object.keys(data);
-      listener(data);
-    });
+  const chatRoomsRef = ref(db, `users/${uid}/chatRooms/`);
+  return onValue(chatRoomsRef, (snapshot) => {
+    const data = snapshot.exists() ? snapshot.val() : {};
+    // const chatRoomIds = Object.keys(data);
+    listener(data);
+  });
+};
+
+export const getChatRoom = async (chatRoomId) => {
+  const chatRoomRef = ref(db, `chatRooms/${chatRoomId}`);
+  const chatRoomSnapshot = await get(chatRoomRef);
+
+  if (chatRoomSnapshot.exists()) {
+    return chatRoomSnapshot.val();
+  } else {
+    return null;
+  }
+};
+
+export const removeChatRoom = async (chatRoomId) => {
+  try {
+    const chatRoomRef = ref(db, `chatRooms/${chatRoomId}`);
+    const chatRoomSnapshot = await get(chatRoomRef);
+
+    if (chatRoomSnapshot.exists()) {
+      const updates = {};
+      updates[`chatRooms/${chatRoomId}`] = null;
+      update(ref(db), updates);
+      return chatRoomId;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {

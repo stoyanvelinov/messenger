@@ -11,7 +11,7 @@ const theme = extendTheme({
         primaryLight: '#52688E',
         accent: '#3182ce',
         accentDark: '#2C5282',
-        tertiary: '#425472'
+        tertiary: '#29416d'
         // secondary: '#DBC2CF',
         //#EBBAB9
         //#C3979F
@@ -25,6 +25,33 @@ const theme = extendTheme({
                 color: '#fff'
             }
         }
+    },
+    components: {
+        Popover: {
+            variants: {
+                responsive: {
+                    content: {
+                        minWidth: '7rem',
+                        width: '8rem'
+                    },
+                }
+            }
+        },
+        IconButton: {
+            variants: {
+                default: {
+                    bg: 'transparent'
+                }
+            }
+
+        },
+        // Icon: {
+        //     variants: {
+        //         small: {
+        //             size: 'sm'
+        //         }
+        //     }
+        // }
     }
 });
 export default theme;

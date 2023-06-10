@@ -5,23 +5,17 @@ import {
   Button,
   FormControl,
   Textarea,
-  HStack,
 } from '@chakra-ui/react';
 import { AuthContext } from '../../context/authContext';
 import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service';
 import Message from '../Message/Message';
 
 
-const ChatRoom = () => {
+const ChatRoom = ({ chatRoomId }) => {
   const [input, setInput] = useState('');
   const scrollToMyRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const { user, userData, currentChatRoomId } = useContext(AuthContext);
-
-  console.log('pisnamiotkod', messages);
-  // Listen for messages received
-
-
   useEffect(() => {
     const unsub = getLiveMsgByChatRoomId(currentChatRoomId, (c) => setMessages([...c]));
 
@@ -41,7 +35,6 @@ const ChatRoom = () => {
       message: input,
       timestamp: Date.now(),
       sender: user.uid,
-
       avatarUrl: userData.avatar,
       username: userData.username,
       firstName: userData.firstName,
@@ -50,13 +43,11 @@ const ChatRoom = () => {
         {
           edited: false
         }
-      
     };
 
     if (isValidMessage(input)) {
       //add error handling
       await createMsg(input, data.sender, data.avatarUrl, data.username, data.edited, currentChatRoomId, data.firstName, data.lastName);
-      console.log('message sent');
       setInput('');
     }
   };
@@ -65,7 +56,6 @@ const ChatRoom = () => {
   const isValidMessage = input => {
     let validMessage = true;
 
-    console.log(input.trim());
     if (input.trim() === '') validMessage = false;
     return validMessage;
   };
@@ -82,28 +72,14 @@ const ChatRoom = () => {
     scrollToMyRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // const history = useHistory();
-
-  const logout = () => {
-    handleLogout(() => {
-      history.push('/login');
-    });
-  };
+//   const logout = () => {
+//     handleLogout(() => {
+//       history.push('/login');
+//     });
+//   };
 
   return (
     <Flex fontSize="md" flexDirection="column">
-      {/* <Box border='solid' mt='0.2rem'>
-        {members.map((member) => (
-
-          <Avatar
-              key={member.uid}
-              name={`${member.firstName} ${member.lastName}`}
-              src={member.avatar}
-              status={member.status}
-            />
-
-        ))}
-      </Box> */}
       <Flex h="93vh" flexDirection="column" p={5}>
         <Flex h="70vh" mb={5} flexDirection="column" overflowY="auto">
           <Box >

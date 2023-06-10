@@ -1,0 +1,19 @@
+.channel {
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 12px 9px -9px rgba(0, 0, 0, 0.5);
+    background-color: var(--primary-light);
+    width: 100%;
+}
+
+.channel:hover {
+    background-color: var(--tertiary);
+}
+
+.active {
+    background-color: var(--tertiary);
+}
+
+.channel-editing {
+    align-items: center;
+}

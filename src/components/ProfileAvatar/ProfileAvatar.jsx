@@ -1,26 +1,32 @@
-import { Avatar, AvatarBadge } from '@chakra-ui/react';
-import { STATUS } from '../common/status';
+import { Avatar, Input } from '@chakra-ui/react';
+import { storeImage } from '../../services/image.service';
+import PropTypes from 'prop-types';
 
-const ProfileAvatar = (props) => {
+const ProfileAvatar = ({ name, src, target, updateState }) => {
 
+  const handleUploadImg = async (e) => {
+    const img = await storeImage(e.target.files[0], target);
+    updateState(img);
+  };
 
-  let style;
-
-  switch (props.status) {
-    case STATUS.ONLINE:
-      style = 'green';
-      break;
-    case STATUS.DO_NOT_DISTURB:
-      style = 'red';
-      break;
-    default:
-      style = 'gray';
-  }
   return (
-    <Avatar {...props} cursor="pointer" >
-      {/* <AvatarBadge boxSize='15px' border='none' bg={`${style}`} onClick={e=>openChangeStatus(e)} /> */}
-    </Avatar>
+    <label htmlFor='avatar-img'>
+      <Avatar
+        name={name}
+        src={src}
+        cursor="pointer"
+        size="2xl"
+      />
+      <Input id='avatar-img' type='file' accept='.jpg,.png,.jpeg' display='none' onChange={(e) => handleUploadImg(e)} />
+    </label>
   );
+};
+
+ProfileAvatar.propTypes = {
+  name: PropTypes.string.isRequired,
+  src: PropTypes.string,
+  target: PropTypes.string.isRequired,
+  updateState: PropTypes.func.isRequired,
 };
 
 export default ProfileAvatar;

@@ -1,0 +1,12 @@
+.remove-btn {
+    font-size: 0.6rem;
+}
+
+
+.team-member:hover>.remove-btn {
+    display: inline-block;
+}
+
+.team-member:hover {
+    background: var(--primary-light);
+}
