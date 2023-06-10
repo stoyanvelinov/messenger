@@ -166,7 +166,7 @@ const Register = () => {
                             <Box display="flex"  w='100%'>
                                 <Checkbox isChecked={isChecked} onChange={(e) => setIsChecked(e.target.checked)}
                                 />
-                                <Link pl='0.4rem' onClick={onOpen}>I am agree with Terms &amp; Conditions</Link>
+                                <Link pl='0.4rem' onClick={onOpen}>I agree with Terms &amp; Conditions</Link>
                             </Box>
                             <Button borderRadius="md" w="100%" type='submit' color='primaryDark' _hover={{ bg: 'primaryLight', color: '#fff' }} >Register</Button>
                         </FormControl>
