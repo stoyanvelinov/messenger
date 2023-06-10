@@ -150,3 +150,8 @@ export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
     });
   });
 };
+
+export const updateUserNotification = (userId, chatRoomId) => {
+  return set(ref(db, `/users/${userId}/notifications/${chatRoomId}/isSeen`), true);
+};
+

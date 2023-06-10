@@ -76,7 +76,7 @@ const Login = () => {
                     <Box>
                         <Flex justifyContent='space-around' mt='0.2rem' opacity='0.5'>
                             <Text >Not a member yet? <Link btn-id="toRegisterBtn" pl={2} onClick={() => { navigate('/register'); }} fontSize='1.3rem' color="blue.400" >Sign up</Link></Text>
-                            <Link btn-id='forgotPassBtn' onClick={onModalOpen}>Forgot your password?</Link>
+                            <Link btn-id='forgotPassBtn' mt='0.4rem' onClick={onModalOpen}>Forgot your password?</Link>
                         </Flex>
                     </Box>
                 </Flex>

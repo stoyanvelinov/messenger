@@ -41,7 +41,7 @@ export const removeChatRoomMember = (uid, chatRoomId) => {
 };
 
 export const toggleChatRoomVisibility = async (uid, chatRoomId) => {
-  const currentStatus = await get(query(ref(db,`users/${uid}/chatRooms/${chatRoomId}`)));
+  const currentStatus = await get(query(ref(db, `users/${uid}/chatRooms/${chatRoomId}`)));
   const updates = {};
   updates[`users/${uid}/chatRooms/${chatRoomId}`] = !currentStatus.val();
   update(ref(db), updates);
@@ -55,7 +55,7 @@ export const findActiveRoom = async (chatRoomId, uid) => {
   if (snapshot.exists()) {
     return chatRoomId;
   } else {
-    return false; 
+    return false;
   }
 };
 
@@ -64,7 +64,7 @@ export const isOpenChatRoom = async (username) => {
     const userId = await getUserValueByUsername(username);
     const snapshot = await getUserChatRooms(userId);
     const data = snapshot.exists() ? snapshot.val() : {};
-    if(isEmpty(data)){
+    if (isEmpty(data)) {
       return false;
     }
 
@@ -80,12 +80,12 @@ export const isOpenChatRoom = async (username) => {
   }
 };
 
-export const addChatRoom = async (myUserId,newUserUsername) => {
+export const addChatRoom = async (myUserId, newUserUsername) => {
   try {
     const chatRoomId = await createChatRoom(myUserId);
     const newUserId = await getUserValueByUsername(newUserUsername);
     await addChatRoomMember(newUserId, chatRoomId);
-    
+
   } catch (error) {
     console.log(error);
   }
@@ -97,7 +97,7 @@ export const createChatRoom = (uid) => {
   });
 };
 
-export const getUserChatRooms = (uid) =>{
+export const getUserChatRooms = (uid) => {
   const chatRoomsRef = ref(db, `users/${uid}/chatRooms/`);
 
   return get(chatRoomsRef);
@@ -154,7 +154,7 @@ export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
 };
 
 export const getChatRoomMembers = (chatRoomId) => {
-  return get(query(ref(db,`chatRooms/${chatRoomId}/members`)));
+  return get(query(ref(db, `chatRooms/${chatRoomId}/members`)));
 };
 
 export const sendMessage = (chatRoomId, message, author, avatar, timeStamp) => {
@@ -184,12 +184,47 @@ export const createMsg = async (input, sender, avatar = null, firstName, lastNam
   };
   const updates = {
     [`/messages/${msgId}`]: msgData,
-    [`/chatRooms/${chatRoomId}/messages/${msgId}`]: { edited:false }
+    [`/chatRooms/${chatRoomId}/messages/${msgId}`]: { edited: false }
   };
   await update(ref(db), updates);
+
+  // notification
+
+  const chatRoomMembersSnapshot = await get(ref(db, `/chatRooms/${chatRoomId}/members`));
+  const chatRoomMembers = chatRoomMembersSnapshot.exists() ? chatRoomMembersSnapshot.val() : {};
+  const memberUids = Object.keys(chatRoomMembers);
+
+  for (const memberUid of memberUids) {
+    if (memberUid !== sender) {
+      const notificationRef = ref(db, `/users/${memberUid}/notifications`);
+      const existingNotificationSnapshot = await get(child(notificationRef, chatRoomId));
+
+      if (existingNotificationSnapshot.exists() && !existingNotificationSnapshot.val().isSeen) {
+        // Update the existing notification if it exists and is not seen
+        await update(notificationRef, {
+          [chatRoomId]: {
+            ...existingNotificationSnapshot.val(),
+            timeStamp: Date.now(),
+          },
+        });
+      } else {
+        // Create a new notification if the existing one doesn't exist or is already seen
+        await set(child(notificationRef, chatRoomId), {
+          isSeen: false,
+          timeStamp: Date.now(),
+          sender: sender,
+          chatRoomId: chatRoomId,
+          msgId: msgId
+        });
+      }
+    }
+  }
   return msgId;
 };
 
+  
+    
+    
 export const getLiveMsgByChatRoomId = (chatRoomId, listener) => {
   return onValue(ref(db, `/chatRooms/${chatRoomId}/messages`), snapshot => {
     const data = snapshot.exists() ? snapshot.val() : {};

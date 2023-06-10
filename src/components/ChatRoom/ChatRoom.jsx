@@ -11,23 +11,19 @@ import { Message } from '../Message/Message';
 import { AuthContext } from '../../context/authContext';
 import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service';
 import { getLiveUsersByChatRoomId } from '../../services/users.service';
-import { useParams } from 'react-router-dom';
 
 
 const ChatRoom = ({ chatRoomId }) => {
   const [input, setInput] = useState('');
   const scrollToMyRef = useRef(null);
   const [messages, setMessages] = useState([]);
-  const [members, setMembers] = useState([]);
   const { user, userData } = useContext(AuthContext);
 
   useEffect(() => {
     const unsubscribeMessages = getLiveMsgByChatRoomId(chatRoomId, (c) => setMessages([...c]));
-    const unsubscribeUsers = getLiveUsersByChatRoomId(chatRoomId, (c) => setMembers([...c]));
 
-    return () => { unsubscribeMessages(), unsubscribeUsers(); };
+    return () => unsubscribeMessages();
   }, [chatRoomId]);
-
   // Scroll to the bottom of the element upon message submission
   useEffect(() => {
     scrollToBottom();
@@ -47,12 +43,14 @@ const ChatRoom = ({ chatRoomId }) => {
       edited: 
         {
           edited: false
-        }
+      }
+      // messageType:
     };
 
     if (isValidMessage(input)) {
       //add error handling
       await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.edited, chatRoomId);
+
       setInput('');
     }
   };
