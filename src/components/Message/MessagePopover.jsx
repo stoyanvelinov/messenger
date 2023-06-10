@@ -15,7 +15,6 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
         // console.log(`${emojiLabel} clicked by ${user.uid} in chatRoom ${currentChatRoomId} on msg with id ${msgId}`);
         if (!found) {
             await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
-            console.log('user', user);
 
         } else if (alreadyReacted) {
             await deleteReaction(found.reactionId, msgId, currentChatRoomId);
@@ -25,7 +24,6 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
         }
     };
 
-    console.log('reactions', Object.values(reactions).map(e => e.emojiLabel));
     return (
         <Popover
             isOpen={isPopoverOpen}

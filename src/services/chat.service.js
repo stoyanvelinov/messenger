@@ -215,7 +215,8 @@ export const createMsg = async (input, sender, avatar = null, username, edited, 
           timeStamp: Date.now(),
           sender: sender,
           chatRoomId: chatRoomId,
-          msgId: msgId
+          msgId: msgId,
+          username: username
         });
       }
     }

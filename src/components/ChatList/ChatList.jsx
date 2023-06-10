@@ -10,7 +10,7 @@ import SearchUsers from '../SearchUsers/SearchUsers';
 import { Button } from '@chakra-ui/react';
 
 const ChatList = () => {
-  const { user, setUser, currentChatRoomId } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [activeChats, setActiveChats] = useState([]);
   const [allUsers, setAllUsers] = useState('');
   const navigate = useNavigate();

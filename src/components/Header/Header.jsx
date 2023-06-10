@@ -5,7 +5,10 @@ import Profile from '../Profile/Profile';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { getLiveUserNotification } from '../../services/notifications.service';
-import NotificationDropdown from '../Notifications/NotificationDropdown';
+import NotificationDropdown from '../Notifications/NewNotifications/NewNotifications';
+import { updateUserNotification } from '../../services/users.service';
+import NewNotifications from '../Notifications/NewNotifications/NewNotifications';
+import AllNotifications from '../Notifications/AllNotifications/AllNotifications';
 
 const Header = () => {
     const [notifications, setNotifications] = useState([]);
@@ -13,8 +16,17 @@ const Header = () => {
     useEffect(() => {
         const un1 = getLiveUserNotification(user.uid, (c) => setNotifications([...c]));
         return () => un1();
-    }, [user]);
-    console.log(notifications,'notificationsHeader');
+    }, [user.uid]);
+    useEffect(() => {
+        const updateUserNotificationAsync = async () => {
+            if (currentChatRoomId === notifications.chatRoomId) {
+                await updateUserNotification(user.uid, currentChatRoomId);
+            }
+        };
+
+        updateUserNotificationAsync();
+    }, [currentChatRoomId, notifications, user.uid]);
+    const unseenNotifications = notifications.filter((c) => !c.isSeen && c.chatRoomId !== currentChatRoomId);
 
     return (<Flex
         bg="primaryDark"
@@ -47,12 +59,17 @@ const Header = () => {
             </MenuList>
         </Menu >
         <Flex alignItems='center' ml='auto'>
-            <Box>
-        <NotificationDropdown notifications={notifications} />
+            <Flex flexDirection='column'>
+                {unseenNotifications.length > 0 && (
+                    < NewNotifications unseenNotifications={unseenNotifications} />
+                )}
+                {notifications.length > 0 && (
+                    < AllNotifications notifications={notifications} />
+                )}
+            </Flex>
+            <Box ml='auto'>
+                <Profile />
             </Box>
-        <Box ml='auto'>
-            <Profile />
-        </Box>
         </Flex>
         <Text
             display={{ base: 'flex', md: 'none' }}

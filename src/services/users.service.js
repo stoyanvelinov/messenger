@@ -138,7 +138,6 @@ export const updateUserProfile = (uid, form) => {
   });
 };
 
-// export const updateUserAvatar() to do
 export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
   return onValue(ref(db, `/chatRooms/${chatRoomId}/members`), snapshot => {
     const data = snapshot.exists() ? snapshot.val() : {};
@@ -151,12 +150,26 @@ export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
   });
 };
 
-export const updateUserNotification = (userId, chatRoomId) => {
-  return set(ref(db, `/users/${userId}/notifications/${chatRoomId}/isSeen`), true);
+export const updateUserNotification = async (userId, chatRoomId) => {
+  if (chatRoomId === null) {
+    return;
+  }
+  const userNotificationsRef = ref(db, `users/${userId}/notifications/${chatRoomId}`);
+  const snapshot = await get(userNotificationsRef);
+
+  if (snapshot.exists()) {
+    const notificationToUpdate = snapshot.val();
+    const updatedNotification = { ...notificationToUpdate, isSeen: true };
+    await set(userNotificationsRef, updatedNotification);
+  }
 };
+
 
 export const updateUserAvatarUrl = (uid, avatarUrl) => {
   return update(ref(db, `users/${uid}`), {
     avatar: avatarUrl
   });
 };
+
+
+

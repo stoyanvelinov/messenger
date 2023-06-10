@@ -10,7 +10,7 @@ import TeamButton from '../TeamButton/TeamButton';
 import CreateTeam from '../CreateTeam/CreateTeam';
 
 const SideBar = () => {
-    const { user } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
     const [teamIds, setTeamIds] = useState([]);
     const [iconMsg, setIconMsg] = useState(messageIcon);
     const navigate = useNavigate();
@@ -27,6 +27,11 @@ const SideBar = () => {
 
     const onOpenDirectMessages = () => {
         navigate('/messages/');
+        setUser((prev) => ({
+            ...prev,
+            currentChatRoomId: null
+        }));
+
     };
 
     return (

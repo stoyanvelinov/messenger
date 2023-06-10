@@ -4,20 +4,21 @@ import { AvatarGroup, Avatar, HStack, Box } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { getLiveUsersByChatRoomId } from '../../services/chat.service';
+import { updateUserNotification } from '../../services/users.service';
 
 const ChatListItem = ({ chatRoomId, handleRemoveFromList }) => {
   const navigate = useNavigate();
   const [chatMembers, setChatMembers] = useState([]);
-  const { setUser, user } = useContext(AuthContext);
+  const { setUser, user, currentChatRoomId } = useContext(AuthContext);
 
-  const handleOpenChatroom = () => {
+  const handleOpenChatroom = async() => {
     setUser((prev) => ({
       ...prev,
       currentChatRoomId: chatRoomId
     }));
     navigate(`/messages/${chatRoomId}`);
+    await updateUserNotification(user.uid, currentChatRoomId);
   };
-
   useEffect(()=>{
     const unsubscribe = getLiveUsersByChatRoomId( chatRoomId , (members)=>{
       const otherMembers = members.filter((member)=> member.uid !== user.uid );
