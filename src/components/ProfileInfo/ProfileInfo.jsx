@@ -4,7 +4,7 @@ import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { AuthContext } from '../../context/authContext';
 import { EditIcon } from '@chakra-ui/icons';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
-import { updateUserProfile, updateUserStatus } from '../../services/users.service';
+import { updateUserAvatarUrl, updateUserProfile, updateUserStatus } from '../../services/users.service';
 // import { storeImage } from '../../services/image.service';
 import { STATUS } from '../common/status';
 import ProfileStatusIcon from './ProfileStatusIcon';
@@ -115,8 +115,7 @@ const ProfileInfo = () => {
 
     const handleUploadImg = async (e) => {
         const img = await storeImage(e.target.files[0], userData.username);
-        //to do update user img
-        console.log(img);
+        await updateUserAvatarUrl(user.uid, img);
         setUser((prev) => ({
             ...prev,
             userData: { ...prev.userData, avatar: newState }

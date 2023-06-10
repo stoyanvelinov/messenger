@@ -155,3 +155,8 @@ export const updateUserNotification = (userId, chatRoomId) => {
   return set(ref(db, `/users/${userId}/notifications/${chatRoomId}/isSeen`), true);
 };
 
+export const updateUserAvatarUrl = (uid, avatarUrl) => {
+  return update(ref(db, `users/${uid}`), {
+    avatar: avatarUrl
+  });
+};

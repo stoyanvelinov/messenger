@@ -44,21 +44,21 @@ const Login = () => {
             .then(() => {
                 navigate('/messages');
             })
-            .catch(e => setError(e));
+            .catch(setError('Invalid email or password!'));
     };
 
     return (
         <>
-            <Box ml='3rem' mt='2rem' cursor='pointer'  onClick={()=>navigate('/')} >
+            <Box ml='3rem' mt='2rem' cursor='pointer' onClick={() => navigate('/')} >
                 <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                ml='1rem'
-                _hover={{ bg: 'primaryLight' }}
-                maxW='5rem'
-            >
-                Logo
-            </Text>
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    ml='1rem'
+                    _hover={{ bg: 'primaryLight' }}
+                    maxW='5rem'
+                >
+                    Logo
+                </Text>
             </Box>
             <Container maxW='2xl' mt='3rem' borderColor='primaryLight' border='1px' borderRadius='1rem' >
                 <Flex w="100%" direction='column' p='1rem'>
@@ -69,7 +69,7 @@ const Login = () => {
                         </Box>
                         <Box w="100%"><FormLabel>Password</FormLabel>
                             <Input id="password" borderRadius="2xl" type="password" value={form.password} onChange={updateForm('password')} placeholder="Password" autoComplete="off" required />
-                            {error && <Text color="red">{error.message}</Text>}
+                            {error && <Text color="red">{error}</Text>}
                         </Box>
                         <Button color='primaryDark' _hover={{ bg: 'primaryLight', color: '#fff' }} borderRadius="2xl" w="100%" onClick={onLogin}>Log in</Button>
                     </FormControl>

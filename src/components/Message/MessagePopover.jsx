@@ -1,21 +1,31 @@
 import { useContext, useState } from 'react';
-import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text } from '@chakra-ui/react';
+import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text, Tooltip } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react';
-import { Flex, VStack } from '@chakra-ui/layout';
+import { Flex } from '@chakra-ui/layout';
 import { AuthContext } from '../../context/authContext';
-import PropTypes from 'prop-types';
+import { createReaction, deleteReaction } from '../../services/reactions.service';
 
-const MessagePopover = ({ message, reactions, msgId }) => {
+const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const { user, currentChatRoomId } = useContext(AuthContext);
-    
-    const handleEmojiClick = (emojiLabel) => {
-        console.log(`${emojiLabel} clicked by ${user.uid} in chatRoom ${currentChatRoomId} with msg id ${msgId}`);
-        // add reaction => msg uid
+    const { user, userData, currentChatRoomId } = useContext(AuthContext);
 
-        
+    const handleEmojiClick = async (emojiLabel) => {
+        const found = Object.values(reactions).find(e => e.reactedUserId === user.uid);
+        const alreadyReacted = Object.values(reactions).find(e => e.emojiLabel === emojiLabel);
+        // console.log(`${emojiLabel} clicked by ${user.uid} in chatRoom ${currentChatRoomId} on msg with id ${msgId}`);
+        if (!found) {
+            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+            console.log('user', user);
+
+        } else if (alreadyReacted) {
+            await deleteReaction(found.reactionId, msgId, currentChatRoomId);
+        } else {
+            await deleteReaction(found.reactionId, msgId, currentChatRoomId);
+            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+        }
     };
-    
+
+    console.log('reactions', Object.values(reactions).map(e => e.emojiLabel));
     return (
         <Popover
             isOpen={isPopoverOpen}
@@ -24,16 +34,38 @@ const MessagePopover = ({ message, reactions, msgId }) => {
             placement='bottom-start'
         >
             <PopoverTrigger>
-                <Flex w='30vh'>
+                <Flex w='30vh' direction='column'>
                     <Box
                         borderRadius='0.2rem'
                         ml='4rem'
-                        _hover={{ bg: 'primaryLight' }}
+                        _hover={{ bg: 'primary' }}
                         transition='background-color 0.5s'
                         cursor='pointer'
                         w='100%'
                     >
-                        {message}
+                        <Tooltip
+                            backgroundColor={'primaryLight'}
+                            label={new Date(parseInt(timestamp)).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })}
+                            placement='left'
+                        >
+                            <Text opacity={0.8}>{message}</Text>
+                        </Tooltip>
+                        <Flex direction='row'>
+                            {Object.values(reactions).map((e) => (
+                                <Tooltip
+                                    key={e.reactionId}
+                                    fontSize='1.2rem'
+                                    label={e.username}
+                                    backgroundColor={'primary'}
+                                    placement='bottom'
+                                >
+                                    <Text fontSize='1.2rem'>{getEmoji(e.emojiLabel)}</Text>
+                                </Tooltip>
+                            ))}
+                        </Flex>
                     </Box>
                 </Flex>
             </PopoverTrigger>
@@ -49,7 +81,7 @@ const MessagePopover = ({ message, reactions, msgId }) => {
                                 borderRadius='0.2rem'
                                 aria-label={emojiLabel}
                                 onClick={() => handleEmojiClick(emojiLabel)}
-                                >
+                            >
                                 {getEmoji(emojiLabel)}
                             </Text>
                         ))}
@@ -60,15 +92,7 @@ const MessagePopover = ({ message, reactions, msgId }) => {
     );
 };
 
-MessagePopover.propTypes = {
-    message: PropTypes.string.isRequired,
-    reactions: PropTypes.arrayOf(
-        PropTypes.shape({
-            reactionType: PropTypes.string.isRequired,
-            userId: PropTypes.string.isRequired
-        })
-        )
-};
+
 
 export default MessagePopover;
 

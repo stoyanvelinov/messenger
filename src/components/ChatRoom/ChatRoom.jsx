@@ -5,25 +5,24 @@ import {
   Button,
   FormControl,
   Textarea,
-  HStack,
 } from '@chakra-ui/react';
-import { Message } from '../Message/Message';
 import { AuthContext } from '../../context/authContext';
 import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service';
-import { getLiveUsersByChatRoomId } from '../../services/users.service';
+import Message from '../Message/Message';
 
 
 const ChatRoom = ({ chatRoomId }) => {
   const [input, setInput] = useState('');
   const scrollToMyRef = useRef(null);
   const [messages, setMessages] = useState([]);
-  const { user, userData } = useContext(AuthContext);
+  const { user, userData, currentChatRoomId } = useContext(AuthContext);
 
   useEffect(() => {
     const unsubscribeMessages = getLiveMsgByChatRoomId(chatRoomId, (c) => setMessages([...c]));
 
     return () => unsubscribeMessages();
   }, [chatRoomId]);
+
   // Scroll to the bottom of the element upon message submission
   useEffect(() => {
     scrollToBottom();
@@ -38,6 +37,7 @@ const ChatRoom = ({ chatRoomId }) => {
       timestamp: Date.now(),
       sender: user.uid,
       avatarUrl: userData.avatar,
+      username: userData.username,
       firstName: userData.firstName,
       lastName: userData.lastName,
       edited: 
@@ -49,8 +49,7 @@ const ChatRoom = ({ chatRoomId }) => {
 
     if (isValidMessage(input)) {
       //add error handling
-      await createMsg(input, data.sender, data.avatarUrl, data.firstName, data.lastName, data.edited, chatRoomId);
-
+      await createMsg(input, data.sender, data.avatarUrl, data.username, data.edited, currentChatRoomId, data.firstName, data.lastName);
       setInput('');
     }
   };
@@ -94,12 +93,12 @@ const ChatRoom = ({ chatRoomId }) => {
                   nextSameUser={messages?.[index + 1]?.sender === message.sender}
                   message={message.message}
                   avatarUrl={message.avatar}
-                  firstName={message.firstName}
-                  lastName={message.lastName}
+                  username={message.username}
                   reactions={message.reactions}
                   timestamp={message.timestamp}
-                  sender={message.sender}
                   msgId={message.msgId}
+                  firstName={message.firstName}
+                  lastName={message.lastName}
                 />
               );
             })}
