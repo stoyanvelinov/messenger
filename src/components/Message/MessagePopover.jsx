@@ -5,7 +5,7 @@ import { Flex } from '@chakra-ui/layout';
 import { AuthContext } from '../../context/authContext';
 import { createReaction, deleteReaction } from '../../services/reactions.service';
 
-const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
+const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl }) => {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const { user, userData, currentChatRoomId } = useContext(AuthContext);
 
@@ -22,6 +22,19 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
             await deleteReaction(found.reactionId, msgId, currentChatRoomId);
             await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
         }
+    };
+    const renderContent = () => {
+        if (message) {
+            return (
+                <Text opacity={0.8}>{message}</Text>
+            );
+        }
+            return (
+                <audio controls>
+                    <source src={audioUrl} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                </audio>
+            );
     };
 
     return (
@@ -49,7 +62,7 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
                             })}
                             placement='left'
                         >
-                            <Text opacity={0.8}>{message}</Text>
+                            {renderContent()}
                         </Tooltip>
                         <Flex direction='row'>
                             {Object.values(reactions).map((e) => (
@@ -89,7 +102,6 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp }) => {
         </Popover>
     );
 };
-
 
 
 export default MessagePopover;
