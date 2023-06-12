@@ -2,7 +2,7 @@ import { Popover, PopoverTrigger, Portal, PopoverContent, PopoverCloseButton, Po
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { HiDotsVertical } from 'react-icons/hi';
 import './ChannelUpdate.css';
-import DeleteTeamAlert from '../DeleteAlert/DeleteAlert';
+import DeleteAlert from '../DeleteAlert/DeleteAlert';
 import { deleteChannel } from '../../services/channels.service';
 import PropTypes from 'prop-types';
 
@@ -28,7 +28,7 @@ const ChannelUpdate = ({ channelId, setIsEditing }) => {
                     <HStack w="100%" className="active-channel-action" _hover={{ bg: 'primaryMid' }} onClick={onDialogOpen}>
                         <IconButton variant="default" size="xs" icon={<DeleteIcon />} />
                         <Text>Delete</Text>
-                        <DeleteTeamAlert isOpen={isDialogOpen} onClose={onDialogClose} deleteFn={deleteChannel} heading="Delete Channel" id={channelId} />
+                        <DeleteAlert isOpen={isDialogOpen} onClose={onDialogClose} deleteFn={deleteChannel} heading="Delete Channel" id={channelId} />
                     </HStack>
                 </Flex>
             </PopoverContent>
