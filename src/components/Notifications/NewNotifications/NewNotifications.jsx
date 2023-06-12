@@ -11,6 +11,8 @@ const NewNotifications = ({ unseenNotifications }) => {
     const handleClick = async (uid, chatRoomId) => {
         try {
             await updateUserNotification(uid, chatRoomId);
+
+            //check if chatRoom is in team and navigate correctly
             navigate(`/messages/${chatRoomId}`);
             setUser((prev) => ({
                 ...prev,

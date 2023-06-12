@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import './Channel.css';
 
 const Channel = ({ channelId, channelName, team, channelChatRoom }) => {
-    const { user } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [form, setForm] = useState({
@@ -21,6 +21,7 @@ const Channel = ({ channelId, channelName, team, channelChatRoom }) => {
     const setActiveChannel = (id) => {
         document.querySelectorAll('.channel').forEach(c => c.classList.remove('active'));
         document.querySelector(`#${id}`).classList.add('active');
+        
     };
 
     const goToChannel = (e) => {
@@ -29,6 +30,10 @@ const Channel = ({ channelId, channelName, team, channelChatRoom }) => {
         if (id && !id.includes('popover')) {
             setActiveChannel(id);
             navigate(`/teams/${team.teamId}/${id}/${channelChatRoom}`);
+            setUser((prev) => ({
+                ...prev,
+                currentChatRoomId: channelChatRoom
+            }));
         }
     };
 
