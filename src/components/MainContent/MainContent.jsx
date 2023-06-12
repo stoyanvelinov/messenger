@@ -21,9 +21,9 @@ const MainContent = () => {
                 borderRightColor="primaryLight" borderLeft="1px" borderLeftColor="primaryLight">
                 <ChatRoom chatRoomId={chatRoomId} />
             </Box>
-            <Box bg="primary" display={{ base: 'none', xl: 'flex' }} minW="200px" flexBasis={{ md: '200px', lg: '10%' }}>
+            <Flex bg="primary" direction="column" display={{ base: 'none', xl: 'flex' }} minW="200px" flexBasis={{ md: '200px', lg: '10%' }} gap="1rem" w="100%" >
                 {teamId && <TeamMembers teamId={teamId} />}
-            </Box>
+            </Flex>
         </Flex>
     );
 };

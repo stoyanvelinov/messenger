@@ -1,14 +1,11 @@
 import { useState, useEffect, useRef, useContext } from 'react';
-import {
-  Box,
-  Flex,
-  Button,
-  Textarea,
-} from '@chakra-ui/react';
+import { Box, Flex, Button, Textarea } from '@chakra-ui/react';
 import { Message } from '../Message/Message';
 import { AuthContext } from '../../context/authContext';
 import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service';
 import { getLiveUsersByChatRoomId } from '../../services/users.service';
+import { useParams } from 'react-router-dom';
+import TeamMembersSmallerScreen from '../TeamMembersSmallerScreen/TeamMembersSmallerScreen';
 
 
 const ChatRoom = () => {
@@ -17,9 +14,9 @@ const ChatRoom = () => {
   const [messages, setMessages] = useState([]);
   const [members, setMembers] = useState([]);
   const { user, userData, currentChatRoomId } = useContext(AuthContext);
+  const { teamId } = useParams();
+
   // Listen for messages received
-
-
   useEffect(() => {
     const unsub = getLiveMsgByChatRoomId(currentChatRoomId, (c) => setMessages([...c]));
     const unsub2 = getLiveUsersByChatRoomId(currentChatRoomId, (c) => setMembers([...c]));
@@ -89,8 +86,12 @@ const ChatRoom = () => {
   };
 
   return (<>
-    <Flex flexDirection="column" minWidth="250px" px={5} h="100%" >
-      <Box flexGrow="1" flexShrink="1" overflowY="auto" h="100%">
+    <Flex flexDirection="column" minWidth="250px" h="100%" >
+      <Flex alignItems="center" as="header" h="3.6em" bg="tertiary" px="0.5rem" w="100%">
+        <Box flexGrow={1}></Box>
+        {teamId && <TeamMembersSmallerScreen />}
+      </Flex>
+      <Box flexGrow="1" flexShrink="1" overflowY="auto" h="100%" px={5}>
         {messages.map((message, index) => {
           return (
             <Message
@@ -110,7 +111,7 @@ const ChatRoom = () => {
         })}
         <div ref={scrollToMyRef} />
       </Box>
-      <Flex className="text-input" px={{ base: '0.5rem', md: '1rem', lg: '1.5rem', '2xl': '3.5rem' }} minHeight="4.5rem" minWidth="12.5rem" gap="1rem" justifyContent="center" alignItems="center"  >
+      <Flex className="text-input" px={{ base: '1rem', lg: '1.5rem', '2xl': '3.5rem' }} minHeight="4.5rem" minWidth="12.5rem" gap="1rem" justifyContent="center" alignItems="center"  >
         <Textarea
           minHeight="2.5rem"
           minWidth="11.5rem"

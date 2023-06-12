@@ -1,6 +1,6 @@
 import SearchUsers from '../SearchUsers/SearchUsers';
 import { AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Button, IconButton, Tooltip, useDisclosure, Box, Text, useToast } from '@chakra-ui/react';
-import { FiUserPlus } from 'react-icons/fi';
+import { HiOutlineUserAdd } from 'react-icons/hi';
 import { useState } from 'react';
 import { getUserByUsername } from '../../services/users.service';
 import { addMemberToTeam } from '../../services/teams.service';
@@ -36,7 +36,7 @@ const AddTeamMembersDialog = ({ teamId, memberIds }) => {
     };
 
     return (<>
-        <IconButton icon={<FiUserPlus fontSize="1rem" />} size="sm" pr="0.3rem" bg="transparent" _hover={{ color: 'primaryDark', bg: 'transparent' }} onClick={onOpen} />
+        <IconButton icon={< HiOutlineUserAdd fontSize="1rem" />} size="sm" pr="0.3rem" bg="transparent" _hover={{ color: 'primaryDark', bg: 'transparent' }} onClick={onOpen} />
         <AlertDialog
             isOpen={isOpen}
             onClose={onClose}
