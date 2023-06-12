@@ -48,10 +48,7 @@ const ChatRoom = ({ chatRoomId }) => {
       username: userData.username,
       firstName: userData.firstName,
       lastName: userData.lastName,
-      edited: 
-        {
-          edited: false
-      },
+      edited: false,
       audioUrl: ''
       // messageType:
     };
@@ -124,7 +121,8 @@ const ChatRoom = ({ chatRoomId }) => {
                   firstName={message.firstName}
                   lastName={message.lastName}
                   audioUrl={message.audioUrl}
-                  
+                  sender={message.sender}
+                  edited={message.edited}
                 />
               );
             })}

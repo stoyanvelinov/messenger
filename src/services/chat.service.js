@@ -178,14 +178,13 @@ export const createMsg = async (input, sender, avatar = null, username, edited, 
     avatar: avatar,
     username: username,
     chatRoomId: chatRoomId,
-    edited: edited,
     firstName: firstName,
     lastName: lastName,
     audioUrl: audioUrl
   };
   const updates = {
     [`/messages/${msgId}`]: msgData,
-    [`/chatRooms/${chatRoomId}/messages/${msgId}`]: { edited: false }
+    [`/chatRooms/${chatRoomId}/messages/${msgId}`]: true
   };
   await update(ref(db), updates);
   await sendNotification(sender, chatRoomId, msgId, username);
@@ -193,10 +192,6 @@ export const createMsg = async (input, sender, avatar = null, username, edited, 
   return msgId;
 };
 
-
-  
-    
-    
 export const getLiveMsgByChatRoomId = (chatRoomId, listener) => {
   return onValue(ref(db, `/chatRooms/${chatRoomId}/messages`), snapshot => {
     const data = snapshot.exists() ? snapshot.val() : {};
@@ -211,4 +206,13 @@ export const getLiveMsgByChatRoomId = (chatRoomId, listener) => {
 
 export const getMsgById = (id) => {
   return get(ref(db, `messages/${id}`));
+};
+
+
+export const deleteMsg = async (msgId, chatRoomId) => {
+    const updates = {
+      [`/messages/${msgId}`]: null,
+      [`/chatRooms/${chatRoomId}/messages/${msgId}`]: null,
+    };
+    await update(ref(db), updates);
 };

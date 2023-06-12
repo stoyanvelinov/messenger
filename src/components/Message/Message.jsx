@@ -3,11 +3,11 @@ import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import MessagePopover from './MessagePopover';
 
-const Message = ({ timestamp, message, reactions, username, avatarUrl, prevSameUser, nextSameUser, msgId, firstName, lastName, audioUrl }) => {
+const Message = ({ timestamp, message, reactions, username, avatarUrl, prevSameUser, nextSameUser, msgId, firstName, lastName, audioUrl, sender, edited }) => {
   return (
     <Flex flexDirection='column' p={prevSameUser && nextSameUser ? '0 1rem' : nextSameUser ? '1rem 1rem 0' : prevSameUser ? '0 1rem 1rem' : '1rem'}>
       {prevSameUser ? (
-        <MessagePopover message={message} reactions={reactions} msgId={msgId} timestamp={timestamp} audioUrl={audioUrl} />
+        <MessagePopover message={message} reactions={reactions} msgId={msgId} timestamp={timestamp} audioUrl={audioUrl} sender={sender} edited={edited} />
       ) : (
         <>
           <Flex Flex flexDirection='row'>
@@ -24,7 +24,7 @@ const Message = ({ timestamp, message, reactions, username, avatarUrl, prevSameU
           <Box px='3rem'>
             <Divider maxW='9rem'  borderColor='primaryLight' />
           </Box>
-            <MessagePopover message={message} reactions={reactions} msgId={msgId} timestamp={timestamp} audioUrl={audioUrl}  />
+            <MessagePopover message={message} reactions={reactions} msgId={msgId} timestamp={timestamp} audioUrl={audioUrl} sender={sender} edited={edited} />
         </>
       )}
     </Flex>

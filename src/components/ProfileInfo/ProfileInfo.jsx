@@ -1,24 +1,22 @@
-import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Stack, useDisclosure, useToast } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Icon, Popover, PopoverArrow, PopoverBody,  PopoverContent, PopoverTrigger, useToast } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { AuthContext } from '../../context/authContext';
 import { EditIcon } from '@chakra-ui/icons';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import { updateUserAvatarUrl, updateUserProfile, updateUserStatus } from '../../services/users.service';
-// import { storeImage } from '../../services/image.service';
 import { STATUS } from '../common/status';
 import ProfileStatusIcon from './ProfileStatusIcon';
 import ProfileChangePassword from '../ProfileChangePassword/ProfileChangePassword';
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH, TOAST_DURATION } from '../common/constants';
-import { storeImage } from '../../services/image.service';
 
 const ProfileInfo = () => {
     const { user, userData, setUser } = useContext(AuthContext);
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const toast = useToast();
-    const [avatarUrl, setAvatarUrl] = useState('');
+    const [avatarUrl, setAvatarUrl] = useState(userData.avatarUrl);
     const [passForm, setPassForm] = useState({
         currentPass: null,
         newPass: null,
