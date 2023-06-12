@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import InfoBar from '../InfoBar/InfoBar';
@@ -18,7 +17,7 @@ const LandingBody = () => {
       display="flex"
       flexDirection={{ base: 'column', md: 'row' }} // Column layout on smaller screens, row layout on medium screens and above
     >
-      {showInfoBar && <InfoBar />} {/* Render InfoBar only when showInfoBar is true */}
+      {showInfoBar && <InfoBar />} Render InfoBar only when showInfoBar is true
       <Flex
         className='body-center'
         width={{ base: '100%', md: '35%' }} // Take full width on smaller screens, 35% width on medium screens and above

@@ -37,10 +37,8 @@ const ChatList = () => {
     },[]);
 
   const handleAddChatRoom = async (newUser) => {
-    console.log('newUser',newUser);
     try {
       const chR = await isOpenChatRoom(newUser);
-      console.log(chR);
       if (chR) {
         const chatRoomId = await toggleChatRoomVisibility(user.uid, chR);
         navigate(`/messages/${chatRoomId}`);
