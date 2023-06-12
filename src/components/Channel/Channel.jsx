@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
-import { Flex, Input, Text, IconButton, ButtonGroup, useToast, Box } from '@chakra-ui/react';
+import { Flex, Input, Text, IconButton, useToast } from '@chakra-ui/react';
 import ChannelUpdate from '../ChannelUpdate/ChannelUpdate';
 import { useNavigate } from 'react-router-dom';
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
@@ -62,25 +62,27 @@ const Channel = ({ channelId, channelName, team }) => {
         });
     };
 
-    if (isEditing) return (
-        <form onSubmit={handleSave}>
-            <Flex className="channel-editing" px={2} gap="0.2rem">
-                <Input
-                    className="channelNameInput"
-                    h="2.1em"
-                    fontSize="1.4em"
-                    type="text"
-                    value={form.channelName}
-                    onChange={handleChange}
-                    autoComplete='off' />
-                <ButtonGroup justifyContent='center' size='xs'>
-                    <IconButton bg="accent" _hover={{ bg: 'primary' }} type="submit" icon={<CheckIcon />} />
-                    <IconButton bg="primaryLight" _hover={{ bg: 'primary' }} onClick={handleCancel} icon={<CloseIcon />} />
-                </ButtonGroup>
-            </Flex>
-        </form >
-
-    );
+    if (isEditing) {
+        return (
+            <form onSubmit={handleSave}>
+                <Flex className="channel-editing" px={2} gap="0.2rem">
+                    <Input
+                        className="channelNameInput"
+                        flexGrow="1"
+                        h="2.2em"
+                        fontSize="1.4em"
+                        type="text"
+                        value={form.channelName}
+                        onChange={handleChange}
+                        autoComplete='off' />
+                    <Flex justifyContent='center' alignItems="center" gap="2px">
+                        <IconButton bg="accent" size="xs" _hover={{ bg: 'primary' }} type="submit" icon={<CheckIcon size="xs" />} />
+                        <IconButton bg="primaryLight" size="xs" _hover={{ bg: 'primary' }} onClick={handleCancel} icon={<CloseIcon size="xs" />} />
+                    </Flex>
+                </Flex>
+            </form >
+        );
+    }
 
     return (<Flex
         key={channelId}
