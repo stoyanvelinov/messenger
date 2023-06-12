@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react';
 import { Box } from '@chakra-ui/react';
+import { BiStopCircle, BiMicrophone, BiTrash } from 'react-icons/bi';
+
 
 const AudioRecorder = ({ setAudioFile, setIsTextAreaHidden, setAudioBlob, audioBlob }) => {
     const [recording, setRecording] = useState(false);
@@ -25,7 +27,6 @@ const AudioRecorder = ({ setAudioFile, setIsTextAreaHidden, setAudioBlob, audioB
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     setAudioBlob(audioBlob);
                     setAudioFile(audioBlob);
-                   
                 });
             })
             .catch(error => {
@@ -43,15 +44,18 @@ const AudioRecorder = ({ setAudioFile, setIsTextAreaHidden, setAudioBlob, audioB
         <Box>
         <div>
             {recording ? (
-                <button onClick={stopRecording}>Stop</button>
+                    <Box cursor='pointer' size='2rem' color='red' onClick={stopRecording} as={BiStopCircle}></Box>
             ) : (
-                <button onClick={startRecording}>Start</button>
+                        <Box cursor='pointer' size='2rem' onClick={startRecording} as={BiMicrophone}></Box>
             )}
-            {audioBlob && (
-                <audio controls src={URL.createObjectURL(audioBlob)} />
+                {audioBlob && (
+                    <Box>
+                        <audio controls src={URL.createObjectURL(audioBlob)} />
+                    <Box mt='5px' cursor='pointer' size='2rem'as={BiTrash} onClick={() => { setAudioFile(null); setAudioBlob(null); setIsTextAreaHidden(false); }}></Box>
+
+                    </Box>
             )}
         </div>
-            <Box mt='5px' border='solid' cursor='pointer' onClick={() => { setAudioFile(null); setAudioBlob(null); setIsTextAreaHidden(false); }}></Box>
         </Box>
         
     );

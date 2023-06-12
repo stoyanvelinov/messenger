@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Flex, Icon, Input, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Stack, useDisclosure, useToast } from '@chakra-ui/react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { AuthContext } from '../../context/authContext';
 import { EditIcon } from '@chakra-ui/icons';
@@ -11,12 +11,14 @@ import ProfileStatusIcon from './ProfileStatusIcon';
 import ProfileChangePassword from '../ProfileChangePassword/ProfileChangePassword';
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH, TOAST_DURATION } from '../common/constants';
+import { storeImage } from '../../services/image.service';
 
 const ProfileInfo = () => {
     const { user, userData, setUser } = useContext(AuthContext);
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const toast = useToast();
+    const [avatarUrl, setAvatarUrl] = useState('');
     const [passForm, setPassForm] = useState({
         currentPass: null,
         newPass: null,
@@ -112,16 +114,20 @@ const ProfileInfo = () => {
     };
 
 
-    const handleUploadImg = async (e) => {
-        const img = await storeImage(e.target.files[0], userData.username);
-        await updateUserAvatarUrl(user.uid, img);
-
-        //to do
+    const updateUserAvatar = async (userId, avatarUrl) => {
+        await updateUserAvatarUrl(userId, avatarUrl);
         setUser((prev) => ({
             ...prev,
-            userData: { ...prev.userData, avatar: newState }
+            userData: { ...prev.userData, avatar: avatarUrl },
         }));
     };
+
+    useEffect(() => {
+        updateUserAvatar(user.uid, avatarUrl);
+    }, [avatarUrl]);
+    
+
+    
 
     let style;
 
@@ -152,11 +158,12 @@ const ProfileInfo = () => {
 
                     <ProfileAvatar
                         name={`${userData.firstName} ${userData.lastName}`}
-                        status={userData.status}
                         src={userData.avatar}
                         size='xl'
+                        target={userData.username}
+                        updateState={setAvatarUrl}
                     />
-                    <Input id='avatar-img' type='file' accept='.jpg,.png,.jpeg' display='none' onChange={(e) => handleUploadImg(e)} />
+                    {/* <Input id='avatar-img' type='file' accept='.jpg,.png,.jpeg' display='none' onChange={(e) => handleUploadImg(e)} /> */}
                 </label>
                 <Popover placement='bottom-start' >
                     <PopoverTrigger>

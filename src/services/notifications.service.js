@@ -1,18 +1,12 @@
-import { ref, onValue } from '@firebase/database';
+import {
+    get,
+    set,
+    ref,
+    update,
+    onValue,
+    child,
+} from 'firebase/database';
 import { db } from '../config/firebase.config';
-import { getMsgById } from './chat.service';
-
-// export const getLiveUserNotification = (userUid, listener) => {
-//     return onValue(ref(db, `/users${userUid}/notifications`), snapshot => {
-//         const msgId = Object.keys(data);
-//         console.log(msgId,'msgIds');
-//         const msgPromises = msgId.map(id => getMsgById(id));
-//         Promise.all(msgPromises).then(msgSnapshot => {
-//             const messages = msgSnapshot.map(msg => msg.val());
-//             listener(messages);
-//         });
-//     });
-// };
 
 export const getLiveUserNotification = (userUid, listener) => {
     const userNotificationsRef = ref(db, `users/${userUid}/notifications`);
@@ -24,14 +18,34 @@ export const getLiveUserNotification = (userUid, listener) => {
     });
 };
 
-// export const getLiveMsgByChatRoomId = (chatRoomId, listener) => {
-//     return onValue(ref(db, `/chatRooms/${chatRoomId}/messages`), snapshot => {
-//         const data = snapshot.exists() ? snapshot.val() : {};
-//         const msgId = Object.keys(data);
-//         const msgPromises = msgId.map(id => getMsgById(id));
-//         Promise.all(msgPromises).then(msgSnapshot => {
-//             const messages = msgSnapshot.map(msg => msg.val());
-//             listener(messages);
-//         });
-//     });
-// };
+export const sendNotification = async (sender, chatRoomId, msgId, username) => {
+    const chatRoomMembersSnapshot = await get(ref(db, `/chatRooms/${chatRoomId}/members`));
+    const chatRoomMembers = chatRoomMembersSnapshot.exists() ? chatRoomMembersSnapshot.val() : {};
+
+    await Promise.all(Object.keys(chatRoomMembers).map(async memberUid => {
+        if (memberUid !== sender) {
+            const notificationRef = ref(db, `/users/${memberUid}/notifications`);
+            const existingNotificationSnapshot = await get(child(notificationRef, chatRoomId));
+
+            if (existingNotificationSnapshot.exists() && !existingNotificationSnapshot.val().isSeen) {
+                // Update the existing notification if it exists and is not seen
+                await update(notificationRef, {
+                    [chatRoomId]: {
+                        ...existingNotificationSnapshot.val(),
+                        timeStamp: Date.now(),
+                    },
+                });
+            } else {
+                // Create a new notification if the existing one doesn't exist or is already seen
+                await set(child(notificationRef, chatRoomId), {
+                    isSeen: false,
+                    timeStamp: Date.now(),
+                    sender: sender,
+                    chatRoomId: chatRoomId,
+                    msgId: msgId,
+                    username: username
+                });
+            }
+        }
+    }));
+};
