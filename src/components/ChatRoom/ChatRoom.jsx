@@ -6,6 +6,7 @@ import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service'
 import { getLiveUsersByChatRoomId } from '../../services/users.service';
 import { useParams } from 'react-router-dom';
 import TeamMembersSmallerScreen from '../TeamMembersSmallerScreen/TeamMembersSmallerScreen';
+import ChannelsSmallerScreen from '../ChannelsSmallerScreen/ChannelsSmallerScreen';
 
 
 const ChatRoom = () => {
@@ -89,6 +90,7 @@ const ChatRoom = () => {
     <Flex flexDirection="column" minWidth="250px" h="100%" >
       <Flex alignItems="center" as="header" h="3.6em" bg="tertiary" px="0.5rem" w="100%">
         <Box flexGrow={1}></Box>
+        {teamId && <ChannelsSmallerScreen />}
         {teamId && <TeamMembersSmallerScreen />}
       </Flex>
       <Box flexGrow="1" flexShrink="1" overflowY="auto" h="100%" px={5}>

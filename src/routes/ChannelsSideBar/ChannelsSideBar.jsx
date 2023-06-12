@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react';
 import { getLiveChannelsByTeamId } from '../../services/channels.service';
 import { Box, Flex } from '@chakra-ui/react';
 import { getLiveTeamInfo } from '../../services/teams.service';
-import { CHANNEL_NAME_MAX_LENGTH, CHANNEL_NAME_MIN_LENGTH } from '../../constants/constants';
 import Channel from '../../components/Channel/Channel';
 import { AuthContext } from '../../context/authContext';
 import CreateNewChannel from '../../components/CreateNewChannel/CreateNewChannel';
