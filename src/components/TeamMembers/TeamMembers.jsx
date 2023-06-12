@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
-import { Flex, HStack, IconButton, Text, useDisclosure, useToast } from '@chakra-ui/react';
+import { Flex, IconButton, useDisclosure, useToast, Box } from '@chakra-ui/react';
 import { getLiveTeamMemberIds, getTeamById } from '../../services/teams.service';
 import TeamMember from '../TeamMember/TeamMember';
 import { FiLoader, FiLogOut } from 'react-icons/fi';
 import AddTeamMembersDialog from '../AddTeamMembersDialog/AddTeamMembersDialog';
 import { AuthContext } from '../../context/authContext';
-import PropTypes from 'prop-types';
 import RemoveMemberDialog from '../RemoveMemberDialog/RemoveMemberDialog';
 import { useParams } from 'react-router-dom';
+import Scrollbars from 'react-custom-scrollbars-2';
 
 const TeamMembers = () => {
     const [memberIds, setMemberIds] = useState(null);
@@ -42,28 +42,27 @@ const TeamMembers = () => {
         return () => unsubscribe();
     }, [team]);
 
-    if (team === null) return <FiLoader />;
+    if (team === null || memberIds === null) return <FiLoader />;
 
-    return (<Flex direction="column" gap="1rem" w="100%">
-        <HStack justifyContent="space-between" bg="primaryLight" fontWeight="bold" fontSize="1.6rem" px={2} py="0.2rem">
-            <Text as="h2" >Members</Text>
-            {user.uid === team.teamOwner ? <AddTeamMembersDialog teamId={teamId} memberIds={memberIds} /> :
-                <IconButton icon={<FiLogOut fontSize="1rem" />} onClick={onOpen} bg="transparent" _hover={{ color: 'primaryDark', bg: 'transparent' }} />}
-            <RemoveMemberDialog isOpen={isOpen} onClose={onClose} uid={user.uid} teamId={teamId}
-                heading="Leave Team" message="Are you sure you want to leave the team?" />
-        </HStack>
-        <Flex direction="column" gap="0.5rem" >
-            {memberIds && memberIds.map(uid => {
-                return (<TeamMember key={uid} uid={uid} avatarSize="sm" team={team} />);
-            }
-            )}
-        </Flex>
-    </Flex>
-
+    return (
+        <>
+            <Flex justifyContent="space-between" alignItems="center" bg="primaryLight" pos="sticky" px={2} mb="0.6rem" py="0.2rem">
+                <Box as="h2" fontSize="1.6em" h="1.6em">Members</Box>
+                {user.uid === team.teamOwner ? <AddTeamMembersDialog teamId={teamId} memberIds={memberIds} /> :
+                    <IconButton icon={<FiLogOut fontSize="1rem" />} onClick={onOpen} bg="transparent" _hover={{ color: 'primaryDark', bg: 'transparent' }} />}
+                <RemoveMemberDialog isOpen={isOpen} onClose={onClose} uid={user.uid} teamId={teamId}
+                    heading="Leave Team" message="Are you sure you want to leave the team?" />
+            </Flex>
+            <Scrollbars style={{ height: '100%', width: '100%' }} autoHide>
+                <Flex direction="column" gap="0.5rem" overflowX="hidden" overflowY="auto">
+                    {memberIds && memberIds.map(uid => {
+                        return (<TeamMember key={uid} uid={uid} avatarSize="sm" team={team} />);
+                    }
+                    )}
+                </Flex>
+            </Scrollbars>
+        </>
     );
 };
 
-TeamMembers.propTypes = {
-    teamId: PropTypes.string.isRequired,
-};
 export default TeamMembers;

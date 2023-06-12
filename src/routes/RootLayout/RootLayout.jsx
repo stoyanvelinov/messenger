@@ -1,21 +1,22 @@
-import { Stack } from '@chakra-ui/react';
+import { Grid, GridItem } from '@chakra-ui/react';
 import Header from '../../components/Header/Header';
 import { Outlet } from 'react-router-dom';
 import SideBar from '../../components/SideBar/SideBar';
-import MainContent from '../../components/MainContent/MainContent';
 
 const RootLayout = () => {
 
     return (
-        <>
-            <SideBar />
-            <Stack h='100%' ml={{ base: 0, md: '6rem' }}>
+        <Grid h="100vh" templateRows="5rem auto" templateColumns={{ base: '1fr', md: '7rem auto' }} overflowY="hidden">
+            <GridItem rowStart="1" rowSpan="2" overflowY="hidden">
+                <SideBar />
+            </GridItem>
+            <GridItem colStart={{ base: '1', md: '2' }} colSpan={{ base: '2', md: '1' }} rowStart="1">
                 <Header />
-                {/* <Outlet /> */}
-                <MainContent />
-            </Stack>
-        </>
-
+            </GridItem>
+            <GridItem overflow="hidden" colStart={{ base: '1', md: '2' }} colSpan={{ base: '2', md: '1' }} rowStart="2">
+                <Outlet />
+            </GridItem>
+        </Grid >
     );
 };
 

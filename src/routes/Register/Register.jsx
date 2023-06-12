@@ -15,8 +15,8 @@ import PhoneNumberInput from '../../components/PhoneNumberInput/PhoneNumberInput
 import { COUNTRIES } from '../../services/countries';
 import { AttachmentIcon } from '@chakra-ui/icons';
 import './Register.css';
-import { validateForm } from '../../components/common/helperFuncs';
-import { TOAST_DURATION } from '../../components/common/constants';
+import { validateForm } from '../../common/helperFuncs.js';
+import { TOAST_DURATION } from '../../common/constants.js';
 import TermsModal from './TermsModal';
 import { updateInfo } from '../../services/infoBar.service';
 
@@ -59,7 +59,7 @@ const Register = () => {
 
     const onRegister = async (e) => {
         e.preventDefault();
-        
+
         try {
             if (!isChecked) {
                 customToast({
@@ -158,12 +158,12 @@ const Register = () => {
                                     <label htmlFor="avatar" id='avatarLabelRegister' >
                                         <AttachmentIcon boxSize={6} mr={2} cursor='pointer' />
                                         Attach Avatar
-                                    <Input id="avatar" display="none" type="file" onChange={updateImage} autoComplete="off" accept=".jpg,.png,.jpeg" />
+                                        <Input id="avatar" display="none" type="file" onChange={updateImage} autoComplete="off" accept=".jpg,.png,.jpeg" />
                                     </label>
-                                    {isFileAttached && <Box >{ isFileAttached.name }</Box>}
+                                    {isFileAttached && <Box >{isFileAttached.name}</Box>}
                                 </Box>
                             </Box>
-                            <Box display="flex"  w='100%'>
+                            <Box display="flex" w='100%'>
                                 <Checkbox isChecked={isChecked} onChange={(e) => setIsChecked(e.target.checked)}
                                 />
                                 <Link pl='0.4rem' onClick={onOpen}>I agree with Terms &amp; Conditions</Link>
@@ -176,7 +176,7 @@ const Register = () => {
                     </Text>
                 </Flex>
             </Container>
-            <TermsModal isOpen={ isOpen } onClose={ onClose } />
+            <TermsModal isOpen={isOpen} onClose={onClose} />
         </>
     );
 

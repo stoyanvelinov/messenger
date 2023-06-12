@@ -1,4 +1,4 @@
-import { Box, Tooltip, Text, Flex,  Divider, Image } from '@chakra-ui/react';
+import { Tooltip, Text, Flex, Divider, Image, useDisclosure } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { getLiveTeams } from '../../services/teams.service';
@@ -8,19 +8,24 @@ import messageIconHover from '../../assets/icons/icon-msg-hover.png';
 import { useNavigate } from 'react-router-dom';
 import TeamButton from '../TeamButton/TeamButton';
 import CreateTeam from '../CreateTeam/CreateTeam';
+import { useMediaQuery } from '@chakra-ui/react';
+import DirectMessagesSmallerScreen from '../DirectMessagesSmallerScreen/DirectMessagesSmallerScreen';
 
 const SideBar = () => {
     const { user, setUser } = useContext(AuthContext);
     const [teamIds, setTeamIds] = useState([]);
     const [iconMsg, setIconMsg] = useState(messageIcon);
     const navigate = useNavigate();
+    const [isSmallerThan991] = useMediaQuery('(max-width: 991px)');
+    const { isOpen, onClose, onOpen } = useDisclosure();
+
 
     useEffect(() => {
         const unsub = getLiveTeams(user.uid, (t) => setTeamIds([...t]));
         return () => unsub();
     }, [user.uid]);
 
-    const onOpen = (e) => {
+    const onOpenTeam = (e) => {
         const teamId = e.target.closest('span').getAttribute('data-team-id');
         navigate(`/teams/${teamId}`);
     };
@@ -32,19 +37,18 @@ const SideBar = () => {
             currentChatRoomId: null
         }));
 
+        if (isSmallerThan991) onOpen();
     };
 
     return (
-        <Box
+        <Flex
             bg="primaryDark"
             borderRight="1px"
             borderRightColor="primaryLight"
             display={{ base: 'none', md: 'block' }}
-            w={{ md: '6rem' }}
-            pos="fixed"
-            h="full"
-        // overflowY="scroll"
-        // overflowX="hidden"
+            w={{ md: '7rem' }}
+            overflowY="hidden"
+            overflowX="hidden"
         >
             <Text
                 display="flex"
@@ -55,28 +59,29 @@ const SideBar = () => {
                 Logo
             </Text>
             <Flex direction="column" p={2} gap="1rem" >
-                {/* <Box boxSize='sm'>
-                    <Image src={messageIcon}  boxSize='50px' alt='message icon' />
-                </Box> */}
                 <span>
                     <Tooltip label='Direct Messages' openDelay={300} placement="right">
-                        <Image src={iconMsg} 
-                            boxSize='50px'
+                        <Image src={iconMsg}
+                            boxSize='5em'
+                            cursor="pointer"
                             onMouseEnter={() => setIconMsg(messageIconHover)}
                             onMouseOut={() => setIconMsg(messageIcon)}
                             onClick={onOpenDirectMessages}
                             alt='message icon' />
                     </Tooltip>
                 </span>
+                <DirectMessagesSmallerScreen isOpen={isOpen} onClose={onClose} />
                 <span>
                     <Divider />
                 </span>
-                <CreateTeam/>
+                <CreateTeam />
+            </Flex>
+            <Flex id="teams" p={2} direction="column" gap="1rem" overflowY="auto" overflowX="hidden">
                 {teamIds.length > 0 && teamIds.map(teamId => {
-                    return <TeamButton key={teamId} onOpen={onOpen} teamId={teamId} uid={user.uid} />;
+                    return <TeamButton key={teamId} onOpen={onOpenTeam} teamId={teamId} uid={user.uid} />;
                 })}
             </Flex>
-        </Box >
+        </ Flex>
     );
 };
 

@@ -25,7 +25,7 @@ const TeamButton = ({ onOpen, teamId }) => {
             <Avatar
                 className="team-avatar"
                 data-team-id={teamId}
-                boxSize="4rem"
+                boxSize="4em"
                 name={team.teamName}
                 src={team.teamAvatar}
                 cursor="pointer"

@@ -5,7 +5,7 @@ import ProfileAvatar from '../ProfileAvatar/ProfileAvatar';
 import { deleteTeam, updateTeam } from '../../services/teams.service';
 import PropTypes from 'prop-types';
 import { useToast } from '@chakra-ui/react';
-import { TEAM_NAME_MIN_LENGTH, TEAM_NAME_MAX_LENGTH } from '../../constants/constants';
+import { TEAM_NAME_MIN_LENGTH, TEAM_NAME_MAX_LENGTH } from '../../common/constants.js';
 import { useNavigate } from 'react-router-dom';
 
 const TeamUpdate = ({ isDrawerOpen, onDrawerClose, team }) => {

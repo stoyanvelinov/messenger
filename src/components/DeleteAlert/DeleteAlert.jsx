@@ -8,7 +8,7 @@ const DeleteAlert = ({ isOpen, onClose, deleteFn, heading, id }) => {
     const { teamId, channelId } = useParams();
     const toast = useToast();
 
-    const handleDeleteTeam = async () => {
+    const handleDelete = async () => {
         try {
             onClose();
             await deleteFn(id);
@@ -44,7 +44,7 @@ const DeleteAlert = ({ isOpen, onClose, deleteFn, heading, id }) => {
                         <Button variant="outline" bg="primaryDark" _hover={{ bg: 'primaryMid' }} onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button bg='darkRed' _hover={{ bg: 'red' }} onClick={handleDeleteTeam} ml={3}>
+                        <Button bg='darkRed' _hover={{ bg: 'red' }} onClick={handleDelete} ml={3}>
                             Delete
                         </Button>
                     </AlertDialogFooter>

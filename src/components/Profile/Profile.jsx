@@ -16,7 +16,7 @@ import { AuthContext } from '../../context/authContext';
 import ProfileInfo from '../ProfileInfo/ProfileInfo';
 import { logout } from '../../services/auth.service';
 import { updateUserStatus } from '../../services/users.service';
-import { STATUS } from '../common/status';
+import { STATUS } from '../../common/status';
 import { useNavigate } from 'react-router-dom';
 import UserAvatar from '../../UserAvatar/UserAvatar';
 

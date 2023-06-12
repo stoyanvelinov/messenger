@@ -1,7 +1,7 @@
 import { IconButton, Box, Input, useOutsideClick, useToast, PopoverTrigger, PopoverBody, PopoverContent, Portal, PopoverHeader, PopoverCloseButton, FormControl, FormHelperText, Popover, Tooltip } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useRef, useState } from 'react';
-import { CHANNEL_NAME_MAX_LENGTH, CHANNEL_NAME_MIN_LENGTH } from '../../constants/constants';
+import { CHANNEL_NAME_MAX_LENGTH, CHANNEL_NAME_MIN_LENGTH } from '../../common/constants.js';
 import { addNewChannel } from '../../services/channels.service';
 import { useParams } from 'react-router-dom';
 

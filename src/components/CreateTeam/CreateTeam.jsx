@@ -2,7 +2,7 @@ import { Box, IconButton, Tooltip, Input, FormControl, FormLabel, FormHelperText
 import { TriangleDownIcon } from '@chakra-ui/icons';
 import { useContext, useRef, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
-import { TEAM_NAME_MAX_LENGTH, TEAM_NAME_MIN_LENGTH } from '../../constants/constants';
+import { TEAM_NAME_MAX_LENGTH, TEAM_NAME_MIN_LENGTH } from '../../common/constants.js';
 import { getTeamByName, createTeam, addMemberToTeam } from '../../services/teams.service';
 import { storeImage } from '../../services/image.service';
 import { AuthContext } from '../../context/authContext';
@@ -72,11 +72,11 @@ const CreateTeam = () => {
         <PopoverTrigger>
             <span><Tooltip label="Add Team" placement="right">
                 <IconButton
-                    icon={<TriangleDownIcon boxSize="2rem" />}
+                    icon={<TriangleDownIcon boxSize="2em" />}
                     aria-label='create team'
                     bg='accent'
                     borderRadius="50%"
-                    boxSize="4rem"
+                    boxSize="5em"
                     _hover={{ bg: 'primaryLight', color: 'primaryDark' }}
                 /></Tooltip></span>
         </PopoverTrigger>

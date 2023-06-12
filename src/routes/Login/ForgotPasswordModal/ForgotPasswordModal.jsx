@@ -13,7 +13,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
-import { TOAST_DURATION } from '../../../components/common/constants';
+import { TOAST_DURATION } from '../../../common/constants.js';
 
 const ForgotPasswordModal = ({ isModalOpen, onModalClose }) => {
   const [email, setEmail] = useState('');

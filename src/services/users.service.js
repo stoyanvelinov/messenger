@@ -11,7 +11,7 @@ import {
 } from 'firebase/database';
 import { db } from '../config/firebase.config';
 import { Timestamp } from 'firebase/firestore';
-import { STATUS } from '../components/common/status';
+import { STATUS } from '../common/status';
 
 export const getUserByHandle = (handle) => {
   return get(ref(db, `users/${handle}`));
@@ -32,16 +32,16 @@ export const getUserById = (uid) => {
 
 export const getUserValueByUsername = (username) => {
   return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)))
-          .then((snapshot) => { 
-            if (snapshot.exists()) {
-              return Object.keys(snapshot.val())[0];
-            }
-            return null;
-          })
-          .catch(error => {
-            console.error('Error getting user:', error);
-            return null; // Return null in case of an error
-          });
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        return Object.keys(snapshot.val())[0];
+      }
+      return null;
+    })
+    .catch(error => {
+      console.error('Error getting user:', error);
+      return null; // Return null in case of an error
+    });
 };
 
 export const getUserByEmail = (email) => {

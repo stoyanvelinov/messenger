@@ -13,14 +13,14 @@ import {
     Text,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import { SPOONACULAR_API_KEY } from '../../components/common/constants';
+import { SPOONACULAR_API_KEY } from '../../common/constants.js';
 
 const TermsModal = ({ isOpen, onClose }) => {
     const [recipes, setRecipes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const contentRef = useRef(null);
-    
+
 
     // fetch one random recipe
     const fetchRandomRecipe = async () => {
@@ -46,7 +46,7 @@ const TermsModal = ({ isOpen, onClose }) => {
             fetchRandomRecipe();
         }
     }, [isOpen]);
-    
+
     const handleScroll = () => {
         //     if (isOpen) {
         //     const contentElement = contentRef.current;
@@ -97,7 +97,7 @@ const TermsModal = ({ isOpen, onClose }) => {
                                 </Text>
                             ) : (
                                 <>
-                                        <Text mt='1rem' fontWeight="bold" color="primaryLight" >
+                                    <Text mt='1rem' fontWeight="bold" color="primaryLight" >
                                         Recipes:
                                     </Text>
 
@@ -105,7 +105,7 @@ const TermsModal = ({ isOpen, onClose }) => {
                                     {recipes.map((recipe) => (
                                         <Box key={recipe.id} mt='1rem' p='1rem' bg="primaryLight" borderRadius='0.3rem'>
                                             <Text fontWeight="bold">{recipe.title}</Text>
-                                            <Text dangerouslySetInnerHTML={{ __html: recipe.instructions }} p='1rem'/>
+                                            <Text dangerouslySetInnerHTML={{ __html: recipe.instructions }} p='1rem' />
                                         </Box>
                                     ))}
 

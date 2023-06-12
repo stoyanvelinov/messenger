@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import InfoBar from '../InfoBar/InfoBar';
 import Carousel from '../Carousel/Carousel';
 import './LandingBody.css'
-import { LANDING_TEXT } from '../../common/constants';
+import { LANDING_TEXT } from '../../../common/constants.js';
 
 const LandingBody = () => {
   const showInfoBar = useBreakpointValue({ base: false, md: true }); // Show InfoBar on medium screens and above

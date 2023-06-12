@@ -5,14 +5,14 @@ import { Flex } from '@chakra-ui/layout';
 import { AuthContext } from '../../context/authContext';
 import { createReaction, deleteReaction } from '../../services/reactions.service';
 import { DeleteIcon } from '@chakra-ui/icons';
-import { emojiArr, getEmoji } from '../../constants/constants';
+import { emojiArr, getEmoji } from '../../common/constants.js';
 import { deleteMsg } from '../../services/chat.service';
 
 const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, sender }) => {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const { user, userData, currentChatRoomId } = useContext(AuthContext);
     const [isMyMsg, setIsMyMsg] = useState(false);
-    
+
     const handleEmojiClick = async (emojiLabel) => {
         const found = Object.values(reactions).find(e => e.reactedUserId === user.uid);
         const alreadyReacted = Object.values(reactions).find(e => e.emojiLabel === emojiLabel);
@@ -31,12 +31,12 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
             setIsMyMsg(true);
         }
     };
-    
+
     const handleDeleteMsg = async () => {
         await deleteMsg(msgId, currentChatRoomId);
     };
 
-    
+
     return (
         <Popover
             isOpen={isPopoverOpen}
@@ -64,13 +64,13 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
                             placement='left'
                         >
                             {message ? (
-                                        <Text opacity={0.8}>{message} </Text>
-                                    ) : (
-                                        <audio controls>
-                                            <source src={audioUrl} type="audio/mpeg" />
-                                            Your browser does not support the audio element.
-                                        </audio>
-                                    )}
+                                <Text opacity={0.8}>{message} </Text>
+                            ) : (
+                                <audio controls>
+                                    <source src={audioUrl} type="audio/mpeg" />
+                                    Your browser does not support the audio element.
+                                </audio>
+                            )}
                         </Tooltip>
                         <Flex direction='row'>
                             {Object.values(reactions).map((e) => (

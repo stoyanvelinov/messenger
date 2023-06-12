@@ -1,5 +1,5 @@
 import { Icon } from '@chakra-ui/react';
-import { STATUS } from '../common/status';
+import { STATUS } from '../../common/status';
 import PropTypes from 'prop-types';
 
 

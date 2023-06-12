@@ -3,7 +3,6 @@ import {
   Box,
   Flex,
   Button,
-  FormControl,
   Textarea,
 } from '@chakra-ui/react';
 import { AuthContext } from '../../context/authContext';
@@ -11,6 +10,9 @@ import { createMsg, getLiveMsgByChatRoomId, } from '../../services/chat.service'
 import Message from '../Message/Message';
 import AudioRecorder from '../AudioRecorder/AurdioRecorder';
 import { storeAudio } from '../../services/audio.service';
+import { useParams } from 'react-router-dom';
+import TeamMembersSmallerScreen from '../TeamMembersSmallerScreen/TeamMembersSmallerScreen';
+import ChannelsSmallerScreen from '../ChannelsSmallerScreen/ChannelsSmallerScreen';
 
 
 const ChatRoom = ({ chatRoomId }) => {
@@ -21,7 +23,9 @@ const ChatRoom = ({ chatRoomId }) => {
   const [isTextAreaHidden, setIsTextAreaHidden] = useState(false);
   const { user, userData, currentChatRoomId } = useContext(AuthContext);
   const [audioBlob, setAudioBlob] = useState(null);
+  const { teamId } = useParams();
 
+  // Listen for messages received
   useEffect(() => {
     const unsubscribeMessages = getLiveMsgByChatRoomId(chatRoomId, (c) => setMessages([...c]));
 
@@ -33,12 +37,9 @@ const ChatRoom = ({ chatRoomId }) => {
     scrollToBottom();
   }, [messages]);
 
-
-
   // Function to handle message submission
   const sendMessage = async event => {
     event.preventDefault();
-
 
     const data = {
       message: input,
@@ -50,10 +51,9 @@ const ChatRoom = ({ chatRoomId }) => {
       lastName: userData.lastName,
       edited: false,
       audioUrl: ''
-      // messageType:
     };
 
-    if (audioFile) {////////////////
+    if (audioFile) {
       try {
         const audioUrl = await storeAudio(audioFile, chatRoomId);
         data.audioUrl = audioUrl;
@@ -62,7 +62,7 @@ const ChatRoom = ({ chatRoomId }) => {
         return;
       }
     }
-    
+
     if (isValidMessage(input)) {
       //add error handling
       await createMsg(input, data.sender, data.avatarUrl, data.username, data.edited, currentChatRoomId, data.firstName, data.lastName, data.audioUrl);//////////
@@ -80,7 +80,7 @@ const ChatRoom = ({ chatRoomId }) => {
     if (input.trim() === '' && !audioFile) {
       validMessage = false;
     }
-      return validMessage;
+    return validMessage;
   };
 
   // Allow user to press Enter to send messages
@@ -95,62 +95,54 @@ const ChatRoom = ({ chatRoomId }) => {
     scrollToMyRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-//   const logout = () => {
-//     handleLogout(() => {
-//       history.push('/login');
-//     });
-//   };
-
-  return (
-    <Flex fontSize="md" flexDirection="column">
-      <Flex h="93vh" flexDirection="column" p={5}>
-        <Flex h="70vh" mb={5} flexDirection="column" overflowY="auto">
-          <Box >
-            {messages.map((message, index) => {
-              return (
-                <Message
-                  key={message.msgId}
-                  prevSameUser={messages?.[index - 1]?.sender === message.sender}
-                  nextSameUser={messages?.[index + 1]?.sender === message.sender}
-                  message={message.message}
-                  avatarUrl={message.avatar}
-                  username={message.username}
-                  reactions={message.reactions}
-                  timestamp={message.timestamp}
-                  msgId={message.msgId}
-                  firstName={message.firstName}
-                  lastName={message.lastName}
-                  audioUrl={message.audioUrl}
-                  sender={message.sender}
-                  edited={message.edited}
-                />
-              );
-            })}
-            <div ref={scrollToMyRef} />
-          </Box>
-        </Flex>
-        <FormControl>
-          <Flex justifyContent="center" alignItems="center" flexDirection="row">
-            {!isTextAreaHidden && <Textarea
-              w="50vw"
-              placeholder="Enter message"
-              value={input}
-              onChange={event => {
-                setInput(event.target.value);
-              }}
-              onKeyPress={e => handleKeyPress(e)}
-              size="sm"
-              resize="none"
-            />}
-            <AudioRecorder setAudioFile={setAudioFile} setIsTextAreaHidden={setIsTextAreaHidden} setAudioBlob={setAudioBlob} audioBlob={audioBlob} />
-            <Button h={20} w={150} m={5} onClick={e => sendMessage(e)}>
-              Send Message
-            </Button>
-          </Flex>
-        </FormControl>
-      </Flex>
+  return (<><Flex flexDirection="column" minWidth="250px" h="100%" >
+    <Flex alignItems="center" as="header" h="3.6em" bg="tertiary" px="0.5rem" w="100%">
+      <Box flexGrow={1}></Box>
+      {teamId && <ChannelsSmallerScreen />}
+      {teamId && <TeamMembersSmallerScreen />}
     </Flex>
-  );
+    <Box flexGrow="1" flexShrink="1" overflowY="auto" h="100%" px={5}>
+      {messages.map((message, index) => {
+        return (
+          <Message
+            key={message.msgId}
+            prevSameUser={messages?.[index - 1]?.sender === message.sender}
+            nextSameUser={messages?.[index + 1]?.sender === message.sender}
+            message={message.message}
+            avatarUrl={message.avatar}
+            username={message.username}
+            reactions={message.reactions}
+            timestamp={message.timestamp}
+            msgId={message.msgId}
+            firstName={message.firstName}
+            lastName={message.lastName}
+            audioUrl={message.audioUrl}
+            sender={message.sender}
+          />
+        );
+      })}
+      <div ref={scrollToMyRef} />
+    </Box>
+    <Flex className="text-input" px={{ base: '1rem', lg: '1.5rem', '2xl': '3.5rem' }} minHeight="4.5rem" minWidth="12.5rem" gap="1rem" justifyContent="center" alignItems="center"  >
+      {!isTextAreaHidden && <Textarea
+        minHeight="2.5rem"
+        minWidth="11.5rem"
+        w="90%"
+        placeholder="Enter message"
+        value={input}
+        onChange={event => {
+          setInput(event.target.value);
+        }}
+        onKeyPress={e => handleKeyPress(e)}
+        resize="none"
+      />}
+      <AudioRecorder setAudioFile={setAudioFile} setIsTextAreaHidden={setIsTextAreaHidden} setAudioBlob={setAudioBlob} audioBlob={audioBlob} />
+      <Button bg="accent" _hover={{ bg: 'primaryLight', color: 'primaryDark' }} minHeight="40px" minWidth="30px" maxWidth="85%" onClick={e => sendMessage(e)}>
+        Send
+      </Button>
+    </Flex>
+  </Flex >
+  </>);
 };
 
 export default ChatRoom;

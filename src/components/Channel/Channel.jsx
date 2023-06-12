@@ -1,11 +1,11 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
-import { Flex, Input, Text, IconButton, ButtonGroup, useToast, Box } from '@chakra-ui/react';
+import { Flex, Input, Text, IconButton, useToast } from '@chakra-ui/react';
 import ChannelUpdate from '../ChannelUpdate/ChannelUpdate';
 import { useNavigate } from 'react-router-dom';
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import { updateChannel } from '../../services/channels.service';
-import { CHANNEL_NAME_MIN_LENGTH, CHANNEL_NAME_MAX_LENGTH } from '../../constants/constants';
+import { CHANNEL_NAME_MIN_LENGTH, CHANNEL_NAME_MAX_LENGTH } from '../../common/constants.js';
 import PropTypes from 'prop-types';
 import './Channel.css';
 
@@ -21,7 +21,7 @@ const Channel = ({ channelId, channelName, team, channelChatRoom }) => {
     const setActiveChannel = (id) => {
         document.querySelectorAll('.channel').forEach(c => c.classList.remove('active'));
         document.querySelector(`#${id}`).classList.add('active');
-        
+
     };
 
     const goToChannel = (e) => {
@@ -67,25 +67,27 @@ const Channel = ({ channelId, channelName, team, channelChatRoom }) => {
         });
     };
 
-    if (isEditing) return (
-        <form onSubmit={handleSave}>
-            <Flex className="channel-editing" px={2} gap="0.2rem">
-                <Input
-                    className="channelNameInput"
-                    h="2.1em"
-                    fontSize="1.4em"
-                    type="text"
-                    value={form.channelName}
-                    onChange={handleChange}
-                    autoComplete='off' />
-                <ButtonGroup justifyContent='center' size='xs'>
-                    <IconButton bg="accent" _hover={{ bg: 'primary' }} type="submit" icon={<CheckIcon />} />
-                    <IconButton bg="primaryLight" _hover={{ bg: 'primary' }} onClick={handleCancel} icon={<CloseIcon />} />
-                </ButtonGroup>
-            </Flex>
-        </form >
-
-    );
+    if (isEditing) {
+        return (
+            <form onSubmit={handleSave}>
+                <Flex className="channel-editing" px={2} gap="0.2rem">
+                    <Input
+                        className="channelNameInput"
+                        flexGrow="1"
+                        h="2.2em"
+                        fontSize="1.4em"
+                        type="text"
+                        value={form.channelName}
+                        onChange={handleChange}
+                        autoComplete='off' />
+                    <Flex justifyContent='center' alignItems="center" gap="2px">
+                        <IconButton bg="accent" size="xs" _hover={{ bg: 'primary' }} type="submit" icon={<CheckIcon size="xs" />} />
+                        <IconButton bg="primaryLight" size="xs" _hover={{ bg: 'primary' }} onClick={handleCancel} icon={<CloseIcon size="xs" />} />
+                    </Flex>
+                </Flex>
+            </form >
+        );
+    }
 
     return (<Flex
         key={channelId}
@@ -106,6 +108,7 @@ Channel.propTypes = {
         teamId: PropTypes.string.isRequired,
         teamOwner: PropTypes.string.isRequired,
     }).isRequired,
+    channelChatRoom: PropTypes.string.isRequired
 };
 
 export default Channel;
