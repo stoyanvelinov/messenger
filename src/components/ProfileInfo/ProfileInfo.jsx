@@ -16,7 +16,7 @@ const ProfileInfo = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const toast = useToast();
-    const [avatarUrl, setAvatarUrl] = useState(userData.avatarUrl);
+    const [avatarUrl, setAvatarUrl] = useState(userData.avatar);
     const [passForm, setPassForm] = useState({
         currentPass: null,
         newPass: null,
@@ -121,6 +121,7 @@ const ProfileInfo = () => {
     };
 
     useEffect(() => {
+        console.log(avatarUrl, 'sss');
         updateUserAvatar(user.uid, avatarUrl);
     }, [avatarUrl]);
 

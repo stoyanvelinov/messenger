@@ -35,12 +35,11 @@ const Header = () => {
         px="4"
         top="0"
         height="5rem"
-        zIndex="1"
+        zIndex="11"
         alignItems="center"
         borderBottomWidth="1px"
         borderBottomColor="primaryLight"
         justifyContent={{ base: 'space-between' }}
-        style={{ zIndex: '999' }}
         position='relative'
     >
         <IconButton
