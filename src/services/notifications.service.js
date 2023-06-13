@@ -22,7 +22,6 @@ export const getLiveUserNotificationByChatRoom = (chatRoomId, userId, listener) 
 
     return onValue(chatRoomNotification, snapshot => {
         const data = snapshot.exists() ? snapshot.val() : {};
-        console.log(data,'datanotification');
         listener(data);
     });
 };

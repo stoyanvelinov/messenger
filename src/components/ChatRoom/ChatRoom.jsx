@@ -33,7 +33,6 @@ const ChatRoom = ({ chatRoomId }) => {
     const unsubscribeUserNotification = getLiveUserNotificationByChatRoom(chatRoomId, user.uid, (c) => setNotification({ ...c }));
     return () => { unsubscribeMessages(), unsubscribeUserNotification(); };
   }, [chatRoomId]);
-  console.log(notifications,'notification');
   
   useEffect(() => {
     if (!!chatRoomId && notifications?.chatRoomId === chatRoomId) {
