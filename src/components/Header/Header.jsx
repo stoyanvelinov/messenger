@@ -18,15 +18,7 @@ const Header = () => {
         const un1 = getLiveUserNotification(user.uid, (c) => setNotifications([...c]));
         return () => un1();
     }, [user.uid]);
-    useEffect(() => {
-        const updateUserNotificationAsync = async () => {
-            if (currentChatRoomId === notifications.chatRoomId) {
-                await updateUserNotification(user.uid, currentChatRoomId);
-            }
-        };
 
-        updateUserNotificationAsync();
-    }, [currentChatRoomId, notifications, user.uid]);
     const unseenNotifications = notifications.filter((c) => !c.isSeen && c.chatRoomId !== currentChatRoomId);
 
     return (<Flex

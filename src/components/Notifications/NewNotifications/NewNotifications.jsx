@@ -13,7 +13,7 @@ const NewNotifications = ({ unseenNotifications }) => {
             await updateUserNotification(uid, chatRoomId);
 
             //check if chatRoom is in team and navigate correctly
-            // navigate(`/messages/${chatRoomId}`);
+            navigate(`/messages/${chatRoomId}`);
             setUser((prev) => ({
                 ...prev,
                 currentChatRoomId: chatRoomId

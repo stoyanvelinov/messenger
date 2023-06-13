@@ -13,25 +13,35 @@ import { storeAudio } from '../../services/audio.service';
 import { useParams } from 'react-router-dom';
 import TeamMembersSmallerScreen from '../TeamMembersSmallerScreen/TeamMembersSmallerScreen';
 import ChannelsSmallerScreen from '../ChannelsSmallerScreen/ChannelsSmallerScreen';
+import { getLiveUserNotificationByChatRoom } from '../../services/notifications.service';
+import { updateUserNotification } from '../../services/users.service';
 
 
 const ChatRoom = ({ chatRoomId }) => {
   const [input, setInput] = useState('');
   const scrollToMyRef = useRef(null);
   const [messages, setMessages] = useState([]);
-  const [audioFile, setAudioFile] = useState(null);///////////////////////////
+  const [audioFile, setAudioFile] = useState(null);
   const [isTextAreaHidden, setIsTextAreaHidden] = useState(false);
   const { user, userData, currentChatRoomId } = useContext(AuthContext);
   const [audioBlob, setAudioBlob] = useState(null);
   const { teamId } = useParams();
-
+  const [notifications, setNotification] = useState(null);
   // Listen for messages received
   useEffect(() => {
     const unsubscribeMessages = getLiveMsgByChatRoomId(chatRoomId, (c) => setMessages([...c]));
-
-    return () => unsubscribeMessages();
+    const unsubscribeUserNotification = getLiveUserNotificationByChatRoom(chatRoomId, user.uid, (c) => setNotification({ ...c }));
+    return () => { unsubscribeMessages(), unsubscribeUserNotification(); };
   }, [chatRoomId]);
-
+  console.log(notifications,'notification');
+  
+  useEffect(() => {
+    if (!!chatRoomId && notifications?.chatRoomId === chatRoomId) {
+      (async () => {
+        await updateUserNotification(user.uid, chatRoomId);
+      })();
+    } 
+  }, [notifications]);
   // Scroll to the bottom of the element upon message submission
   useEffect(() => {
     scrollToBottom();

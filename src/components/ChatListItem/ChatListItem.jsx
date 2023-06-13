@@ -16,8 +16,8 @@ const ChatListItem = ({ chatRoomId, handleRemoveFromList }) => {
       ...prev,
       currentChatRoomId: chatRoomId
     }));
+    await updateUserNotification(user.uid, chatRoomId);
     navigate(`/messages/${chatRoomId}`);
-    await updateUserNotification(user.uid, currentChatRoomId);
   };
   useEffect(()=>{
     const unsubscribe = getLiveUsersByChatRoomId( chatRoomId , (members)=>{
