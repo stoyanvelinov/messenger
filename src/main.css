@@ -27,3 +27,7 @@ html {
 ::-webkit-scrollbar-thumb {
     background-color: rgba(18, 33, 60, 0.3);
 }
+
+body {
+    overflow: hidden;
+}

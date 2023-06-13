@@ -123,7 +123,7 @@ const ChatRoom = ({ chatRoomId }) => {
       })}
       <div ref={scrollToMyRef} />
     </Box>
-    <Flex className="text-input" px={{ base: '1rem', lg: '1.5rem', '2xl': '3.5rem' }} minHeight="4.5rem" minWidth="12.5rem" gap="1rem" justifyContent="center" alignItems="center"  >
+    <Flex className="text-input" backgroundColor='primaryMid' style={{ zIndex: 999 }} px={{ base: '1rem', lg: '1.5rem', '2xl': '3.5rem' }} minHeight="4.5rem" minWidth="12.5rem" gap="1rem" justifyContent="center" alignItems="center"  >
       {!isTextAreaHidden && <Textarea
         minHeight="2.5rem"
         minWidth="11.5rem"

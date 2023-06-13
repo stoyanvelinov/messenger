@@ -38,11 +38,12 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
 
 
     return (
+        <div onScroll={() => setIsPopoverOpen(false)}>
         <Popover
             isOpen={isPopoverOpen}
             onClose={() => setIsPopoverOpen(false)}
             onOpen={() => setIsPopoverOpen(true)}
-            placement='bottom-start'
+            placement='top-start'
         >
             <PopoverTrigger>
                 <Flex w='30vh' direction='column'>
@@ -115,7 +116,8 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
                     )}
                 </PopoverBody>
             </PopoverContent>
-        </Popover>
+            </Popover>
+        </div>
     );
 };
 

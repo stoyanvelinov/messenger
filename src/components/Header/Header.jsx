@@ -40,6 +40,8 @@ const Header = () => {
         borderBottomWidth="1px"
         borderBottomColor="primaryLight"
         justifyContent={{ base: 'space-between' }}
+        style={{ zIndex: '999' }}
+        position='relative'
     >
         <IconButton
             icon={<HamburgerIcon />}
