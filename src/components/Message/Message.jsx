@@ -10,8 +10,8 @@ const Message = ({ timestamp, message, reactions, username, avatarUrl, prevSameU
         <MessagePopover message={message} reactions={reactions} msgId={msgId} timestamp={timestamp} audioUrl={audioUrl} sender={sender} edited={edited} />
       ) : (
         <>
-          <Flex Flex flexDirection='row'>
-            <Avatar name={`${firstName} ${lastName}`} src={avatarUrl}  />
+          <Flex flexDirection='row'>
+            <Avatar name={`${firstName} ${lastName}`} src={avatarUrl} />
             <Flex alignItems='flex-start' flexDirection='column'>
               <Box ml='0.5rem' fontSize='1.4rem'>
                 {`${username}`}
@@ -22,9 +22,9 @@ const Message = ({ timestamp, message, reactions, username, avatarUrl, prevSameU
             </Flex>
           </Flex>
           <Box px='3rem'>
-            <Divider maxW='9rem'  borderColor='primaryLight' />
+            <Divider maxW='9rem' borderColor='primaryLight' />
           </Box>
-            <MessagePopover message={message} reactions={reactions} msgId={msgId} timestamp={timestamp} audioUrl={audioUrl} sender={sender} edited={edited} />
+          <MessagePopover message={message} reactions={reactions} msgId={msgId} timestamp={timestamp} audioUrl={audioUrl} sender={sender} edited={edited} />
         </>
       )}
     </Flex>
