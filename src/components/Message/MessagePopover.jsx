@@ -7,6 +7,7 @@ import { createReaction, deleteReaction } from '../../services/reactions.service
 import { DeleteIcon } from '@chakra-ui/icons';
 import { emojiArr, getEmoji } from '../../common/constants.js';
 import { deleteMsg } from '../../services/chat.service';
+import '../AudioRecorder/AudioRecorder.css'; 
 
 const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, sender }) => {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -67,7 +68,7 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
                             {message ? (
                                 <Text opacity={0.8}>{message} </Text>
                             ) : (
-                                <audio controls>
+                                <audio controls id='audio-controls'>
                                     <source src={audioUrl} type="audio/mpeg" />
                                     Your browser does not support the audio element.
                                 </audio>
