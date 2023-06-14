@@ -4,7 +4,6 @@ import Profile from '../Profile/Profile';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { getLiveUserNotification } from '../../services/notifications.service';
-import { updateUserNotification } from '../../services/users.service';
 import NewNotifications from '../Notifications/NewNotifications/NewNotifications';
 import AllNotifications from '../Notifications/AllNotifications/AllNotifications';
 import SmallScreenMenu from '../SmallScreenMenu/SmallScreenMenu';
@@ -18,15 +17,7 @@ const Header = () => {
         const un1 = getLiveUserNotification(user.uid, (c) => setNotifications([...c]));
         return () => un1();
     }, [user.uid]);
-    useEffect(() => {
-        const updateUserNotificationAsync = async () => {
-            if (currentChatRoomId === notifications.chatRoomId) {
-                await updateUserNotification(user.uid, currentChatRoomId);
-            }
-        };
 
-        updateUserNotificationAsync();
-    }, [currentChatRoomId, notifications, user.uid]);
     const unseenNotifications = notifications.filter((c) => !c.isSeen && c.chatRoomId !== currentChatRoomId);
 
     return (<Flex
@@ -35,11 +26,12 @@ const Header = () => {
         px="4"
         top="0"
         height="5rem"
-        zIndex="1"
+        zIndex="11"
         alignItems="center"
         borderBottomWidth="1px"
         borderBottomColor="primaryLight"
         justifyContent={{ base: 'space-between' }}
+        position='relative'
     >
         <IconButton
             icon={<HamburgerIcon />}

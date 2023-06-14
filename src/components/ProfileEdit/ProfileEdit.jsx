@@ -31,7 +31,6 @@ const ProfileEdit = ({ form, setForm }) => {
 
 ProfileEdit.propTypes = {
   form: PropTypes.shape({
-    email: PropTypes.string.isRequired,
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,

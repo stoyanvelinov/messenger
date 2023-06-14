@@ -16,16 +16,17 @@ function App() {
     currentChatRoomId: null
   });
 
-  if (appState.user !== user) {
-    setAppState({ user });
-  }
+  // if (appState.user !== user) {
+  //   setAppState({ user });
+  // }
+
 
   useEffect(() => {
     if (user === null) return;
 
     getUserData(user.uid)
       .then(snapshot => {
-
+        
         if (!snapshot.exists()) {
           throw new Error('Something went wrong!');
         }
@@ -33,14 +34,12 @@ function App() {
 
         setAppState({
           ...appState,
+          user,
           userData: { ...snapshot.val()[Object.keys(snapshot.val())[0]], status: STATUS.ONLINE },
         });
       })
       .catch(e => alert(e.message));
 
-    // return () => {
-    //   updateUserStatus(user.uid, STATUS.OFFLINE);
-    // };
   }, [user]);
 
   return (

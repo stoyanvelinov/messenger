@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react';
+import PropTypes from 'prop-types';
 import {
   Box,
   Flex,
@@ -13,25 +14,39 @@ import { storeAudio } from '../../services/audio.service';
 import { useParams } from 'react-router-dom';
 import TeamMembersSmallerScreen from '../TeamMembersSmallerScreen/TeamMembersSmallerScreen';
 import ChannelsSmallerScreen from '../ChannelsSmallerScreen/ChannelsSmallerScreen';
+import { getLiveUserNotificationByChatRoom } from '../../services/notifications.service';
+import { updateUserNotification } from '../../services/users.service';
 
 
 const ChatRoom = ({ chatRoomId }) => {
   const [input, setInput] = useState('');
   const scrollToMyRef = useRef(null);
   const [messages, setMessages] = useState([]);
-  const [audioFile, setAudioFile] = useState(null);///////////////////////////
+  const [audioFile, setAudioFile] = useState(null);
   const [isTextAreaHidden, setIsTextAreaHidden] = useState(false);
   const { user, userData, currentChatRoomId } = useContext(AuthContext);
   const [audioBlob, setAudioBlob] = useState(null);
   const { teamId } = useParams();
-
+  const [notifications, setNotification] = useState(null);
   // Listen for messages received
   useEffect(() => {
     const unsubscribeMessages = getLiveMsgByChatRoomId(chatRoomId, (c) => setMessages([...c]));
-
-    return () => unsubscribeMessages();
+    const unsubscribeUserNotification = getLiveUserNotificationByChatRoom(chatRoomId, user.uid, (c) => setNotification({ ...c }));
+    return () => { unsubscribeMessages(), unsubscribeUserNotification(); };
   }, [chatRoomId]);
-
+  
+useEffect(() => {
+  if (!!chatRoomId && notifications?.chatRoomId === chatRoomId) {
+    (async () => {
+      try {
+        await updateUserNotification(user.uid, chatRoomId);
+      } catch (error) {
+        console.log('Error updating user notification:', error);
+        // Handle error
+      }
+    })();
+  } 
+}, [notifications, chatRoomId]);
   // Scroll to the bottom of the element upon message submission
   useEffect(() => {
     scrollToBottom();
@@ -62,14 +77,27 @@ const ChatRoom = ({ chatRoomId }) => {
         return;
       }
     }
-
     if (isValidMessage(input)) {
-      //add error handling
-      await createMsg(input, data.sender, data.avatarUrl, data.username, data.edited, currentChatRoomId, data.firstName, data.lastName, data.audioUrl);//////////
-      setInput('');
-      setAudioFile(null);
-      setAudioBlob(null);
-      setIsTextAreaHidden(false);
+      try {
+        await createMsg(
+          input,
+          data.sender,
+          data.avatarUrl,
+          data.username,
+          data.edited,
+          currentChatRoomId,
+          data.firstName,
+          data.lastName,
+          data.audioUrl
+        );
+        setInput('');
+        setAudioFile(null);
+        setAudioBlob(null);
+        setIsTextAreaHidden(false);
+      } catch (error) {
+        console.log('Error creating message:', error);
+        // Handle error
+      }
     }
   };
 
@@ -123,7 +151,7 @@ const ChatRoom = ({ chatRoomId }) => {
       })}
       <div ref={scrollToMyRef} />
     </Box>
-    <Flex className="text-input" px={{ base: '1rem', lg: '1.5rem', '2xl': '3.5rem' }} minHeight="4.5rem" minWidth="12.5rem" gap="1rem" justifyContent="center" alignItems="center"  >
+    <Flex className="text-input" backgroundColor='primaryMid' style={{ zIndex: 999 }} px={{ base: '1rem', lg: '1.5rem', '2xl': '3.5rem' }} minHeight="4.5rem" minWidth="12.5rem" gap="1rem" justifyContent="center" alignItems="center"  >
       {!isTextAreaHidden && <Textarea
         minHeight="2.5rem"
         minWidth="11.5rem"
@@ -143,6 +171,10 @@ const ChatRoom = ({ chatRoomId }) => {
     </Flex>
   </Flex >
   </>);
+};
+
+ChatRoom.propTypes = {
+  chatRoomId: PropTypes.string,
 };
 
 export default ChatRoom;

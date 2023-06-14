@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import InfoBar from '../InfoBar/InfoBar';
@@ -7,8 +6,8 @@ import './LandingBody.css'
 import { LANDING_TEXT } from '../../../common/constants.js';
 
 const LandingBody = () => {
-  const showInfoBar = useBreakpointValue({ base: false, md: true }); // Show InfoBar on medium screens and above
-  const showAnimationBox = useBreakpointValue({ base: false, md: true }); // Show the animation box on medium screens and above
+  const showInfoBar = useBreakpointValue({ base: false, md: true }); 
+  const showAnimationBox = useBreakpointValue({ base: false, md: true }); 
 
   return (
     <Box
@@ -16,13 +15,12 @@ const LandingBody = () => {
       height="85%"
       width="100%"
       display="flex"
-      flexDirection={{ base: 'column', md: 'row' }} // Column layout on smaller screens, row layout on medium screens and above
+      flexDirection={{ base: 'column', md: 'row' }} 
     >
-      {showInfoBar && <InfoBar />} {/* Render InfoBar only when showInfoBar is true */}
+      {showInfoBar && <InfoBar />}
       <Flex
         className='body-center'
-        width={{ base: '100%', md: '35%' }} // Take full width on smaller screens, 35% width on medium screens and above
-        height="100%"
+        width={{ base: '100%', md: '35%' }} 
         bg="primary"
         justifyContent="center"
         fontWeight="bold"
@@ -31,12 +29,12 @@ const LandingBody = () => {
       >
         <Text fontSize='m' p='1rem'>{LANDING_TEXT}
         </Text>
-        {showAnimationBox && ( // Render the animation box only when showAnimationBox is true
+        {showAnimationBox && (
           <Box
             className='gtp-animation'
             position="absolute"
             top="60%"
-            transform="translate(-50%, -50%)" // Center the box precisely
+            transform="translate(-50%, -50%)" 
           >
             {/* Add your animation styles here */}
             <Link to="/login">
@@ -47,7 +45,7 @@ const LandingBody = () => {
       </Flex>
       <Flex
         className='body-right-side'
-        width={{ base: '100%', md: '55%' }} // Take full width on smaller screens, 55% width on medium screens and above
+        width={{ base: '100%', md: '55%' }}
         height="100%"
         bg="primary"
       >

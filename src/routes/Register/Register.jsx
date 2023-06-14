@@ -98,9 +98,10 @@ const Register = () => {
             await createUser(form.username, credential.user.uid, credential.user.email, form.firstName, form.lastName, imgUrl, phoneValue);
             await updateInfo(form.username);
 
-            setUser({
+            setUser((prev) => ({
+                ...prev,
                 user: credential.user,
-            });
+            }));
             console.log('redirecting..');
             toast.success('User Created');
             navigate('/');

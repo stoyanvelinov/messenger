@@ -18,8 +18,12 @@ const SearchUsers = ({ addMember, width }) => {
 
   useEffect(() => {
     const getUsers = async () => {
-      const allUsers = await getAllUsers();
-      setUsers(allUsers);
+      try {
+        const allUsers = await getAllUsers();
+        setUsers(allUsers);
+      } catch (error) {
+        console.log(error);
+      }
     };
     getUsers();
   }, []);

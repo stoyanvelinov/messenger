@@ -1,6 +1,8 @@
+import PropTypes from 'prop-types';
 import { useState, useRef } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { BiStopCircle, BiMicrophone, BiTrash } from 'react-icons/bi';
+import './AudioRecorder.css'; 
 
 
 const AudioRecorder = ({ setAudioFile, setIsTextAreaHidden, setAudioBlob, audioBlob }) => {
@@ -41,24 +43,28 @@ const AudioRecorder = ({ setAudioFile, setIsTextAreaHidden, setAudioBlob, audioB
     };
 
     return (
-        <Box>
-        <div>
+        <Flex direction='row' alignItems='center'>
             {recording ? (
                     <Box cursor='pointer' size='2rem' color='red' onClick={stopRecording} as={BiStopCircle}></Box>
             ) : (
-                        <Box cursor='pointer' size='2rem' onClick={startRecording} as={BiMicrophone}></Box>
+                        <Box mr='0.7rem' cursor='pointer' size='2rem' onClick={startRecording} as={BiMicrophone}></Box>
             )}
                 {audioBlob && (
-                    <Box>
-                        <audio controls src={URL.createObjectURL(audioBlob)} />
-                    <Box mt='5px' cursor='pointer' size='2rem'as={BiTrash} onClick={() => { setAudioFile(null); setAudioBlob(null); setIsTextAreaHidden(false); }}></Box>
+                <Flex direction='row' alignItems='center'>
+                        <audio controls src={URL.createObjectURL(audioBlob)} id='audio-controls'/>
+                    <Box ml='0.7rem' cursor='pointer' size='2rem'as={BiTrash} onClick={() => { setAudioFile(null); setAudioBlob(null); setIsTextAreaHidden(false); }}></Box>
 
-                    </Box>
+                    </Flex>
             )}
-        </div>
-        </Box>
+        </Flex>
         
     );
 };
 
+AudioRecorder.propTypes = {
+    setAudioFile: PropTypes.func.isRequired,
+    setIsTextAreaHidden: PropTypes.func.isRequired,
+    setAudioBlob: PropTypes.func.isRequired,
+    audioBlob: PropTypes.object,
+};
 export default AudioRecorder;

@@ -1,6 +1,6 @@
-import { Flex, Box, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import fetchInfo from "../../../services/infoBar.service";
+import { Flex, Box, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import fetchInfo from '../../../services/infoBar.service';
 
 const InfoBar = () => {
   const [infoForm, setInfoForm] = useState({});
@@ -11,7 +11,7 @@ const InfoBar = () => {
         const infoData = await fetchInfo();
         setInfoForm(infoData);
       } catch (error) {
-        console.error("Error fetching info:", error);
+        console.error('Error fetching info:', error);
       }
     };
 

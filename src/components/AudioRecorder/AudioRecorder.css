@@ -1,0 +1,22 @@
+
+#audio-controls::-webkit-media-controls-time-remaining-display {
+display: none;
+}
+#audio-controls::-webkit-media-controls-current-time-display {
+display: none;
+}
+#audio-controls::-webkit-media-controls-seek-back-button {
+display: none;
+}
+#audio-controls::-webkit-media-controls-seek-forward-button {
+display: none;
+}
+#audio-controls::-webkit-media-controls-panel {
+background-color: #3182ce
+}
+#audio-controls {
+    max-width: 12rem;
+    padding: 0.3rem;
+}
+
+

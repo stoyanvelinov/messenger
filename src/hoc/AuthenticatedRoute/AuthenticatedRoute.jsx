@@ -7,7 +7,7 @@ import LandingPage from '../../components/LandingPage/LandingPage/LandingPage';
 
 const AuthenticatedRoute = ({ children }) => {
     const { user, userData } = useContext(AuthContext);
-
+    
     if (user && !userData) {
         return <Container centerContent><FiLoader size='24px' /></Container>;
     }

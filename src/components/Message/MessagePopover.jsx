@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
-import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text, Tooltip, Input } from '@chakra-ui/react';
+import PropTypes from 'prop-types';
+import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text, Tooltip } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react';
 import { Flex } from '@chakra-ui/layout';
 import { AuthContext } from '../../context/authContext';
@@ -7,6 +8,7 @@ import { createReaction, deleteReaction } from '../../services/reactions.service
 import { DeleteIcon } from '@chakra-ui/icons';
 import { emojiArr, getEmoji } from '../../common/constants.js';
 import { deleteMsg } from '../../services/chat.service';
+import '../AudioRecorder/AudioRecorder.css'; 
 
 const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, sender }) => {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -14,16 +16,21 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
     const [isMyMsg, setIsMyMsg] = useState(false);
 
     const handleEmojiClick = async (emojiLabel) => {
-        const found = Object.values(reactions).find(e => e.reactedUserId === user.uid);
-        const alreadyReacted = Object.values(reactions).find(e => e.emojiLabel === emojiLabel);
-        if (!found) {
-            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+        try {
+            const found = Object.values(reactions).find(e => e.reactedUserId === user.uid);
+            const alreadyReacted = Object.values(reactions).find(e => e.emojiLabel === emojiLabel);
 
-        } else if (alreadyReacted) {
-            await deleteReaction(found.reactionId, msgId, currentChatRoomId);
-        } else {
-            await deleteReaction(found.reactionId, msgId, currentChatRoomId);
-            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+            if (!found) {
+                await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+            } else if (alreadyReacted) {
+                await deleteReaction(found.reactionId, msgId, currentChatRoomId);
+            } else {
+                await deleteReaction(found.reactionId, msgId, currentChatRoomId);
+                await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+            }
+        } catch (error) {
+            console.log('Error handling emoji click:', error);
+            // Handle error
         }
     };
     const handlePopoverClick = () => {
@@ -38,11 +45,12 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
 
 
     return (
+        <div onScroll={() => setIsPopoverOpen(false)}>
         <Popover
             isOpen={isPopoverOpen}
             onClose={() => setIsPopoverOpen(false)}
             onOpen={() => setIsPopoverOpen(true)}
-            placement='bottom-start'
+            placement='top-start'
         >
             <PopoverTrigger>
                 <Flex w='30vh' direction='column'>
@@ -66,7 +74,7 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
                             {message ? (
                                 <Text opacity={0.8}>{message} </Text>
                             ) : (
-                                <audio controls>
+                                <audio controls id='audio-controls'>
                                     <source src={audioUrl} type="audio/mpeg" />
                                     Your browser does not support the audio element.
                                 </audio>
@@ -115,10 +123,18 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
                     )}
                 </PopoverBody>
             </PopoverContent>
-        </Popover>
+            </Popover>
+        </div>
     );
 };
 
-
+MessagePopover.propTypes = {
+    message: PropTypes.string,
+    reactions: PropTypes.object,
+    msgId: PropTypes.string.isRequired,
+    timestamp: PropTypes.number.isRequired,
+    audioUrl: PropTypes.string,
+    sender: PropTypes.string.isRequired,
+};
 export default MessagePopover;
 

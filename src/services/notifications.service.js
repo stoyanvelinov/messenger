@@ -17,6 +17,14 @@ export const getLiveUserNotification = (userUid, listener) => {
         listener(notifications);
     });
 };
+export const getLiveUserNotificationByChatRoom = (chatRoomId, userId, listener) => {
+    const chatRoomNotification = ref(db, `users/${userId}/notifications/${chatRoomId}`);
+
+    return onValue(chatRoomNotification, snapshot => {
+        const data = snapshot.exists() ? snapshot.val() : {};
+        listener(data);
+    });
+};
 
 export const sendNotification = async (sender, chatRoomId, msgId, username) => {
     const chatRoomMembersSnapshot = await get(ref(db, `/chatRooms/${chatRoomId}/members`));

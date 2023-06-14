@@ -1,13 +1,12 @@
 //chatlist.jsx
 import { useState, useEffect, useContext } from 'react';
-import { addChatRoomMember, createChatRoom, getCurrentUserChatRooms, toggleChatRoomVisibility, findActiveRoom, getUserChatRooms ,addChatRoom, isOpenChatRoom } from '../../services/chat.service';
+import { getCurrentUserChatRooms, toggleChatRoomVisibility, addChatRoom, isOpenChatRoom } from '../../services/chat.service';
 import { AuthContext } from '../../context/authContext';
 import { Flex, Container, Box, Text } from '@chakra-ui/layout';
 import ChatListItem from '../ChatListItem/ChatListItem';
 import { getAllUsers, getUserById, getUserByUsername } from '../../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import SearchUsers from '../SearchUsers/SearchUsers';
-import { Button } from '@chakra-ui/react';
 
 const ChatList = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -37,10 +36,8 @@ const ChatList = () => {
     },[]);
 
   const handleAddChatRoom = async (newUser) => {
-    console.log('newUser',newUser);
     try {
       const chR = await isOpenChatRoom(newUser);
-      console.log(chR);
       if (chR) {
         const chatRoomId = await toggleChatRoomVisibility(user.uid, chR);
         navigate(`/messages/${chatRoomId}`);

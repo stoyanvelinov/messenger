@@ -37,14 +37,15 @@ const Login = () => {
 
         loginUser(form.email, form.password)
             .then(credential => {
-                setUser({
+                setUser((prev) => ({
+                    ...prev,
                     user: credential.user,
-                });
+                }));
             })
             .then(() => {
                 navigate('/messages');
             })
-            .catch(setError('Invalid email or password!'));
+            .catch(()=>setError('Wrong email or password.'));
     };
 
     return (
