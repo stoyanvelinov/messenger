@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip, Input, FormControl, FormLabel, FormHelperText, HStack, Popover, PopoverContent, PopoverTrigger, PopoverArrow, PopoverBody, PopoverHeader, PopoverCloseButton, Button, Portal } from '@chakra-ui/react';
+import { Box, IconButton, Tooltip, Input, FormControl, FormLabel, FormHelperText, HStack, Popover, PopoverContent, PopoverTrigger, PopoverArrow, PopoverBody, PopoverHeader, PopoverCloseButton, Button, Portal, useDisclosure } from '@chakra-ui/react';
 import { TriangleDownIcon } from '@chakra-ui/icons';
 import { useContext, useRef, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
@@ -11,11 +11,13 @@ import { createGeneralChannel } from '../../services/channels.service';
 const CreateTeam = () => {
     const toast = useToast();
     const nameInput = useRef();
+    const avatarInput = useRef();
     const [form, setForm] = useState({
         teamName: '',
-        teamAvatar: '',
+        teamAvatar: ''
     });
     const { user } = useContext(AuthContext);
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const updateForm = prop => e => {
         setForm({ ...form, [prop]: e.target.value });
@@ -39,10 +41,10 @@ const CreateTeam = () => {
             const teamId = await createTeam(form.teamName, imgUrl, user.uid);
             await createGeneralChannel(teamId);
             await addMemberToTeam(user.uid, teamId);
-
+            onClose();
             setForm({
                 teamName: '',
-                teamAvatar: '',
+                teamAvatar: ''
             });
 
             toast({
@@ -63,15 +65,20 @@ const CreateTeam = () => {
         }
     };
 
-    return (<Popover initialFocusRef={nameInput} onClose={() => {
+    const handleClose = () => {
         setForm({
             teamName: '',
             teamAvatar: '',
         });
-    }} closeOnBlur>
-        <PopoverTrigger>
+        avatarInput.current.value = '';
+        onClose();
+    };
+
+    return (<Popover initialFocusRef={nameInput} isOpen={isOpen} onClose={handleClose} closeOnBlur>
+        <PopoverTrigger >
             <span><Tooltip label="Add Team" placement="right">
                 <IconButton
+                    onClick={onOpen}
                     icon={<TriangleDownIcon boxSize="2em" />}
                     aria-label='create team'
                     bg='accent'
@@ -81,10 +88,10 @@ const CreateTeam = () => {
                 /></Tooltip></span>
         </PopoverTrigger>
         <Portal>
-            <PopoverContent textAlign="center" bg='primary'>
+            <PopoverContent textAlign="center" bg='primary' >
                 <PopoverArrow />
                 <PopoverHeader as="h2" bg="primaryLight" fontWeight="bold" letterSpacing={2}>CREATE&nbsp; A&nbsp; NEW&nbsp; TEAM</PopoverHeader>
-                <PopoverCloseButton />
+                <PopoverCloseButton onClick={handleClose} />
                 <PopoverBody>
                     <form onSubmit={onCreate}>
                         <FormControl display="flex" flexDirection="column" gap="1rem">
@@ -106,6 +113,7 @@ const CreateTeam = () => {
                                 <FormLabel >Team Avatar</FormLabel>
                                 <Input
                                     id="team-avatar"
+                                    ref={avatarInput}
                                     type="file"
                                     bg="primary"
                                     pt="4px"
