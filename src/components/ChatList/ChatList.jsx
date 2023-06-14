@@ -42,10 +42,13 @@ const ChatList = () => {
 
   const handleAddChatRoom = async () => {
     try {
-      const newChatRoom = await createChatRoom(user.uid, 'direct');
-      const newUserId = await getUserValueByUsername(newChatMember);
-      const chatRoomId = await addChatRoomMember(newUserId, newChatRoom, 'direct');
-      navigate(`/messages/${chatRoomId}`);
+      const newUserId = newChatMember ? await getUserValueByUsername(newChatMember) : null;
+      if (newUserId && newUserId !== user.uid) {
+        const newChatRoom = await createChatRoom(user.uid, 'direct');
+        const chatRoomId = await addChatRoomMember(newUserId, newChatRoom, 'direct');
+        navigate(`/messages/${chatRoomId}`);
+      }
+      setNewChatMember(null);
     } catch (error) {
       console.log(error);
     }
