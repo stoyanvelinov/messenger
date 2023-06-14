@@ -93,10 +93,15 @@ const Register = () => {
             if (snapshot.exists()) {
                 throw new Error(`Username @${form.username} has already been taken!`);
             }
-
+            
             const credential = await registerUser(form.email, form.password);
+
             await createUser(form.username, credential.user.uid, credential.user.email, form.firstName, form.lastName, imgUrl, phoneValue);
-            await updateInfo(form.username);
+            try {
+                await updateInfo(form.username);
+            } catch (err) {
+                console.log(err);
+            }
 
             setUser((prev) => ({
                 ...prev,
@@ -108,6 +113,15 @@ const Register = () => {
         }
         catch (error) {
             console.log(error);
+
+            //to do
+            customToast({
+                title: 'User with this email already exist.',
+                status: 'error',
+                duration: `${TOAST_DURATION}`,
+                isClosable: true,
+                position: 'top-left',
+            });
         }
     };
 
