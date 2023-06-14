@@ -6,9 +6,14 @@ import {
 } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { app } from '../config/firebase.config';
-
+/**
+ * Stores an audio file in the Firebase Storage.
+ * @param {Blob | Uint8Array} audio - The audio file to be stored.
+ * @param {string} target - The chat room ID associated with the audio file.
+ * @returns {Promise<string>} A Promise that resolves to the download URL of the stored audio file.
+ * @throws {Error} If there is an error during the storage process.
+ */
 export const storeAudio = async (audio, target) => {
-    // console.log(audio,'ko ima tuka');
     return new Promise((resolve, reject) => {
         const storage = getStorage(app);
         const fileName = `${target}-${uuidv4()}`;

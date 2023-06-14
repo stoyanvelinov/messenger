@@ -1,6 +1,15 @@
 import { child, get, onValue, push, ref, update } from '@firebase/database';
 import { db } from '../config/firebase.config';
 
+/**
+ * Creates a new reaction for a message and stores it in the Firebase Realtime Database.
+ * @param {string} user - The ID of the user who reacted.
+ * @param {string} chatRoomId - The ID of the chat room where the message is reacted to.
+ * @param {string} emojiLabel - The label of the reacted emoji.
+ * @param {string} messageId - The ID of the reacted message.
+ * @param {string} username - The username of the user who reacted.
+ * @returns {Promise<string>} A Promise that resolves to the ID of the created reaction.
+ */
 export const createReaction = async (user, chatRoomId, emojiLabel, messageId, username) => {
     const reactionId = push(child(ref(db), '/reactions')).key;
     const reactionData = {
@@ -19,7 +28,12 @@ export const createReaction = async (user, chatRoomId, emojiLabel, messageId, us
     await update(ref(db), updates);
     return reactionId;
 };
-
+/**
+ * Retrieves live reactions for a chat room from the Firebase Realtime Database and listens for updates.
+ * @param {string} chatRoomId - The ID of the chat room to retrieve reactions for.
+ * @param {function} listener - The listener function to be called when reactions are retrieved or updated.
+ * @returns {function} A function that can be used to unsubscribe from the listener.
+ */
 export const getLiveReactionsByChatRoomId = (chatRoomId, listener) => {
     return onValue(ref(db, `/chatRooms/${chatRoomId}/reactions`), snapshot => {
         const data = snapshot.exists() ? snapshot.val() : {};
@@ -32,12 +46,22 @@ export const getLiveReactionsByChatRoomId = (chatRoomId, listener) => {
         });
     });
 };
-
+/**
+ * Retrieves a reaction by its ID from the Firebase Realtime Database.
+ * @param {string} id - The ID of the reaction to retrieve.
+ * @returns {Promise<DataSnapshot>} A Promise that resolves to the DataSnapshot of the reaction.
+ */
 export const getReactionById = (id) => {
     return get(ref(db, `messages/reactions/${id}`));
 };
 
-
+/**
+ * Deletes a reaction from the Firebase Realtime Database.
+ * @param {string} reactionId - The ID of the reaction to delete.
+ * @param {string} msgId - The ID of the message where the reaction is stored.
+ * @param {string} chatRoomId - The ID of the chat room where the message is located.
+ * @returns {Promise<void>} A Promise that resolves when the deletion is complete.
+ */
 export const deleteReaction = (reactionId, msgId, chatRoomId) => {
     const updates = {};
     updates[`/chatRooms/${chatRoomId}/messages/${msgId}/reactions/${reactionId}`] = null;

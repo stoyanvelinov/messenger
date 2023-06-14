@@ -51,6 +51,17 @@ export const getUserByUsername = (username) => {
   return get(query(ref(db, 'users'), orderByChild('username'), equalTo(username)));
 };
 
+/**
+ * Creates a new user in the Firebase Realtime Database.
+ * @param {string} username - The username of the user.
+ * @param {string} uid - The ID of the user.
+ * @param {string} email - The email address of the user.
+ * @param {string} firstName - The first name of the user.
+ * @param {string} lastName - The last name of the user.
+ * @param {string} avatar - The URL of the user's avatar.
+ * @param {string} phone - The phone number of the user.
+ * @returns {Promise<void>} A Promise that resolves when the user creation is complete.
+ */
 export const createUser = (
   username,
   uid,
@@ -138,6 +149,12 @@ export const updateUserProfile = (uid, form) => {
   });
 };
 
+/**
+ * Retrieves live users for a chat room from the Firebase Realtime Database and listens for updates.
+ * @param {string} chatRoomId - The ID of the chat room to retrieve users for.
+ * @param {function} listener - The listener function to be called when users are retrieved or updated.
+ * @returns {function} A function that can be used to unsubscribe from the listener.
+ */
 export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
   return onValue(ref(db, `/chatRooms/${chatRoomId}/members`), snapshot => {
     const data = snapshot.exists() ? snapshot.val() : {};
@@ -150,6 +167,12 @@ export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
   });
 };
 
+/**
+ * Updates the notification status for a user in the Firebase Realtime Database.
+ * @param {string} userId - The ID of the user to update.
+ * @param {string} chatRoomId - The ID of the chat room associated with the notification.
+ * @returns {Promise<void>} A Promise that resolves when the update is complete.
+ */
 export const updateUserNotification = async (userId, chatRoomId) => {
   if (chatRoomId === null) {
     return;
@@ -164,7 +187,12 @@ export const updateUserNotification = async (userId, chatRoomId) => {
   }
 };
 
-
+/**
+ * Updates the avatar URL of a user in the Firebase Realtime Database.
+ * @param {string} uid - The UID of the user to update.
+ * @param {string} avatarUrl - The new avatar URL to set for the user.
+ * @returns {Promise<void>} A Promise that resolves when the update is complete.
+ */
 export const updateUserAvatarUrl = (uid, avatarUrl) => {
   return update(ref(db, `users/${uid}`), {
     avatar: avatarUrl

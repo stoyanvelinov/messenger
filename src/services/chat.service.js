@@ -255,6 +255,12 @@ export const createMsg = async (input, sender, avatar = null, username, edited, 
   return msgId;
 };
 
+/**
+ * Retrieves live messages for a chat room from the Firebase Realtime Database and listens for updates.
+ * @param {string} chatRoomId - The ID of the chat room to retrieve messages for.
+ * @param {function} listener - The listener function to be called when messages are retrieved or updated.
+ * @returns {function} A function that can be used to unsubscribe from the listener.
+ */
 export const getLiveMsgByChatRoomId = (chatRoomId, listener) => {
   return onValue(ref(db, `/chatRooms/${chatRoomId}/messages`), snapshot => {
     const data = snapshot.exists() ? snapshot.val() : {};
@@ -267,10 +273,21 @@ export const getLiveMsgByChatRoomId = (chatRoomId, listener) => {
   });
 };
 
+/**
+ * Retrieves a message from the Firebase Realtime Database based on the provided ID.
+ * @param {string} id - The ID of the message to retrieve.
+ * @returns {Promise<DataSnapshot>} A Promise that resolves to the DataSnapshot of the message.
+ */
 export const getMsgById = (id) => {
   return get(ref(db, `messages/${id}`));
 };
 
+/**
+ * Deletes a message from the Firebase Realtime Database.
+ * @param {string} msgId - The ID of the message to delete.
+ * @param {string} chatRoomId - The ID of the chat room that the message belongs to.
+ * @returns {Promise<void>} A Promise that resolves when the deletion is complete.
+ */
 export const deleteMsg = async (msgId, chatRoomId) => {
   const updates = {
     [`/messages/${msgId}`]: null,
