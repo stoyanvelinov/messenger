@@ -26,7 +26,7 @@ export const getLiveUserNotificationByChatRoom = (chatRoomId, userId, listener) 
     });
 };
 
-export const sendNotification = async (sender, chatRoomId, msgId, username) => {
+export const sendNotification = async (sender, chatRoomId, msgId, username, channelId, teamId) => {
     const chatRoomMembersSnapshot = await get(ref(db, `/chatRooms/${chatRoomId}/members`));
     const chatRoomMembers = chatRoomMembersSnapshot.exists() ? chatRoomMembersSnapshot.val() : {};
 
@@ -51,7 +51,9 @@ export const sendNotification = async (sender, chatRoomId, msgId, username) => {
                     sender: sender,
                     chatRoomId: chatRoomId,
                     msgId: msgId,
-                    username: username
+                    username: username,
+                    channelId: channelId,
+                    teamId: teamId
                 });
             }
         }

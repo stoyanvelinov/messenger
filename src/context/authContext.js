@@ -4,5 +4,7 @@ export const AuthContext = createContext({
   user: null,
   userData: null,
   currentChatRoomId: null,
-  setUser: () => {},
+  currentTeamId: null,
+  currentChannelId: null,
+  setUser: () => {}
 });

@@ -24,7 +24,7 @@ const ChatRoom = ({ chatRoomId }) => {
   const [messages, setMessages] = useState([]);
   const [audioFile, setAudioFile] = useState(null);
   const [isTextAreaHidden, setIsTextAreaHidden] = useState(false);
-  const { user, userData, currentChatRoomId } = useContext(AuthContext);
+  const { user, userData, currentChatRoomId, currentChannelId, currentTeamId } = useContext(AuthContext);
   const [audioBlob, setAudioBlob] = useState(null);
   const { teamId } = useParams();
   const [notifications, setNotification] = useState(null);
@@ -88,7 +88,9 @@ useEffect(() => {
           currentChatRoomId,
           data.firstName,
           data.lastName,
-          data.audioUrl
+          data.audioUrl,
+          currentChannelId,
+          currentTeamId
         );
         setInput('');
         setAudioFile(null);

@@ -32,6 +32,12 @@ const SideBar = () => {
             const firstChannelId = await getFirstChannelIdByTeamId(teamId);
             const chatRoomIdSnapshot = await getChatRoomIdByChannelId(firstChannelId);
             const chatRoomId = chatRoomIdSnapshot.val();
+            setUser((prev) => ({
+                ...prev,
+                currentChatRoomId: chatRoomId,
+                currentTeamId: teamId,
+                currentChannelId: firstChannelId
+            }));
             navigate(`/teams/${teamId}/${firstChannelId}/${chatRoomId}`);
         } catch (error) {
             console.log(error.message);
