@@ -121,7 +121,6 @@ const ProfileInfo = () => {
     };
 
     useEffect(() => {
-        console.log(avatarUrl, 'sss');
         updateUserAvatar(user.uid, avatarUrl);
     }, [avatarUrl]);
 

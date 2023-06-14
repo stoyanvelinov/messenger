@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box } from '@chakra-ui/react';
 import LandingHeader from '../LandingHeader/LandingHeader';
 import LandingFooter from '../LandingFooter/LandingFooter';

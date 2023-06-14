@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react';
+import PropTypes from 'prop-types';
 import {
   Box,
   Flex,
@@ -152,6 +153,10 @@ const ChatRoom = ({ chatRoomId }) => {
     </Flex>
   </Flex >
   </>);
+};
+
+ChatRoom.propTypes = {
+  chatRoomId: PropTypes.string,
 };
 
 export default ChatRoom;

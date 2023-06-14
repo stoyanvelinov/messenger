@@ -1,4 +1,5 @@
-import React, { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { AuthContext } from '../../context/authContext';
 import { AvatarGroup, Avatar, HStack, Box } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
@@ -81,4 +82,8 @@ const ChatListItem = ({ chatRoomId, handleRemoveFromList }) => {
   );
 };
 
+ChatListItem.propTypes = {
+  chatRoomId: PropTypes.string.isRequired,
+  handleRemoveFromList: PropTypes.func.isRequired,
+};
 export default ChatListItem;

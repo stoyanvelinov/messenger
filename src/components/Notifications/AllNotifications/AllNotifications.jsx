@@ -1,7 +1,8 @@
-import { useContext } from 'react';
-import { Menu, MenuButton, MenuList, MenuItem, Box, Text, Flex, Divider } from '@chakra-ui/react';
-import { AuthContext } from '../../../context/authContext';
-import { useNavigate } from 'react-router';
+// import { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { Menu, MenuButton, MenuList, MenuItem, Box, Flex } from '@chakra-ui/react';
+// import { AuthContext } from '../../../context/authContext';
+// import { useNavigate } from 'react-router';
 import {  ChevronDownIcon } from '@chakra-ui/icons';
 
 const AllNotifications = ({ notifications }) => {
@@ -54,4 +55,7 @@ const AllNotifications = ({ notifications }) => {
     );
 };
 
+AllNotifications.propTypes = {
+    notifications: PropTypes.array.isRequired,
+};
 export default AllNotifications;

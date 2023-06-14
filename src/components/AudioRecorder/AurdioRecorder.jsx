@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useRef } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { BiStopCircle, BiMicrophone, BiTrash } from 'react-icons/bi';
@@ -60,4 +61,10 @@ const AudioRecorder = ({ setAudioFile, setIsTextAreaHidden, setAudioBlob, audioB
     );
 };
 
+AudioRecorder.propTypes = {
+    setAudioFile: PropTypes.func.isRequired,
+    setIsTextAreaHidden: PropTypes.func.isRequired,
+    setAudioBlob: PropTypes.func.isRequired,
+    audioBlob: PropTypes.object,
+};
 export default AudioRecorder;

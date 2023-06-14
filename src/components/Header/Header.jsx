@@ -4,7 +4,6 @@ import Profile from '../Profile/Profile';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { getLiveUserNotification } from '../../services/notifications.service';
-import { updateUserNotification } from '../../services/users.service';
 import NewNotifications from '../Notifications/NewNotifications/NewNotifications';
 import AllNotifications from '../Notifications/AllNotifications/AllNotifications';
 import SmallScreenMenu from '../SmallScreenMenu/SmallScreenMenu';

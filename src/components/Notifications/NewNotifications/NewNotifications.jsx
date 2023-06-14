@@ -1,13 +1,14 @@
 import { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Menu, MenuButton, MenuList, MenuItem, Box, Flex } from '@chakra-ui/react';
 import { updateUserNotification } from '../../../services/users.service';
 import { AuthContext } from '../../../context/authContext';
-import { useNavigate } from 'react-router';
+// import { useNavigate } from 'react-router';
 import { BellIcon } from '@chakra-ui/icons';
 
 const NewNotifications = ({ unseenNotifications }) => {
     const { user, setUser } = useContext(AuthContext);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const handleClick = async (uid, chatRoomId) => {
         try {
             await updateUserNotification(uid, chatRoomId);
@@ -73,4 +74,7 @@ const NewNotifications = ({ unseenNotifications }) => {
     );
 };
 
+NewNotifications.propTypes = {
+    unseenNotifications: PropTypes.array.isRequired,
+};
 export default NewNotifications;

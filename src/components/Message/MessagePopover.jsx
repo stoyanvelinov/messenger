@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
-import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text, Tooltip, Input } from '@chakra-ui/react';
+import PropTypes from 'prop-types';
+import { Popover, PopoverTrigger, PopoverContent, PopoverBody, Text, Tooltip } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react';
 import { Flex } from '@chakra-ui/layout';
 import { AuthContext } from '../../context/authContext';
@@ -122,6 +123,13 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
     );
 };
 
-
+MessagePopover.propTypes = {
+    message: PropTypes.string,
+    reactions: PropTypes.object,
+    msgId: PropTypes.string.isRequired,
+    timestamp: PropTypes.number.isRequired,
+    audioUrl: PropTypes.string,
+    sender: PropTypes.string.isRequired,
+};
 export default MessagePopover;
 
