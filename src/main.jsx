@@ -9,9 +9,9 @@ import './main.css';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ChakraProvider resetCSS theme={theme} portalZIndex={40}>
+      <ChakraProvider resetCSS theme={theme} portalZIndex={40} >
         <App />
       </ChakraProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.StrictMode >,
 );

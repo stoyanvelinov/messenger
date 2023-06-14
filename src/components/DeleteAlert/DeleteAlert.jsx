@@ -1,6 +1,7 @@
 import { AlertDialog, AlertDialogOverlay, AlertDialogBody, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, Button, useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { getTeamIdByChannelId, getTeamById } from '../../services/teams.service';
 import PropTypes from 'prop-types';
 
 const DeleteAlert = ({ isOpen, onClose, deleteFn, heading, id }) => {
@@ -10,28 +11,32 @@ const DeleteAlert = ({ isOpen, onClose, deleteFn, heading, id }) => {
 
     const handleDelete = async () => {
         try {
-            onClose();
+            //don't delete if there's only one channel in the team
+            if (heading.includes('Channel')) {
+                const tId = await getTeamIdByChannelId(channelId);
+                const teamSnapshot = await getTeamById(tId);
+                const team = teamSnapshot.val();
+                const channelIds = Object.keys(team.channels);
+                if (channelIds.length <= 1) throw new Error('You need at least one channel!');
+            }
             await deleteFn(id);
+            onClose();
+            //navigation after deleting based on what is being deleted and from where
             if (heading.includes('Team') && id === teamId) navigate('/');
             if (channelId === id) navigate(`/teams/${teamId}`);
-
         } catch (error) {
             toast({
                 title: error.message,
                 status: 'error',
-                duration: 3000,
+                duration: 4000,
                 isClosable: true,
-                position: 'bottom-center'
+                position: 'center',
             });
-
         }
     };
 
     return (
-        <AlertDialog
-            isOpen={isOpen}
-            onClose={onClose}
-        >
+        <AlertDialog isOpen={isOpen} onClose={onClose}>
             <AlertDialogOverlay>
                 <AlertDialogContent bg="primaryMid">
                     <AlertDialogHeader fontSize='lg' fontWeight='bold'>
@@ -53,7 +58,6 @@ const DeleteAlert = ({ isOpen, onClose, deleteFn, heading, id }) => {
         </AlertDialog >
     );
 };
-
 
 DeleteAlert.propTypes = {
     isOpen: PropTypes.bool.isRequired,

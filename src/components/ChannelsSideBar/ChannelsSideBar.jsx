@@ -36,7 +36,7 @@ const ChannelsSideBar = () => {
                     const id = channel.channelId;
                     const name = channel.channelName;
                     const channelCR = channel.chatRoom;
-                    return <Channel key={id} channelId={id} channelName={name} team={team} channelChatRoom={channelCR} />;
+                    return <Channel key={id} chnlId={id} channelName={name} team={team} channelChatRoom={channelCR} />;
                 })}
             </Flex>
         </Scrollbars>

@@ -10,6 +10,8 @@ import TeamButton from '../TeamButton/TeamButton';
 import CreateTeam from '../CreateTeam/CreateTeam';
 import { useMediaQuery } from '@chakra-ui/react';
 import DirectMessagesSmallerScreen from '../DirectMessagesSmallerScreen/DirectMessagesSmallerScreen';
+import { getFirstChannelIdByTeamId } from '../../services/channels.service';
+import { getChatRoomIdByChannelId } from '../../services/chat.service';
 
 const SideBar = () => {
     const { user, setUser } = useContext(AuthContext);
@@ -19,15 +21,21 @@ const SideBar = () => {
     const [isSmallerThan991] = useMediaQuery('(max-width: 991px)');
     const { isOpen, onClose, onOpen } = useDisclosure();
 
-
     useEffect(() => {
         const unsub = getLiveTeams(user.uid, (t) => setTeamIds([...t]));
         return () => unsub();
     }, [user.uid]);
 
-    const onOpenTeam = (e) => {
-        const teamId = e.target.closest('span').getAttribute('data-team-id');
-        navigate(`/teams/${teamId}`);
+    const onOpenTeam = async (e) => {
+        try {
+            const teamId = e.target.closest('span').getAttribute('data-team-id');
+            const firstChannelId = await getFirstChannelIdByTeamId(teamId);
+            const chatRoomIdSnapshot = await getChatRoomIdByChannelId(firstChannelId);
+            const chatRoomId = chatRoomIdSnapshot.val();
+            navigate(`/teams/${teamId}/${firstChannelId}/${chatRoomId}`);
+        } catch (error) {
+            console.log(error.message);
+        }
     };
 
     const onOpenDirectMessages = () => {
@@ -36,7 +44,7 @@ const SideBar = () => {
             ...prev,
             currentChatRoomId: null
         }));
-
+        //to open drawer on smaller screens
         if (isSmallerThan991) onOpen();
     };
 
@@ -78,7 +86,7 @@ const SideBar = () => {
             </Flex>
             <Flex id="teams" p={2} direction="column" gap="1rem" overflowY="auto" overflowX="hidden">
                 {teamIds.length > 0 && teamIds.map(teamId => {
-                    return <TeamButton key={teamId} onOpen={onOpenTeam} teamId={teamId} uid={user.uid} />;
+                    return <TeamButton key={teamId} onOpen={onOpenTeam} teamId={teamId} />;
                 })}
             </Flex>
         </ Flex>

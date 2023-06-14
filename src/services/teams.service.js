@@ -1,6 +1,6 @@
 import { db } from '../config/firebase.config';
 import { ref, push, child, update, get, query, orderByChild, equalTo, onValue } from 'firebase/database';
-import { deleteChannel } from './channels.service';
+import { deleteChannel, getChannelById } from './channels.service';
 import { removeChatRoom, removeChatRoomMember } from './chat.service';
 
 /**
@@ -39,7 +39,7 @@ export const deleteTeam = async (teamId) => {
         // remove all team's chatRooms
         const teamChatRoomsSnapshot = await getTeamChatRooms(teamId);
         const teamChatRooms = Object.keys(teamChatRoomsSnapshot.val());
-        const removeChatRoomsPromises = teamChatRooms.map((chatRoomId)=>{
+        const removeChatRoomsPromises = teamChatRooms.map((chatRoomId) => {
             removeChatRoom(chatRoomId);
         });
         await Promise.all(removeChatRoomsPromises);
@@ -50,7 +50,7 @@ export const deleteTeam = async (teamId) => {
         const owner = team.teamOwner;
         const channelIds = Object.keys(team.channels);
         const channels = channelIds.map(channelId => {
-            deleteChannel(channelId, teamId);
+            deleteChannel(channelId);
         });
         await Promise.all(channels);
 
@@ -107,6 +107,19 @@ export const getTeamById = (teamId) => {
 };
 
 /**
+Retrieves the team id associated with a given channel id.
+@async
+@param {string} channelId - The id of the channel.
+@returns {Promise<string>} - A Promise that resolves to the team id.
+*/
+export const getTeamIdByChannelId = async (channelId) => {
+    const channelSnapshot = await getChannelById(channelId);
+    const channel = channelSnapshot.val();
+    const teamId = channel.channelTeam;
+    return teamId;
+};
+
+/**
  Adds a member to a team.
  @async
  @param {string} uid - The id of the member to add.
@@ -131,7 +144,7 @@ export const addMemberToTeam = (uid, teamId) => {
 export const removeMemberFromTeam = async (uid, teamId) => {
     const teamChatRoomsSnapshot = await getTeamChatRooms(teamId);
     const teamChatRooms = Object.keys(teamChatRoomsSnapshot.val());
-    const removeMemberPromises = teamChatRooms.map((chatRoomId)=>{
+    const removeMemberPromises = teamChatRooms.map((chatRoomId) => {
         removeChatRoomMember(uid, chatRoomId);
     });
     await Promise.all(removeMemberPromises);

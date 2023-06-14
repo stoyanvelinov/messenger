@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import ChannelsSideBar from '../ChannelsSideBar/ChannelsSideBar';
 import TeamMembers from '../TeamMembers/TeamMembers';
 import ChatList from '../ChatList/ChatList';
-// import MessagesHome from '../MessagesHome/MessagesHome';
+import MessagesHome from '../MessagesHome/MessagesHome';
 import ChatRoom from '../ChatRoom/ChatRoom';
 
 const MainContent = () => {
@@ -18,9 +18,8 @@ const MainContent = () => {
             </Flex>
             <Box flexGrow={1} h={{ base: '100%' }} borderRight="1px"
                 borderRightColor="primaryLight" borderLeft="1px" borderLeftColor="primaryLight">
-                {/* {!chatRoomId && <MessagesHome />} */}
-                {/* {chatRoomId && <ChatRoom chatRoomId={chatRoomId} />} */}
-                <ChatRoom chatRoomId={chatRoomId} />
+                {!chatRoomId && <MessagesHome />}
+                {chatRoomId && <ChatRoom chatRoomId={chatRoomId} />}
             </Box>
             <Flex bg="primary" direction="column" display={{ base: 'none', xl: 'flex' }} minW="200px" flexBasis={{ md: '200px', lg: '10%' }} gap="1rem" w="100%" >
                 {teamId && <TeamMembers teamId={teamId} />}

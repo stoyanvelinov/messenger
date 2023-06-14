@@ -89,17 +89,16 @@ export const deleteChannel = async (channelId) => {
 
         return update(ref(db), updates);
     } catch (e) {
-        console.log(e.message);
-        throw new Error('Unexpected issue occurred!');
+        throw new Error(e.message);
     }
 };
 
 /**
  * Retrieves the channel data from the database and invokes a listener function whenever the data changes.
- *
- * @param {string} channelId - The id of the channel whose information is to be retrieved
- * @param {function} listener - The listener function to be invoked when the channel data changes. It receives the updated channel data as an argument.
- * @returns {function} - A function that can be called to unsubscribe the listener.
+ @async
+ @param {string} channelId - The id of the channel whose information is to be retrieved
+ @param {function} listener - The listener function to be invoked when the channel data changes. It receives the updated channel data as an argument.
+ @returns {function} - A function that can be called to unsubscribe the listener.
  */
 export const getLiveChannelInfo = (channelId, listener) => {
     // console.log("live info");
@@ -111,7 +110,25 @@ export const getLiveChannelInfo = (channelId, listener) => {
 };
 
 /**
+Retrieves the id of the first channel within a team based on the team id.
+@async
+@param {string} teamId - The id of the team.
+@returns {Promise<string>} A promise that resolves with the id of the first channel.
+*/
+export const getFirstChannelIdByTeamId = async (teamId) => {
+    try {
+        const channelIdsSnapshot = await get(ref(db, `teams/${teamId}/channels`));
+        if (!channelIdsSnapshot.exists()) throw new Error('There are no channels in the team!');
+        const firstChannelId = Object.keys(channelIdsSnapshot.val())[0];
+        return firstChannelId;
+    } catch (e) {
+        throw new Error(e.message);
+    }
+};
+
+/**
 Fetches all channels that belong to the team with the give id
+@async
 @param {string}teamId the id of the team
 @param {function}listener a callback function that will use the array of channels objects
 @returns {function} - A function that can be called to unsubscribe the listener.

@@ -210,9 +210,19 @@ export const getMsgById = (id) => {
 
 
 export const deleteMsg = async (msgId, chatRoomId) => {
-    const updates = {
-      [`/messages/${msgId}`]: null,
-      [`/chatRooms/${chatRoomId}/messages/${msgId}`]: null,
-    };
-    await update(ref(db), updates);
+  const updates = {
+    [`/messages/${msgId}`]: null,
+    [`/chatRooms/${chatRoomId}/messages/${msgId}`]: null,
+  };
+  await update(ref(db), updates);
+};
+
+/**
+Retrieves the chat room id associated with a channel id.
+@async
+@param {string} channelId - The id of the channel.
+@returns {Promise<string>} A promise that resolves with the id of the chat room.
+*/
+export const getChatRoomIdByChannelId = (channelId) => {
+  return get(ref(db, `channels/${channelId}/chatRoom`));
 };

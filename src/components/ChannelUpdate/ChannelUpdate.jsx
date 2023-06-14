@@ -1,4 +1,4 @@
-import { Popover, PopoverTrigger, Portal, PopoverContent, PopoverCloseButton, PopoverArrow, HStack, IconButton, Flex, Text, useDisclosure } from '@chakra-ui/react';
+import { Popover, PopoverTrigger, Portal, PopoverContent, PopoverCloseButton, PopoverArrow, HStack, IconButton, Flex, Text, useDisclosure, useOutsideClick } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { HiDotsVertical } from 'react-icons/hi';
 import './ChannelUpdate.css';
@@ -12,12 +12,16 @@ const ChannelUpdate = ({ channelId, setIsEditing }) => {
         setIsEditing(true);
     };
 
-    return (<Popover variant="responsive">
-        <PopoverTrigger>
-            <IconButton bg="transparent" _hover={{ bg: 'transparent' }} size="sm" icon={<HiDotsVertical />}></IconButton>
+    const handleClick = (e) => {
+        e.stopPropagation();
+    };
+
+    return (<Popover variant="responsive" >
+        <PopoverTrigger >
+            <IconButton bg="transparent" _hover={{ bg: 'transparent' }} size="sm" onClick={handleClick} icon={<HiDotsVertical />} />
         </PopoverTrigger>
         <Portal w="3rem">
-            <PopoverContent textAlign="center" bg="primary" overflow='hidden'>
+            <PopoverContent textAlign="center" bg="primary" overflow='hidden' onClick={handleClick}>
                 <PopoverArrow bg="primary" />
                 <PopoverCloseButton size="sm" />
                 <Flex direction="column" >
@@ -28,7 +32,8 @@ const ChannelUpdate = ({ channelId, setIsEditing }) => {
                     <HStack w="100%" className="active-channel-action" _hover={{ bg: 'primaryMid' }} onClick={onDialogOpen}>
                         <IconButton variant="default" size="xs" icon={<DeleteIcon />} />
                         <Text>Delete</Text>
-                        <DeleteAlert isOpen={isDialogOpen} onClose={onDialogClose} deleteFn={deleteChannel} heading="Delete Channel" id={channelId} />
+                        <DeleteAlert isOpen={isDialogOpen} onClose={onDialogClose}
+                            deleteFn={deleteChannel} heading="Delete Channel" id={channelId} />
                     </HStack>
                 </Flex>
             </PopoverContent>
