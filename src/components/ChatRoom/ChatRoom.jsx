@@ -35,18 +35,18 @@ const ChatRoom = ({ chatRoomId }) => {
     return () => { unsubscribeMessages(), unsubscribeUserNotification(); };
   }, [chatRoomId]);
   
-  useEffect(() => {
-    if (!!chatRoomId && notifications?.chatRoomId === chatRoomId) {
-      (async () => {
-        try {
-          await updateUserNotification(user.uid, chatRoomId);
-        } catch (error) {
-          console.log('Error updating user notification:', error);
-          // Handle error
-        }
-      })();
-    }
-  }, [notifications, chatRoomId]);
+useEffect(() => {
+  if (!!chatRoomId && notifications?.chatRoomId === chatRoomId) {
+    (async () => {
+      try {
+        await updateUserNotification(user.uid, chatRoomId);
+      } catch (error) {
+        console.log('Error updating user notification:', error);
+        // Handle error
+      }
+    })();
+  } 
+}, [notifications, chatRoomId]);
   // Scroll to the bottom of the element upon message submission
   useEffect(() => {
     scrollToBottom();

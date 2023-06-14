@@ -5,6 +5,7 @@ import { updateUserNotification } from '../../../services/users.service';
 import { AuthContext } from '../../../context/authContext';
 // import { useNavigate } from 'react-router';
 import { BellIcon } from '@chakra-ui/icons';
+import { formatTimeSince } from '../../../common/helperFuncs';
 
 const NewNotifications = ({ unseenNotifications }) => {
     const { user, setUser } = useContext(AuthContext);
@@ -25,24 +26,6 @@ const NewNotifications = ({ unseenNotifications }) => {
         }
     };
 
-    const formatTimeSince = (timestamp) => {
-        const currentTime = Date.now();
-        const receivedTime = parseInt(timestamp);
-        const diffInSeconds = Math.floor((currentTime - receivedTime) / 1000);
-
-        if (diffInSeconds < 60) {
-            return `${diffInSeconds} seconds ago`;
-        } else if (diffInSeconds < 3600) {
-            const minutes = Math.floor(diffInSeconds / 60);
-            return `${minutes} minutes ago`;
-        } else if (diffInSeconds < 86400) {
-            const hours = Math.floor(diffInSeconds / 3600);
-            return `${hours} hours ago`;
-        } else {
-            const days = Math.floor(diffInSeconds / 86400);
-            return `${days} days ago`;
-        }
-    };
 
     return (
         <Menu>
