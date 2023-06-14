@@ -231,7 +231,7 @@ export const sendMessage = (chatRoomId, message, author, avatar, timeStamp) => {
     });
 };
 
-export const createMsg = async (input, sender, avatar = null, username, edited, chatRoomId, firstName, lastName, audioUrl) => {
+export const createMsg = async (input, sender, avatar = null, username, edited, chatRoomId, firstName, lastName, audioUrl, channelId, teamId) => {
   const msgId = push(child(ref(db), '/messages')).key;
   const msgData = {
     msgId: msgId,
@@ -250,7 +250,7 @@ export const createMsg = async (input, sender, avatar = null, username, edited, 
     [`/chatRooms/${chatRoomId}/messages/${msgId}`]: true
   };
   await update(ref(db), updates);
-  await sendNotification(sender, chatRoomId, msgId, username);
+  await sendNotification(sender, chatRoomId, msgId, username, channelId, teamId);
 
   return msgId;
 };
