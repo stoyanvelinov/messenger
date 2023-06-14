@@ -1,4 +1,4 @@
-import { IconButton, Box, Input, useOutsideClick, useToast, PopoverTrigger, PopoverBody, PopoverContent, Portal, PopoverHeader, PopoverCloseButton, FormControl, FormHelperText, Popover, Tooltip } from '@chakra-ui/react';
+import { IconButton, Box, Input, useOutsideClick, useToast, PopoverTrigger, PopoverBody, PopoverContent, Portal, PopoverHeader, PopoverCloseButton, FormControl, FormHelperText, Popover, Tooltip, useDisclosure } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useRef, useState } from 'react';
 import { CHANNEL_NAME_MAX_LENGTH, CHANNEL_NAME_MIN_LENGTH } from '../../common/constants.js';
@@ -11,14 +11,9 @@ const CreateNewChannel = () => {
     const [channelName, setChannelName] = useState('');
     const toast = useToast();
     const { teamId } = useParams();
+    const { isOpen, onClose, onOpen } = useDisclosure();
 
-    useOutsideClick({
-        ref: newChannelInput,
-        handler: () => {
-            setChannelName('');
-            newChannelInput.current.value = '';
-        },
-    });
+
 
     const handleChange = (e) => {
         //prevents creation of channel with no name after having input, deleting it and hitting Enter
@@ -26,6 +21,17 @@ const CreateNewChannel = () => {
             setChannelName(e.target.value);
         }
     };
+
+    const handleClose = () => {
+        setChannelName('');
+        newChannelInput.current.value = '';
+        onClose();
+    };
+
+    useOutsideClick({
+        ref: newChannelInput,
+        handler: handleClose
+    });
 
     const handleKeyDown = async (e) => {
         if (e.key === 'Enter') {
@@ -35,6 +41,7 @@ const CreateNewChannel = () => {
                     throw new Error(`Channel name should be between ${CHANNEL_NAME_MIN_LENGTH} and ${CHANNEL_NAME_MAX_LENGTH} symbols!`);
                 }
                 await addNewChannel(channelName, teamId);
+                onClose();
             } catch (error) {
                 toast({
                     title: error.message,
@@ -47,14 +54,14 @@ const CreateNewChannel = () => {
         }
     };
 
-    return (<Popover>
+    return (<Popover isOpen={isOpen} onClose={handleClose}>
         <PopoverTrigger>
             <span><Tooltip label="create channel">
                 <IconButton
                     bg="accent"
                     size="xs"
                     _hover={{ bg: 'primaryLight', color: 'primaryDark' }}
-                    onClick={() => { }}
+                    onClick={onOpen}
                     icon={<AddIcon />} />
             </Tooltip>
             </span>
