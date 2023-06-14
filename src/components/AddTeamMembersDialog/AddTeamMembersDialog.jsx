@@ -29,7 +29,7 @@ const AddTeamMembersDialog = ({ teamId, memberIds }) => {
             const teamChatRooms = Object.keys(teamChatRoomsSnapshot.val());
             // console.log('teamChatRooms',teamChatRooms);
             const addMembersPromises = teamChatRooms.map((chatRoomId)=>{
-                addChatRoomMember(memberUid, chatRoomId);
+                addChatRoomMember(memberUid, chatRoomId,'channel', teamId );
             });
             await Promise.all(addMembersPromises);
         } catch (error) {

@@ -13,7 +13,7 @@ export const createGeneralChannel = async (teamId) => {
     const channelId = push(child(ref(db), '/channels')).key;
     const team = await getTeamById(teamId);
     const teamOwner = team.val().teamOwner;
-    const chatRoomId = await createChatRoom(teamOwner);
+    const chatRoomId = await createChatRoom(teamOwner,'channel', teamId, channelId );
     const channelData = { channelName: 'General', channelId: channelId, channelTeam: teamId, chatRoom: chatRoomId };
     const updates = {};
 
@@ -36,7 +36,7 @@ export const addNewChannel = async (channelName, teamId) => {
     const team = await getTeamById(teamId);
     const teamOwner = team.val().teamOwner;
     const teamMembers = Object.keys(team.val().members);
-    const chatRoomId = await createChatRoom(teamOwner);
+    const chatRoomId = await createChatRoom(teamOwner,'channel', teamId, channelId );
     await addMultipleChatRoomMembers(teamMembers, chatRoomId);
     const channelData = { channelName: channelName, channelId: channelId, channelTeam: teamId, chatRoom: chatRoomId };
     const updates = {};

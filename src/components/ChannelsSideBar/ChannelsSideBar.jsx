@@ -32,7 +32,7 @@ const ChannelsSideBar = () => {
     </Flex >
         <Scrollbars style={{ width: '100%', height: '100%' }} autoHide>
             <Flex direction="column" px="0.5px" gap="0.8rem" overflowX="hidden"  >
-                {channels && channels.map(channel => {
+                {team && channels && channels.map(channel => {
                     const id = channel.channelId;
                     const name = channel.channelName;
                     const channelCR = channel.chatRoom;

@@ -13,10 +13,16 @@ import { getUserById, getUserValueByUsername } from './users.service';
 import { isEmpty } from 'lodash';
 import { sendNotification } from './notifications.service';
 
-export const addChatRoomMember = (uid, chatRoomId) => {
+export const addChatRoomMember = (uid, chatRoomId, type, teamId, channelId) => {
+  teamId = teamId || false;
+  channelId = channelId || false;
   const updates = {};
   updates[`chatRooms/${chatRoomId}/members/${uid}`] = true;
-  updates[`users/${uid}/chatRooms/${chatRoomId}`] = true;
+  // updates[`users/${uid}/chatRooms/${chatRoomId}`] = true;
+  updates[`users/${uid}/chatRooms/${chatRoomId}/visible`] = true;
+  updates[`users/${uid}/chatRooms/${chatRoomId}/type`] = type;
+  updates[`users/${uid}/chatRooms/${chatRoomId}/team`] = teamId;
+  updates[`users/${uid}/chatRooms/${chatRoomId}/channel`] = channelId;
   update(ref(db), updates);
   return chatRoomId;
 };
@@ -25,7 +31,6 @@ export const addMultipleChatRoomMembers = (usersList, chatRoomId) => {
   const updates = {};
   usersList.forEach((uid) => {
     updates[`chatRooms/${chatRoomId}/members/${uid}`] = true;
-    // updates[`users/${uid}/chatRooms/${chatRoomId}`] = true;
   });
   update(ref(db), updates);
   return chatRoomId;
@@ -37,6 +42,23 @@ export const removeChatRoomMember = (uid, chatRoomId) => {
   updates[`users/${uid}/chatRooms/${chatRoomId}`] = null;
   update(ref(db), updates);
   return chatRoomId;
+};
+
+export const disableChatRoomForUser = (uid, chatRoomId) => {
+  const updates = {};
+  updates[`chatRooms/${chatRoomId}/members/${uid}`] = false;
+  update(ref(db), updates);
+  return chatRoomId;
+};
+
+export const checkRoomActivity = async (chatRoomId) => {
+  const dbRef = ref(db, `chatRooms/${chatRoomId}/members/`);
+  const snapshot = await get(dbRef);
+  const roomMembers = Object.values(snapshot.val());
+  if(roomMembers.length < 1){
+    return false;
+  } 
+  return true;
 };
 
 export const toggleChatRoomVisibility = async (uid, chatRoomId) => {
@@ -90,11 +112,25 @@ export const addChatRoom = async (myUserId, newUserUsername) => {
   }
 };
 
-export const createChatRoom = (uid) => {
-  return push(ref(db, 'chatRooms/'), {}).then((chatRoomId) => {
-    return addChatRoomMember(uid, chatRoomId.key);
-  });
+export const createChatRoom = async (uid, type, teamId, channelId) => {
+  teamId = teamId || false;
+  channelId = channelId || false;
+  const newChatRoom = await push(ref(db, 'chatRooms/'), {});
+  const chatRoomId = newChatRoom.key;
+  const updates = {};
+  updates[`chatRooms/${chatRoomId}/type`] = type;
+  updates[`chatRooms/${chatRoomId}/team`] = teamId;
+  updates[`chatRooms/${chatRoomId}/channel`] = channelId;
+  await update(ref(db), updates);
+  await addChatRoomMember(uid, chatRoomId, type, teamId, channelId);
+  return chatRoomId;
 };
+
+// export const createChatRoom = (uid, type) => {
+//   return push(ref(db, 'chatRooms/'), {}).then((chatRoomId) => {
+//     return addChatRoomMember(uid, chatRoomId.key);
+//   });
+// };
 
 export const getUserChatRooms = (uid) => {
   const chatRoomsRef = ref(db, `users/${uid}/chatRooms/`);
@@ -109,6 +145,13 @@ export const getCurrentUserChatRooms = (uid, listener) => {
     // const chatRoomIds = Object.keys(data);
     listener(data);
   });
+};
+
+export const getChatRoomMembers = async (chatRoomId) => {
+  const dbRef = ref(db, `chatRooms/${chatRoomId}/members/`);
+  const snapshot = await get(dbRef);
+  const roomMembers = Object.keys(snapshot.val());
+  return roomMembers;
 };
 
 export const getChatRoom = async (chatRoomId) => {
@@ -126,11 +169,18 @@ export const removeChatRoom = async (chatRoomId) => {
   try {
     const chatRoomRef = ref(db, `chatRooms/${chatRoomId}`);
     const chatRoomSnapshot = await get(chatRoomRef);
+    const chatRoomMembers = await getChatRoomMembers(chatRoomId);
+    const promises = chatRoomMembers.map(async(userId)=>{
+      await removeChatRoomMember(userId, chatRoomId);
+    });
+    await Promise.all(promises);
 
     if (chatRoomSnapshot.exists()) {
       const updates = {};
       updates[`chatRooms/${chatRoomId}`] = null;
       update(ref(db), updates);
+
+      
       return chatRoomId;
     } else {
       return null;
@@ -139,6 +189,23 @@ export const removeChatRoom = async (chatRoomId) => {
     console.log(error);
   }
 };
+// export const removeChatRoom = async (chatRoomId) => {
+//   try {
+//     const chatRoomRef = ref(db, `chatRooms/${chatRoomId}`);
+//     const chatRoomSnapshot = await get(chatRoomRef);
+
+//     if (chatRoomSnapshot.exists()) {
+//       const updates = {};
+//       updates[`chatRooms/${chatRoomId}`] = null;
+//       update(ref(db), updates);
+//       return chatRoomId;
+//     } else {
+//       return null;
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
   return onValue(ref(db, `/chatRooms/${chatRoomId}/members`), snapshot => {
@@ -150,10 +217,6 @@ export const getLiveUsersByChatRoomId = (chatRoomId, listener) => {
       listener(users);
     });
   });
-};
-
-export const getChatRoomMembers = (chatRoomId) => {
-  return get(query(ref(db, `chatRooms/${chatRoomId}/members`)));
 };
 
 export const sendMessage = (chatRoomId, message, author, avatar, timeStamp) => {
@@ -207,7 +270,6 @@ export const getLiveMsgByChatRoomId = (chatRoomId, listener) => {
 export const getMsgById = (id) => {
   return get(ref(db, `messages/${id}`));
 };
-
 
 export const deleteMsg = async (msgId, chatRoomId) => {
   const updates = {
