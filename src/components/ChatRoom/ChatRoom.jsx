@@ -38,10 +38,15 @@ const ChatRoom = ({ chatRoomId }) => {
   useEffect(() => {
     if (!!chatRoomId && notifications?.chatRoomId === chatRoomId) {
       (async () => {
-        await updateUserNotification(user.uid, chatRoomId);
+        try {
+          await updateUserNotification(user.uid, chatRoomId);
+        } catch (error) {
+          console.log('Error updating user notification:', error);
+          // Handle error
+        }
       })();
-    } 
-  }, [notifications]);
+    }
+  }, [notifications, chatRoomId]);
   // Scroll to the bottom of the element upon message submission
   useEffect(() => {
     scrollToBottom();
@@ -72,14 +77,27 @@ const ChatRoom = ({ chatRoomId }) => {
         return;
       }
     }
-
     if (isValidMessage(input)) {
-      //add error handling
-      await createMsg(input, data.sender, data.avatarUrl, data.username, data.edited, currentChatRoomId, data.firstName, data.lastName, data.audioUrl);//////////
-      setInput('');
-      setAudioFile(null);
-      setAudioBlob(null);
-      setIsTextAreaHidden(false);
+      try {
+        await createMsg(
+          input,
+          data.sender,
+          data.avatarUrl,
+          data.username,
+          data.edited,
+          currentChatRoomId,
+          data.firstName,
+          data.lastName,
+          data.audioUrl
+        );
+        setInput('');
+        setAudioFile(null);
+        setAudioBlob(null);
+        setIsTextAreaHidden(false);
+      } catch (error) {
+        console.log('Error creating message:', error);
+        // Handle error
+      }
     }
   };
 

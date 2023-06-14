@@ -16,16 +16,21 @@ const MessagePopover = ({ message, reactions = {}, msgId, timestamp, audioUrl, s
     const [isMyMsg, setIsMyMsg] = useState(false);
 
     const handleEmojiClick = async (emojiLabel) => {
-        const found = Object.values(reactions).find(e => e.reactedUserId === user.uid);
-        const alreadyReacted = Object.values(reactions).find(e => e.emojiLabel === emojiLabel);
-        if (!found) {
-            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+        try {
+            const found = Object.values(reactions).find(e => e.reactedUserId === user.uid);
+            const alreadyReacted = Object.values(reactions).find(e => e.emojiLabel === emojiLabel);
 
-        } else if (alreadyReacted) {
-            await deleteReaction(found.reactionId, msgId, currentChatRoomId);
-        } else {
-            await deleteReaction(found.reactionId, msgId, currentChatRoomId);
-            await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+            if (!found) {
+                await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+            } else if (alreadyReacted) {
+                await deleteReaction(found.reactionId, msgId, currentChatRoomId);
+            } else {
+                await deleteReaction(found.reactionId, msgId, currentChatRoomId);
+                await createReaction(user.uid, currentChatRoomId, emojiLabel, msgId, userData.username);
+            }
+        } catch (error) {
+            console.log('Error handling emoji click:', error);
+            // Handle error
         }
     };
     const handlePopoverClick = () => {
