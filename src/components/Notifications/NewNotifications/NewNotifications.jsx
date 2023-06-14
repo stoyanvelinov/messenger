@@ -15,14 +15,22 @@ const NewNotifications = ({ unseenNotifications }) => {
             await updateUserNotification(uid, chatRoomId);
             if (chanelId && teamId) {
                 navigate(`teams/${teamId}/${chanelId}/${chatRoomId}`);
+                setUser((prev) => ({
+                    ...prev,
+                    currentChatRoomId: chatRoomId,
+                    currentTeamId: teamId,
+                    currentChannelId: chanelId
+                }));
             } else {
                 navigate(`/messages/${chatRoomId}`);
+                setUser((prev) => ({
+                    ...prev,
+                    currentChatRoomId: chatRoomId,
+                    currentTeamId: null,
+                    currentChannelId: null
+                }));
             }
             //check if chatRoom is in team and navigate correctly
-            setUser((prev) => ({
-                ...prev,
-                currentChatRoomId: chatRoomId
-            }));
         } catch (error) {
             console.log(error);
             // Handle error
