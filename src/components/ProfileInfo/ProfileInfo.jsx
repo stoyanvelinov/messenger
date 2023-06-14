@@ -111,7 +111,7 @@ const ProfileInfo = () => {
         }
     };
 
-
+  // eslint-disable-next-line no-shadow
     const updateUserAvatar = async (userId, avatarUrl) => {
         await updateUserAvatarUrl(userId, avatarUrl);
         setUser((prev) => ({

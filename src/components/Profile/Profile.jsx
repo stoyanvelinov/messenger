@@ -25,7 +25,6 @@ const Profile = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const btnRef = useRef();
-  const [isProfile, setIsProfile] = useState(true);
 
   const handleLogout = async () => {
 
@@ -55,7 +54,7 @@ const Profile = () => {
         onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton onClick={()=>setIsProfile(true)} />
+          <DrawerCloseButton onClick={onClose} />
           <DrawerHeader background='primaryLight' >
             My&nbsp; profile
           </DrawerHeader>

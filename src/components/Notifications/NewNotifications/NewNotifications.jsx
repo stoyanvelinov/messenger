@@ -8,7 +8,7 @@ import { BellIcon } from '@chakra-ui/icons';
 import { formatTimeSince } from '../../../common/helperFuncs';
 
 const NewNotifications = ({ unseenNotifications }) => {
-    const { user, setUser,} = useContext(AuthContext);
+    const { user, setUser} = useContext(AuthContext);
     const navigate = useNavigate();
     const handleClick = async (uid, chatRoomId, chanelId, teamId) => {
         try {

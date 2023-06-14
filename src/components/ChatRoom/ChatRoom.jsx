@@ -104,10 +104,10 @@ useEffect(() => {
   };
 
   // Check if the message is valid before sending
-  const isValidMessage = input => {
+  const isValidMessage = inputs => {
     let validMessage = true;
 
-    if (input.trim() === '' && !audioFile) {
+    if (inputs.trim() === '' && !audioFile) {
       validMessage = false;
     }
     return validMessage;
