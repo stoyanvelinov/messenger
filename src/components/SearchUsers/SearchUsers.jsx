@@ -51,6 +51,7 @@ const SearchUsers = ({ addMember, width }) => {
           placeholder="Search for users..."
           bg='#12213c'
           padding='5px'
+          borderRadius="3px"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
